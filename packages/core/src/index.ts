@@ -6,3 +6,6 @@ export * from './calendar';
 export * from './sky';
 export * from './rules';
 export * from './prayer';
+export * from './plan';
+export * from './meals';
+export * from './slava';
