@@ -23,7 +23,7 @@ interface Reason { label: string; sub: string; level: FoodLevel | 'vrijeme' | 'f
 ```
 
 ## 1. Calendar helpers
-- `dayNum(y,m,d)` = `floor(Date.UTC(y,m-1,d)/864e5)`. `fromDayNum(n)` gives `{y,m,d,wd}` with wd 0=Sunday.
+- `toDayNum(y,m,d)` = `floor(Date.UTC(y,m-1,d)/864e5)`. `fromDayNum(n)` gives `{y,m,d,wd}` with wd 0=Sunday.
 - **Time zone Europe/Podgorica:** UTC+1. EU summer time UTC+2 runs from 01:00 UTC on the last Sunday of March to
   01:00 UTC on the last Sunday of October. For a calendar date, use the date-level rule from the engine (`fsTz`).
   Times on the switch day itself are within 1 h; tests cover 27–28 Mar 2027.
@@ -161,7 +161,7 @@ The card shows within 60 days. Text:
 ```
 orth = practices.orthodox ? orthodoxRule(n) (with strictness) : null
 level = orth?.level ?? 'mrsno'
-hijri = tabularHijri(n − ramadanShift)
+hijri = hijriDate(n, ramadanShift)
 ram = practices.ramadan && hijri.m == 9 ? hijri.d : 0
 naf = practices.nafila && !ram ? nafilaSuggestion(n, hijri) : null
 nafFast = naf && nafilaDays[n]
@@ -213,7 +213,7 @@ food rules take the strictest.
 - `shoppingList(planDays)` aggregates ingredients and counts meals, sorted with `localeCompare('sr-Latn')`.
 
 ## 9. Sky and moon (`sky/`)
-- `sunAltitude(n, hourLocal, lat, lng)` follows the engine `fsSunAlt`. It returns degrees and morning/evening.
+- `sunAltitude(n, minutes, lat, lng)` (minutes from local midnight) follows the engine `fsSunAlt`. It returns degrees and morning/evening.
 - `skyColors(alt, morning)` interpolates the keyframe tables `FS_SKY_M` and `FS_SKY_E` (3 stops: top, mid, bottom).
   - Stars opacity is `clamp((−alt − 4)/10, 0, 1)`.
   - Horizon glow opacity is `max(0, 1 − |alt|/16) * 0.85`.
