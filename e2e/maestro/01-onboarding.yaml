@@ -1,0 +1,30 @@
+# Fresh install, Orthodox + IF 16:8, mjera ulje, slava Sveti Nikola, allergen kivi, guest.
+# Wednesday 2.12.2026 is voda by tipik (Božićni post + Srijeda); the cap "ulje" must show "Post na ulju".
+appId: ai.fastself.app
+---
+- launchApp:
+    clearState: true
+- openLink: 'fastself://dev?reset=1&date=2026-12-02&time=16:30'
+- assertVisible: 'Svaki post ima svoje vrijeme.'
+- tapOn: { id: 'btn-start' }
+- tapOn: { id: 'choice-orthodox' }
+- tapOn: { id: 'seg-strog-ulje' }
+- tapOn: { id: 'btn-slava' }
+- tapOn: { id: 'chip-slava-nikola' }
+- tapOn: { id: 'choice-if' }
+- tapOn: { id: 'seg-if-16' }
+- tapOn: { id: 'btn-next' }
+- assertVisible: 'Alergije i ishrana'
+- tapOn: { id: 'input-allergen' }
+- inputText: 'kivi'
+- pressKey: Enter
+- assertVisible: { id: 'chip-my-kivi' }
+- tapOn: { id: 'btn-next' }
+- assertVisible: 'Prije nego što počneš'
+- tapOn: 'Razumijem, nastavi'
+- assertVisible: 'Grad i podsjetnici'
+- tapOn: { id: 'btn-next' }
+- tapOn: { id: 'btn-skip-account' }
+- assertVisible: { id: 'screen-danas' }
+- assertVisible: 'Post na ulju'
+- assertNotVisible: 'Riba dozvoljena'

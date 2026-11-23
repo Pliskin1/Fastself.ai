@@ -1,0 +1,23 @@
+{
+  "name": "fastself",
+  "private": true,
+  "version": "1.0.0",
+  "description": "fastself.ai: Orthodox fasting, Ramadan and intermittent fasting on one dial (iOS, Expo).",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "pnpm test:core && pnpm test:app",
+    "test:core": "pnpm --filter @fastself/core run test",
+    "test:app": "pnpm --filter mobile run test",
+    "build:edge": "pnpm --filter @fastself/core run build:edge",
+    "ios": "pnpm --filter mobile exec expo run:ios",
+    "ios:device": "pnpm --filter mobile exec expo run:ios --device",
+    "start": "pnpm --filter mobile exec expo start --dev-client",
+    "android": "pnpm --filter mobile exec expo run:android"
+  }
+}

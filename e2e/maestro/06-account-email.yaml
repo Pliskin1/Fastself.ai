@@ -1,0 +1,20 @@
+# Email OTP against LOCAL Supabase. Mailpit catches the email at http://127.0.0.1:54324.
+appId: ai.fastself.app
+env:
+  EMAIL: e2e-${MAESTRO_TS}@test.local
+---
+- launchApp
+- tapOn: 'Profil'
+- tapOn: { id: 'btn-open-account' }
+- tapOn: { id: 'input-email' }
+- inputText: ${EMAIL}
+- tapOn: { id: 'btn-send-code' }
+- runScript:
+    file: scripts/otp.js
+    env:
+      EMAIL: ${EMAIL}
+- tapOn: { id: 'input-code' }
+- inputText: ${output.otp}
+- tapOn: { id: 'btn-verify' }
+- tapOn: { id: 'btn-enable-sync' }
+- assertVisible: 'Sinhronizacija uključena'

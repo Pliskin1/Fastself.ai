@@ -1,0 +1,44 @@
+# App Store screenshots, 6.9" display: run on the "iPhone 17 Pro Max" Simulator with the dev build.
+# maestro test e2e/maestro/screenshots.yaml   → PNGs in store/screenshots/
+# Before running: Simulator → Features → Toggle Appearance not needed (app is dark); set the status bar clean:
+#   xcrun simctl status_bar booted override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4
+appId: ai.fastself.app
+---
+- launchApp:
+    clearState: true
+- openLink: 'fastself://dev?reset=1&preset=orthodox-if&date=2026-12-02&time=16:30&tab=danas'
+- assertVisible: 'Post na vodi'
+- waitForAnimationToEnd
+- takeScreenshot: store/screenshots/01-danas-bozicni-post
+
+- openLink: 'fastself://dev?reset=1&preset=ramadan-nafila&date=2027-02-08&time=16:30&tab=danas'
+- assertVisible: 'Do iftara'
+- waitForAnimationToEnd
+- takeScreenshot: store/screenshots/02-danas-ramazan
+
+- openLink: 'fastself://dev?preset=orthodox-if&date=2026-12-02&time=12:00&tab=kalendar'
+- assertVisible: { id: 'screen-kalendar' }
+- tapOn: { id: 'cal-2026-12-04' }
+- waitForAnimationToEnd
+- takeScreenshot: store/screenshots/03-kalendar
+
+- openLink: 'fastself://dev?preset=orthodox&date=2026-12-02&time=12:30&tab=danas'
+- tapOn: { id: 'btn-what-to-eat' }
+- assertVisible: { id: 'screen-asistent' }
+- tapOn:
+    id: 'recipe-.*'
+    index: 0
+- waitForAnimationToEnd
+- takeScreenshot: store/screenshots/04-sta-da-jedem
+
+- openLink: 'fastself://dev?reset=1&preset=if14&date=2026-12-03&time=20:15&tab=tajmer'
+- tapOn: { id: 'timer-toggle' }
+- openLink: 'fastself://dev?date=2026-12-04&time=07:40&tab=tajmer'
+- waitForAnimationToEnd
+- takeScreenshot: store/screenshots/05-tajmer
+
+- openLink: 'fastself://dev?tab=profil'
+- tapOn: { id: 'row-privacy' }
+- assertVisible: { id: 'screen-privatnost' }
+- waitForAnimationToEnd
+- takeScreenshot: store/screenshots/06-privatnost

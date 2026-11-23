@@ -1,0 +1,8 @@
+packages:
+  - apps/*
+  - packages/*
+
+# pnpm 10 skips dependency build scripts unless they are listed here.
+# If `pnpm install` warns about ignored build scripts, run `pnpm approve-builds` and allow what Expo or esbuild needs.
+onlyBuiltDependencies:
+  - esbuild

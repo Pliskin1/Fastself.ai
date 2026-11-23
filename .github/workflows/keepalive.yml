@@ -1,0 +1,20 @@
+name: Keep prod Supabase awake
+
+# Free Supabase projects pause after a week without activity. App Review must never hit a paused backend.
+# Add the repository secret PROD_HEALTH_URL = https://<prod-ref>.supabase.co/functions/v1/health
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping health
+        env:
+          URL: ${{ secrets.PROD_HEALTH_URL }}
+        run: |
+          if [ -z "$URL" ]; then echo "PROD_HEALTH_URL not set yet"; exit 0; fi
+          curl -fsS --retry 3 --max-time 20 "$URL"

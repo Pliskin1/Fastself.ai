@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  js:
+    name: Types, lint, core and app tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test:core -- --coverage
+      - run: pnpm test:app -- --ci
+      - name: Edge bundle is up to date
+        run: |
+          pnpm build:edge
+          git diff --exit-code supabase/functions/_shared/core.js || (echo "Run pnpm build:edge and commit core.js" && exit 1)
+      - name: No placeholders in shipped code
+        run: |
+          if grep -rnE "\[AI PROVAJDER\]|\[URL |\[POPUNI|lorem ipsum" apps/mobile/src apps/mobile/app.config.ts; then
+            echo "Placeholders found (see docs/TESTING.md §10)"; exit 1; fi
+
+  db:
+    name: Database (pgTAP) and edge functions (Deno)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: supabase start -x studio,imgproxy,vector,logflare,supavisor,edge-runtime
+      - run: supabase db reset
+      - run: supabase test db
+      - run: deno test --allow-env --allow-net=127.0.0.1 supabase/functions
+        env:
+          AI_PROVIDER: mock
+      - if: always()
+        run: supabase stop --no-backup

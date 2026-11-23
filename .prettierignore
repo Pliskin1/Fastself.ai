@@ -1,0 +1,8 @@
+docs/reference/
+supabase/functions/_shared/core.js
+apps/mobile/ios/
+apps/mobile/android/
+pnpm-lock.yaml
+docs/
+*.md
+.claude/
