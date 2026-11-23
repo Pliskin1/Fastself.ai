@@ -63,7 +63,7 @@ These were checked against the rules in DOMAIN.md §2. A must also confirm them 
 | 2027-05-02 | Sun | mrsno | Svijetla sedmica |
 | 2027-05-05 | Wed | mrsno | Svijetla sedmica |
 | 2027-06-23 | Wed | mrsno | Trojičina sedmica |
-| 2027-06-28 | Mon | ulje | Petrovski post (day 1 of 14) |
+| 2027-06-28 | Mon | voda | Petrovski post (day 1 of 14; Monday is voda) |
 | 2027-06-30 | Wed | voda | Petrovski post, Srijeda |
 | 2027-07-03 | Sat | riba | Petrovski post |
 | 2027-07-11 | Sun | riba | Petrovski post (last day) |
@@ -74,6 +74,19 @@ These were checked against the rules in DOMAIN.md §2. A must also confirm them 
 | 2027-09-11 | Sat | voda | Usekovanje |
 | 2027-09-27 | Mon | voda | Krstovdan (Vozdviženje) |
 
+Rows added for the svetosavlje.org rules (rule pack v0.1, DOMAIN §2):
+| Date | Wd | Level | Reasons (in order) |
+|---|---|---|---|
+| 2026-12-28 | Mon | voda | Božićni post (Monday is voda) |
+| 2028-12-30 | Sat | riba | Božićni post (last fish weekend day, 17.12. old style) |
+| 2028-12-31 | Sun | ulje | Božićni post (weekend from 31.12.) |
+| 2027-05-12 | Wed | ulje | Srijeda (ulje, from Tomina nedjelja to Duhovi) |
+| 2027-05-14 | Fri | ulje | Petak (ulje, from Tomina nedjelja to Duhovi) |
+| 2027-05-26 | Wed | riba | Srijeda, Prepolovljenje |
+| 2027-06-09 | Wed | riba | Srijeda, Odanije Vaskrsa |
+| 2028-07-12 | Wed | riba | Srijeda, Petrovdan |
+| 2030-08-28 | Wed | riba | Srijeda, Velika Gospojina |
+
 Strictness cases:
 - `ulje` on 2026-12-02 gives ulje, with the extra reason "Tvoja mjera posta".
 - `riba` on 2027-03-15 gives riba.
@@ -82,6 +95,10 @@ Strictness cases:
 Period sizes:
 - 2026: Petrovski is 34 days, 2026-06-08 to 07-11.
 - 2027: Petrovski is 14 days; Veliki post is 2027-03-15 to 05-01; Bijela sedmica is 03-08 to 03-14.
+- 2026–2036: every movable boundary (Easter, Mitar, Bijela, Veliki post, Cvijeti, Svijetla, Tomina, Prepolovljenje,
+  Odanije, Vaznesenje, Duhovi, Trojičina, Petrovski and its length) is in `packages/core/test/golden/orthodox-years.ts`.
+  These dates were computed by an independent oracle and checked against §3.1. The test asserts that the engine puts
+  each boundary day in the right period, and the day before or after it outside.
 
 ### 3.3 Prayer times, Podgorica, MWL, engine output (±1 min; adhan should match)
 | Date | fajr | sunrise | dhuhr | asr | maghrib | isha |
@@ -118,6 +135,8 @@ IZ CG method: after A calibrates the offsets, add a test per collected official 
 - voda day: "Posna sarma" is rejected with the reason naming step 2 (oil); "Rižoto sa pečurkama" passes
   ("bez ulja" is ignored); "Humus" is rejected (oil, step 2).
 - riba day (4.12.): "Riblja čorba" passes; "Piletina" is rejected (meso, step 1).
+- Shellfish: a recipe whose only animal category is rakovi or mekusci (e.g. cats `['rakovi', 'ulje']`) passes on an ulje
+  day and is rejected on a voda day. With the rakovi or mekusci allergy, it is rejected on every day.
 - Allergy orasasto: "Salata od kupusa i oraha" is rejected with the allergy reason.
 - Custom "kivi": any recipe containing "kivi" is rejected.
 - Halal: anything with svinj… or vino/rakija is rejected.

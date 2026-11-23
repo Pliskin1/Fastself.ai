@@ -39,6 +39,10 @@ interface Reason { label: string; sub: string; level: FoodLevel | 'vrijeme' | 'f
 Rules apply in order. The first matching "free" rule returns immediately. Otherwise fasting rules accumulate and the
 **strictest level wins**, then feast relaxations apply, then the user's strictness cap.
 Let `E` = Easter DayNum of year y, `o = n − E`, `md = m*100+d`, `weekend = wd ∈ {0,6}`.
+Source: [svetosavlje.org, "Pravilo posta za celu godinu"](https://svetosavlje.org/pravilo-posta-za-celu-godinu/)
+(retrieved 2026-11-23) for the weekday levels, the Wed/Fri rule and the fish days. It gives old-style dates, shifted
++13 days here. Rules it does not cover (fast boundaries, one-day fasts, Bogojavljenje, Vavedenje, Sveti Nikola) come
+from `docs/reference/engine.js`. Each JSON entry carries `src` and its old-style date `os`.
 
 ### 2.1 Fast-free periods (return immediately)
 | Rule | Condition | Level |
@@ -51,21 +55,24 @@ Let `E` = Easter DayNum of year y, `o = n − E`, `md = m*100+d`, `weekend = wd 
 | Bijela (Sirna) sedmica | o ∈ [−55, −49] | bezmesa (dairy, eggs and fish allowed, no meat) |
 
 ### 2.2 Fasting periods
-| Period | Dates | Weekdays (Mon–Fri) | Weekend |
-|---|---|---|---|
-| Božićni post | 28.11.–6.1. (40 days) | ulje | riba until 1.1., then ulje |
-| Veliki post | o ∈ [−48, −1] (Čisti ponedjeljak → Velika subota) | voda | ulje |
-| Petrovski post | o ≥ 57 and date ≤ 11.7. (variable length; 14 days in 2027) | ulje | riba |
-| Gospojinski post | 14.8.–27.8. | voda | ulje |
+| Period | Dates | Mon, Wed, Fri | Tue, Thu | Sat, Sun |
+|---|---|---|---|---|
+| Božićni post | 28.11.–6.1. (40 days) | voda | ulje | riba until 30.12. (17.12. old style), then ulje |
+| Veliki post | o ∈ [−48, −1] (Čisti ponedjeljak → Velika subota) | voda | voda | ulje |
+| Petrovski post | o ≥ 57 and date ≤ 11.7. (variable length; 14 days in 2027) | voda | ulje | riba |
+| Gospojinski post | 14.8.–27.8. | voda | voda | ulje |
 - One-day fasts set the level to voda, and the Wed/Fri rule is not applied on top of them:
   Badnji dan 6.1., Krstovdan 18.1., Usekovanje 11.9., Krstovdan (Vozdviženje) 27.9.
 - **Wednesday and Friday** outside the free periods add the reason "Srijeda" or "Petak" at level voda. The stricter level
-  wins, so in Božićni post a Wednesday is voda.
+  wins, so in Božićni post a Wednesday is voda. Exception: from Tomina nedjelja to Duhovi (o ∈ [7, 49]) the reason is
+  at level ulje.
 - Period progress is computed for the subtitle: "Božićni post, 5. dan od 40".
 
 ### 2.3 Feast relaxations
 These apply only if the current level is stricter than riba, and they set it to riba:
-Vavedenje 4.12., Sveti Nikola 19.12., Blagovijesti 7.4., Preobraženje 19.8., Cvijeti (o = −7).
+Vavedenje 4.12., Sveti Nikola 19.12., Blagovijesti 7.4., Preobraženje 19.8., Cvijeti (o = −7),
+Prepolovljenje (o = 24), Odanije Vaskrsa (o = 38), Petrovdan 12.7., Velika Gospojina 28.8. The last four only change a
+Wednesday or Friday, because only then is the level stricter than riba.
 
 ### 2.4 Mjera posta (user strictness cap)
 If `strictness ≠ 'voda'` and `rank(level) > rank(strictness)`, set `level = strictness` and append the reason
@@ -76,17 +83,15 @@ If `strictness ≠ 'voda'` and `rank(level) > rank(strictness)`, set `level = st
 With no rule at all: `{ level: 'mrsno', reasons: [{ label: 'Običan dan', sub: 'nema posta' }] }`.
 
 ### 2.6 Rule pack JSON (data, versioned)
-```json
-{ "id": "orthodox", "version": "0.1", "calendar": "julian",
-  "free": [ {"id":"svjatki","name":"Svjatki","fixed":["01-07","01-17"],"level":"mrsno"},
-            {"id":"svijetla","name":"Svijetla sedmica","easter":[0,6],"level":"mrsno"} ],
-  "periods": [ {"id":"bozicni","name":"Božićni post","fixed":["11-28","01-06"],
-                "weekday":"ulje","weekend":"riba","weekendUntil":"01-01","weekendAfter":"ulje"} ],
-  "oneDay": [ {"id":"badnji","name":"Badnji dan","fixed":"01-06","level":"voda"} ],
-  "weekly": { "days":[3,5], "level":"voda" },
-  "relax": [ {"id":"vavedenje","name":"Vavedenje","fixed":"12-04","to":"riba"},
-             {"id":"cvijeti","name":"Cvijeti","easter":-7,"to":"riba"} ] }
-```
+The file is `packages/core/rule-packs/orthodox.v0.1.json`. Shape:
+- `free[]`, `oneDay[]` and `relax[]` entries select a day with `fixed` (`"MM-DD"`, or `[from, to]` that may wrap the
+  year end) or `easter` (an offset, or `[from, to]`).
+- `periods[]` use the same selectors, plus `easterFrom` and `fixedTo` for Petrovski. Each has a `week` map
+  (`mon`…`sun` → level), or `segments[]` with their own range and `week` (Božićni).
+- `weekly` has `days` (`wed`, `fri` → reason label), `level`, and `overrides[]` by Easter range.
+- `oneDay` entries with `keepsPeriod` keep that period's progress (Badnji dan = Božićni post, day 40 of 40).
+- Every entry has `name`, an optional `sub`, `src`, and `os` for fixed dates.
+
 The engine interprets this. The version `rule pack v0.1` is shown in the why receipt and sent with error reports.
 **Human verification is required** against the church calendar (TESTING.md §3.2). If the church calendar differs,
 fix the JSON, not the code.
@@ -180,7 +185,7 @@ food rules take the strictest.
   - Diet-only: svinjetina, alkohol.
 - FORBID by level:
   - voda: meso, mlijecno, jaja, riba, ulje, vino, rakovi, mekusci
-  - ulje: meso, mlijecno, jaja, riba, rakovi, mekusci
+  - ulje: meso, mlijecno, jaja, riba (rakovi, mekusci and vino are allowed, per svetosavlje.org "post na ulju i vinu")
   - riba: meso, mlijecno, jaja
   - bezmesa: meso
   - mrsno: none
