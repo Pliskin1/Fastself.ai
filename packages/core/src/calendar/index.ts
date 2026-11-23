@@ -14,3 +14,5 @@ export {
   longDate,
   shortDate,
 } from './format';
+export { hijriDate } from './hijriDate';
+export { ISLAMIC_PACK_VERSION } from './hijriPack';

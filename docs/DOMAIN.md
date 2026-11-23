@@ -31,9 +31,14 @@ interface Reason { label: string; sub: string; level: FoodLevel | 'vrijeme' | 'f
   `a=y%4, b=y%7, c=y%19, d=(19c+15)%30, e=(2a+4b−d+34)%7, month=floor((d+e+114)/31), day=((d+e+114)%31)+1`,
   then add 13 days. Results 2020–2040 are in TESTING.md §3.1.
 - **Julian date ("po starom")** = Gregorian date − 13 days, valid until 2100. Shown as "19. novembar po starom".
-- **Hijri** uses the tabular (arithmetic) algorithm from `fsHijri`, applied to `n − ramadanShift`. It is shown with the
-  month names in §4. Ramadan starts are verified in TESTING.md §3.4. The real start depends on moon sighting, so the
-  user can shift by ±1 day in Vaktija.
+- **Hijri** (`hijriDate(n, ramadanShift)`) follows the known month starts in `rule-packs/islamic.v0.1.json`. That
+  data is Diyanet-based, from the Montenegro calendar, and is known from 2026-11-10. It is applied to `n − ramadanShift`.
+  - Months in a gap between known starts take tabular lengths, and the last one absorbs the remainder (always 29/30).
+  - Before the first known start the calendar is plain tabular (`tabularHijri`, from `fsHijri`). After the last one it is
+    tabular, shifted to stay continuous.
+  - Extend the JSON each year when the next calendar is published, and bump its version.
+  - It is shown with the month names in §4, and verified in TESTING.md §3.4.
+  - The user can still shift by ±1 day in Vaktija to follow their own džemat.
 
 ## 2. Orthodox rule engine (`rules/orthodox.ts` + `rule-packs/orthodox.v0.1.json`)
 Rules apply in order. The first matching "free" rule returns immediately. Otherwise fasting rules accumulate and the

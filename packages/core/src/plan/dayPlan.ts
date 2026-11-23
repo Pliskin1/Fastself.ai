@@ -1,6 +1,6 @@
 import { fromDayNum } from '../calendar/daynum';
 import { formatHm } from '../calendar/format';
-import { tabularHijri } from '../calendar/hijri';
+import { hijriDate } from '../calendar/hijriDate';
 import { prayerTimes } from '../prayer/times';
 import { LEVEL_TITLE } from '../rules/levels';
 import { nafilaSuggestion, ramadanMonth } from '../rules/islamic';
@@ -17,7 +17,7 @@ export function dayPlan(n: DayNum, s: Settings): DayPlan {
   const orth = P.orthodox ? orthodoxRule(n, s) : null;
   const ruleLevel = orth?.level ?? 'mrsno';
   const orthFast = !!orth && ruleLevel !== 'mrsno';
-  const hijri = tabularHijri(n, s.ramadanShift);
+  const hijri = hijriDate(n, s.ramadanShift);
   const ramadan = P.ramadan ? ramadanMonth(n, s) : null;
   const ram = ramadan ? ramadan.day : 0;
   const naf = P.nafila && !ram ? nafilaSuggestion(n, hijri) : null;

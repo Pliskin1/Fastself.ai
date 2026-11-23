@@ -115,10 +115,17 @@ Official tables, ±1 min (data in `packages/core/test/golden/`, source copies in
   as IZ CG publishes it.
 - `turkey` = the Diyanet Ramadan 1448 timetable for Podgorica, 8 Feb–8 Mar 2027 (`prayer-diyanet.ts`).
 
-### 3.4 Hijri (tabular, shift 0)
-- 1 Ramadan: 1446 → 2025-03-01, 1447 → 2026-02-18, 1448 → 2027-02-08, 1449 → 2028-01-28.
-- 1 Shawwal 1448 → 2027-03-10. Arafah 1448 → 2027-05-16. Ashura 1448 → 2026-06-26.
-- 2026-12-02 → 21 džumadel-uhra 1448. 2027-02-07 → 29 šaban 1448.
+### 3.4 Hijri (`hijriDate`, shift 0)
+The calendar follows `rule-packs/islamic.v0.1.json` (Diyanet-based, known from 2026-11-10). It is tabular before that
+and tabular-shifted after the last known month (DOMAIN §1).
+- 1 Ramadan:
+  - 1446 → 2025-03-01 and 1447 → 2026-02-18 (both tabular, before the data).
+  - 1448 → 2027-02-08.
+  - 1449 → 2028-01-27 (extrapolated; check it when the 2028 calendar is published).
+- 1 Shawwal 1448 → 2027-03-09 (Ramadan 1448 has 29 days). Arafah 1448 → 2027-05-15. Kurban-bajram → 2027-05-16.
+- Ashura 1448 → 2026-06-26 (tabular).
+- 2026-11-23 → 14 džumadel-uhra 1448. 2026-12-02 → 23 džumadel-uhra 1448. 2027-02-07 → 30 šaban 1448.
+- Every Hijri-dated row of `docs/reference/sources/diyanet-islamski-praznici-crna-gora-2026-11-23.md` matches.
 - With shift +1: 1 Ramadan 1448 → 2027-02-09.
 
 ### 3.5 Day plan combinations (city Podgorica, MWL, offsets 0)
@@ -128,7 +135,8 @@ Official tables, ±1 min (data in `packages/core/test/golden/`, source copies in
 | ramadan + IF16, 2027-02-08 | window start 17:06, end 01:06 (+1 day), ifInside true; title "1. ramazan" |
 | ramadan only, 2027-02-08 | window 17:06 → 05:14 next day |
 | ramadan + exception, 2027-02-08 | no window, title "Danas ne postiš", sub "1. ramazan, dan za naknadu", kaza = 1 |
-| nafila suggested Mon 2026-11-23, not chosen | title "Danas nema posta", sub "Dobrovoljni post je moguć: ponedjeljak, sunnet post" |
+| nafila suggested Mon 2026-11-30, not chosen | title "Danas nema posta", sub "Dobrovoljni post je moguć: ponedjeljak, sunnet post" |
+| nafila suggested Mon 2026-11-23 (14 džumadel-uhra) | white day wins over Monday: "Bijeli dani, 14. džumadel-uhra" |
 | nafila chosen | window fajr→maghrib, title "Dobrovoljni post" |
 | IF only 14:10 | window 10:00–20:00, title "IF 14:10" |
 | minor + IF on | ifH = 0, no window |

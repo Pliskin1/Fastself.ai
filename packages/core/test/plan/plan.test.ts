@@ -9,7 +9,7 @@ import {
   nextDays,
   parseIsoDate,
   rangeStats,
-  tabularHijri,
+  hijriDate,
 } from '../../src/index';
 import type { Settings } from '../../src/index';
 
@@ -44,7 +44,8 @@ describe('dayPlan, TESTING 3.5', () => {
     expect(p.title).toBe('1. ramazan');
     expect(p.sub).toBe('Post od zore do akšama, 1448. po Hidžri');
     expect(p.headline).toBe('ramadan');
-    expect(p.ramadan?.length).toBe(30);
+    expect(p.ramadan?.length).toBe(29);
+    expect(p.ramadan?.bajram).toBe(day('2027-03-09'));
   });
   it('ramadan only, 2027-02-08: 17:06 to 05:14 next day', () => {
     const p = dayPlan(day('2027-02-08'), mk({ ramadan: true }));
@@ -64,8 +65,8 @@ describe('dayPlan, TESTING 3.5', () => {
     expect(p.level).toBe('mrsno');
     expect(p.headline).toBe('exception');
   });
-  it('nafila suggested on Mon 2026-11-23, not chosen', () => {
-    const p = dayPlan(day('2026-11-23'), mk({ nafila: true }));
+  it('nafila suggested on Mon 2026-11-30, not chosen', () => {
+    const p = dayPlan(day('2026-11-30'), mk({ nafila: true }));
     expect(p.title).toBe('Danas nema posta');
     expect(p.sub).toBe('Dobrovoljni post je moguć: ponedjeljak, sunnet post');
     expect(p.nafila).toBe('Ponedjeljak, sunnet post');
@@ -74,8 +75,14 @@ describe('dayPlan, TESTING 3.5', () => {
     expect(p.headline).toBe('none');
     expect(p.times).not.toBeNull();
   });
+  it('2026-11-23 is a white day (14 džumadel-uhra 1448)', () => {
+    const p = dayPlan(day('2026-11-23'), mk({ nafila: true }));
+    expect(p.nafila).toBe('Bijeli dani, 14. džumadel-uhra');
+    expect(p.sub).toBe('Dobrovoljni post je moguć: bijeli dani, 14. džumadel-uhra');
+    expect(p.hijri).toEqual({ y: 1448, m: 6, d: 14 });
+  });
   it('nafila chosen: window maghrib to fajr, title Dobrovoljni post', () => {
-    const n = day('2026-11-23');
+    const n = day('2026-11-30');
     const p = dayPlan(n, mk({ nafila: true }, { nafilaDays: { [n]: true } }));
     expect(p.title).toBe('Dobrovoljni post');
     expect(p.sub).toBe('Ponedjeljak, sunnet post');
@@ -149,7 +156,7 @@ describe('dayPlan, other priorities', () => {
   it('ramadan shift moves the month', () => {
     const p = dayPlan(day('2027-02-08'), mk({ ramadan: true }, { ramadanShift: 1 }));
     expect(p.ramadanDay).toBe(0);
-    expect(p.hijri).toEqual(tabularHijri(day('2027-02-08'), 1));
+    expect(p.hijri).toEqual(hijriDate(day('2027-02-08'), 1));
   });
 });
 

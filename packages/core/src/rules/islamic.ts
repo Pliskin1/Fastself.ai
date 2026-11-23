@@ -1,6 +1,6 @@
 import { fromDayNum } from '../calendar/daynum';
 import { HIJRI_MONTHS } from '../calendar/format';
-import { tabularHijri } from '../calendar/hijri';
+import { hijriDate } from '../calendar/hijriDate';
 import type { DayNum, HijriDate, RamadanMonth, Settings } from '../types';
 
 /** Voluntary (nafila) fast suggestion for a day, or null. Callers skip it during Ramadan. */
@@ -20,10 +20,10 @@ export function nafilaSuggestion(n: DayNum, h: HijriDate): string | null {
 
 /** The Ramadan that day n belongs to (calendar only: practice flags are the caller's concern), or null. */
 export function ramadanMonth(n: DayNum, s: Pick<Settings, 'ramadanShift' | 'exceptions'>): RamadanMonth | null {
-  const h = tabularHijri(n, s.ramadanShift);
+  const h = hijriDate(n, s.ramadanShift);
   if (h.m !== 9) return null;
   const start = n - (h.d - 1);
-  const length = tabularHijri(start + 29, s.ramadanShift).m === 9 ? 30 : 29;
+  const length = hijriDate(start + 29, s.ramadanShift).m === 9 ? 30 : 29;
   const exceptionDays = Object.keys(s.exceptions)
     .map(Number)
     .filter((e) => e >= start && e < start + length)
@@ -42,9 +42,9 @@ export function ramadanMonth(n: DayNum, s: Pick<Settings, 'ramadanShift' | 'exce
 
 /** Days until the next 1 Ramadan; null while Ramadan is running. */
 export function ramadanCountdown(n: DayNum, s: Pick<Settings, 'ramadanShift'>): { days: number; start: DayNum } | null {
-  if (tabularHijri(n, s.ramadanShift).m === 9) return null;
+  if (hijriDate(n, s.ramadanShift).m === 9) return null;
   for (let i = 1; i <= 400; i++) {
-    const h = tabularHijri(n + i, s.ramadanShift);
+    const h = hijriDate(n + i, s.ramadanShift);
     if (h.m === 9 && h.d === 1) return { days: i, start: n + i };
   }
   return null;
