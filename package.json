@@ -15,9 +15,18 @@
     "test:core": "pnpm --filter @fastself/core run test",
     "test:app": "pnpm --filter mobile run test",
     "build:edge": "pnpm --filter @fastself/core run build:edge",
-    "ios": "pnpm --filter mobile exec expo run:ios",
+    "ios": "pnpm --filter mobile exec expo run:ios -d \"iPhone 18 Pro\"",
     "ios:device": "pnpm --filter mobile exec expo run:ios --device",
     "start": "pnpm --filter mobile exec expo start --dev-client",
     "android": "pnpm --filter mobile exec expo run:android"
-  }
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "eslint": "^10.15.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.10.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.73.0"
+  },
+  "packageManager": "pnpm@12.23.0"
 }

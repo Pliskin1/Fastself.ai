@@ -11,15 +11,16 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 - Schedules: docs/team/DANILO.md, docs/team/ANDREJ.md.
 
 ## D (Danilo): now and log
-- Now: T1 scaffold.
+- Now: T1 done on branch t/T1-scaffold, waiting for PR merge. Next: T3.
 - Waiting for A: nothing.
 - Log:
+  - 2026-11-23 14:50 | T1 | monorepo, Expo SDK 58 shell, core (pl), copy wiring; typecheck, lint, test:core, test:app green | merge, A pulls, then T3
   - 2026-11-23 13:00 | kit | kit received | T1
 
 ## Task board, D (Danilo)
 | task | status | branch | notes |
 |---|---|---|---|
-| T1 scaffold | todo | | |
+| T1 scaffold | PR | t/T1-scaffold | pnpm ios check pending |
 | T3 design primitives + icons | todo | | |
 | T5 navigation + route stubs | todo | | |
 | T6 onboarding | todo | | |

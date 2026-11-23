@@ -22,7 +22,7 @@ pnpm test:core                        # Vitest run; add --coverage for the repor
 pnpm test:app                         # Jest; add -- --watch while developing
 supabase start && supabase db reset && supabase test db
 deno test --allow-env --allow-net=127.0.0.1 supabase/functions
-pnpm ios                              # dev build in the Simulator (iPhone 17)
+pnpm ios                              # dev build in the Simulator (iPhone 18 Pro)
 maestro test e2e/maestro              # all flows; maestro test e2e/maestro/01-onboarding.yaml for one
 maestro studio                        # inspect testIDs interactively
 ```
@@ -180,7 +180,7 @@ and the clock (`jest.useFakeTimers().setSystemTime(...)` plus the core clock inj
 
 ## 6. E2E flows (Maestro, `e2e/maestro/`)
 Prerequisites:
-- A dev build is running on the "iPhone 17" Simulator.
+- A dev build is running on the "iPhone 18 Pro" Simulator.
 - `supabase start` is running, with the app pointed at local Supabase (`EXPO_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321`).
 - The dev menu's demo clock is set through the deep link `fastself://dev?date=2026-12-02&time=16:30`.
 Flows:

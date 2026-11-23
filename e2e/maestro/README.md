@@ -1,6 +1,6 @@
 # E2E (Maestro)
 
-Prerequisites: Simulator "iPhone 17" booted, the dev build installed and running (`pnpm ios`), `supabase start`, and
+Prerequisites: Simulator "iPhone 18 Pro" booted, the dev build installed and running (`pnpm ios`), `supabase start`, and
 `apps/mobile/.env.local` pointing at `http://127.0.0.1:54321` (works from the iOS Simulator; see PLATFORMS.md §3).
 Maestro runs on the iOS Simulator only (D's Mac). Android is checked by hand (PLATFORMS.md §8).
 
