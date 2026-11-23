@@ -42,7 +42,7 @@ These were checked against the rules in DOMAIN.md §2. A must also confirm them 
 |---|---|---|---|
 | 2026-11-27 | Fri | voda | Petak |
 | 2026-11-28 | Sat | riba | Božićni post |
-| 2026-12-02 | Wed | voda | Božićni post (ulje), Srijeda (voda) |
+| 2026-12-02 | Wed | voda | Božićni post (voda), Srijeda (voda) |
 | 2026-12-04 | Fri | riba | Božićni post, Petak, Vavedenje (riba) |
 | 2026-12-19 | Sat | riba | Božićni post |
 | 2027-01-01 | Fri | voda | Božićni post, Petak |
@@ -63,7 +63,7 @@ These were checked against the rules in DOMAIN.md §2. A must also confirm them 
 | 2027-05-02 | Sun | mrsno | Svijetla sedmica |
 | 2027-05-05 | Wed | mrsno | Svijetla sedmica |
 | 2027-06-23 | Wed | mrsno | Trojičina sedmica |
-| 2027-06-28 | Mon | ulje | Petrovski post (day 1 of 14) |
+| 2027-06-28 | Mon | voda | Petrovski post (day 1 of 14; Monday is voda) |
 | 2027-06-30 | Wed | voda | Petrovski post, Srijeda |
 | 2027-07-03 | Sat | riba | Petrovski post |
 | 2027-07-11 | Sun | riba | Petrovski post (last day) |
@@ -74,6 +74,19 @@ These were checked against the rules in DOMAIN.md §2. A must also confirm them 
 | 2027-09-11 | Sat | voda | Usekovanje |
 | 2027-09-27 | Mon | voda | Krstovdan (Vozdviženje) |
 
+Rows added for the svetosavlje.org rules (rule pack v0.1, DOMAIN §2):
+| Date | Wd | Level | Reasons (in order) |
+|---|---|---|---|
+| 2026-12-28 | Mon | voda | Božićni post (Monday is voda) |
+| 2028-12-30 | Sat | riba | Božićni post (last fish weekend day, 17.12. old style) |
+| 2028-12-31 | Sun | ulje | Božićni post (weekend from 31.12.) |
+| 2027-05-12 | Wed | ulje | Srijeda (ulje, from Tomina nedjelja to Duhovi) |
+| 2027-05-14 | Fri | ulje | Petak (ulje, from Tomina nedjelja to Duhovi) |
+| 2027-05-26 | Wed | riba | Srijeda, Prepolovljenje |
+| 2027-06-09 | Wed | riba | Srijeda, Odanije Vaskrsa |
+| 2028-07-12 | Wed | riba | Srijeda, Petrovdan |
+| 2030-08-28 | Wed | riba | Srijeda, Velika Gospojina |
+
 Strictness cases:
 - `ulje` on 2026-12-02 gives ulje, with the extra reason "Tvoja mjera posta".
 - `riba` on 2027-03-15 gives riba.
@@ -82,6 +95,10 @@ Strictness cases:
 Period sizes:
 - 2026: Petrovski is 34 days, 2026-06-08 to 07-11.
 - 2027: Petrovski is 14 days; Veliki post is 2027-03-15 to 05-01; Bijela sedmica is 03-08 to 03-14.
+- 2026–2036: every movable boundary (Easter, Mitar, Bijela, Veliki post, Cvijeti, Svijetla, Tomina, Prepolovljenje,
+  Odanije, Vaznesenje, Duhovi, Trojičina, Petrovski and its length) is in `packages/core/test/golden/orthodox-years.ts`.
+  These dates were computed by an independent oracle and checked against §3.1. The test asserts that the engine puts
+  each boundary day in the right period, and the day before or after it outside.
 
 ### 3.3 Prayer times, Podgorica, MWL, engine output (±1 min; adhan should match)
 | Date | fajr | sunrise | dhuhr | asr | maghrib | isha |
@@ -93,12 +110,22 @@ Period sizes:
 | 2027-03-28 (summer time) | 04:57 | 06:33 | 12:48 | 16:19 | 19:04 | 20:34 |
 | 2027-06-21 | 02:51 | 05:06 | 12:45 | 16:49 | 20:24 | 22:28 |
 | 2027-10-31 (winter again) | 04:40 | 06:15 | 11:27 | 14:13 | 16:38 | 18:07 |
-IZ CG method: after A calibrates the offsets, add a test per collected official date with a tolerance of ±2 min.
+Official tables, ±1 min (data in `packages/core/test/golden/`, source copies in `docs/reference/sources/`):
+- `izcg` = the official IZ CG vaktija, Podgorica, all 30 days of November 2026 (`prayer-izcg.ts`). Add each new month
+  as IZ CG publishes it.
+- `turkey` = the Diyanet Ramadan 1448 timetable for Podgorica, 8 Feb–8 Mar 2027 (`prayer-diyanet.ts`).
 
-### 3.4 Hijri (tabular, shift 0)
-- 1 Ramadan: 1446 → 2025-03-01, 1447 → 2026-02-18, 1448 → 2027-02-08, 1449 → 2028-01-28.
-- 1 Shawwal 1448 → 2027-03-10. Arafah 1448 → 2027-05-16. Ashura 1448 → 2026-06-26.
-- 2026-12-02 → 21 džumadel-uhra 1448. 2027-02-07 → 29 šaban 1448.
+### 3.4 Hijri (`hijriDate`, shift 0)
+The calendar follows `rule-packs/islamic.v0.1.json` (Diyanet-based, known from 2026-11-10). It is tabular before that
+and tabular-shifted after the last known month (DOMAIN §1).
+- 1 Ramadan:
+  - 1446 → 2025-03-01 and 1447 → 2026-02-18 (both tabular, before the data).
+  - 1448 → 2027-02-08.
+  - 1449 → 2028-01-27 (extrapolated; check it when the 2028 calendar is published).
+- 1 Shawwal 1448 → 2027-03-09 (Ramadan 1448 has 29 days). Arafah 1448 → 2027-05-15. Kurban-bajram → 2027-05-16.
+- Ashura 1448 → 2026-06-26 (tabular).
+- 2026-11-23 → 14 džumadel-uhra 1448. 2026-12-02 → 23 džumadel-uhra 1448. 2027-02-07 → 30 šaban 1448.
+- Every Hijri-dated row of `docs/reference/sources/diyanet-islamski-praznici-crna-gora-2026-11-23.md` matches.
 - With shift +1: 1 Ramadan 1448 → 2027-02-09.
 
 ### 3.5 Day plan combinations (city Podgorica, MWL, offsets 0)
@@ -108,7 +135,8 @@ IZ CG method: after A calibrates the offsets, add a test per collected official 
 | ramadan + IF16, 2027-02-08 | window start 17:06, end 01:06 (+1 day), ifInside true; title "1. ramazan" |
 | ramadan only, 2027-02-08 | window 17:06 → 05:14 next day |
 | ramadan + exception, 2027-02-08 | no window, title "Danas ne postiš", sub "1. ramazan, dan za naknadu", kaza = 1 |
-| nafila suggested Mon 2026-11-23, not chosen | title "Danas nema posta", sub "Dobrovoljni post je moguć: ponedjeljak, sunnet post" |
+| nafila suggested Mon 2026-11-30, not chosen | title "Danas nema posta", sub "Dobrovoljni post je moguć: ponedjeljak, sunnet post" |
+| nafila suggested Mon 2026-11-23 (14 džumadel-uhra) | white day wins over Monday: "Bijeli dani, 14. džumadel-uhra" |
 | nafila chosen | window fajr→maghrib, title "Dobrovoljni post" |
 | IF only 14:10 | window 10:00–20:00, title "IF 14:10" |
 | minor + IF on | ifH = 0, no window |
@@ -118,6 +146,8 @@ IZ CG method: after A calibrates the offsets, add a test per collected official 
 - voda day: "Posna sarma" is rejected with the reason naming step 2 (oil); "Rižoto sa pečurkama" passes
   ("bez ulja" is ignored); "Humus" is rejected (oil, step 2).
 - riba day (4.12.): "Riblja čorba" passes; "Piletina" is rejected (meso, step 1).
+- Shellfish: a recipe whose only animal category is rakovi or mekusci (e.g. cats `['rakovi', 'ulje']`) passes on an ulje
+  day and is rejected on a voda day. With the rakovi or mekusci allergy, it is rejected on every day.
 - Allergy orasasto: "Salata od kupusa i oraha" is rejected with the allergy reason.
 - Custom "kivi": any recipe containing "kivi" is rejected.
 - Halal: anything with svinj… or vino/rakija is rejected.

@@ -138,5 +138,5 @@ Restart Metro (`pnpm start -- --clear`) after changing `.env.local`.
 - Schedule notifications only after the Android channel exists, or Android drops them silently.
 - `127.0.0.1` from a real phone is the phone itself (§3).
 - Do not commit `apps/mobile/ios/` or `apps/mobile/android/`; they are generated (`.gitignore`).
-- Windows paths: keep the repo at `C:\dev\fastself` (short path; long paths break Gradle).
+- Windows paths: keep the repo at `C:\fastself` (short path; long paths break Gradle).
 - If Gradle fails on Windows after a dependency change: `cd apps/mobile/android && .\gradlew clean`, then `pnpm android`.

@@ -42,7 +42,7 @@ emulator), never the iOS Simulator. Danilo (D) works in parallel on a Mac with a
 lists what A owns, what he must provide to D (exact signatures, D builds against them), what he consumes, and the
 prompt for each task. The human pastes one prompt per session.
 
-Windows notes: commands run in Git Bash; paths in code are POSIX; keep the repo at `C:\dev\fastself`. Docker Desktop
+Windows notes: commands run in Git Bash; paths in code are POSIX; keep the repo at `C:\fastself`. Docker Desktop
 must be running before `supabase start`. Local Supabase from the phone needs `adb reverse tcp:54321 tcp:54321`
 (PLATFORMS.md §3).
 

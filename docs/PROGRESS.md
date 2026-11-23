@@ -44,7 +44,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 ## Task board, A (Andrej)
 | task | status | branch | notes |
 |---|---|---|---|
-| T2 core port | todo | | |
+| T2 core port | review | t/T2-core-port | pushed, PR to open; rule packs: orthodox (svetosavlje.org), islamic (Diyanet-based); izcg calibrated (D-13) |
 | T4 local DB + hooks | todo | | |
 | T9 schema + RLS | todo | | |
 | T10 edge functions + report sheet | todo | | |
@@ -62,7 +62,8 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: setup (Windows, Android Studio, accounts), then T2 after T1 is merged.
-- Waiting for D: T1 merge.
+- Now: T2 in review; next T4 local DB + hooks (due Tue 11:00).
+- Waiting for D: review and merge of the T2 PR.
 - Log:
+  - 2026-11-23 18:40 | T2 | core ported, 456 tests, coverage rules 98% / plan 100% / meals 100%, build:edge ok | T4
   - 2026-11-23 13:00 | kit | kit received | setup

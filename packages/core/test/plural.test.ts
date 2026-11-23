@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pl } from './index';
+import { pl } from '../src/index';
 
 const namirnica = ['namirnica', 'namirnice', 'namirnica'] as const;
 
