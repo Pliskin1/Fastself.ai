@@ -1,5 +1,12 @@
+import { useEffect } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import Animated, { interpolateColor, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import { spring } from '@/theme/motion';
 import { color } from '@/theme/tokens';
 import { haptics } from './haptics';
@@ -15,11 +22,13 @@ type Props = {
 
 export function Switch({ value, onValueChange, accessibilityLabel, disabled, testID }: Props) {
   const { reduced } = useMotion();
-  const track = useAnimatedStyle(() => {
-    const target = value ? 1 : 0;
-    const p = reduced ? target : withTiming(target, { duration: 300 });
-    return { backgroundColor: interpolateColor(p, [0, 1], ['rgba(255,255,255,0.18)', color.sun]) };
-  }, [value, reduced]);
+  const progress = useSharedValue(value ? 1 : 0);
+  useEffect(() => {
+    progress.value = reduced ? (value ? 1 : 0) : withTiming(value ? 1 : 0, { duration: 300 });
+  }, [value, reduced, progress]);
+  const track = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(progress.value, [0, 1], ['rgba(255,255,255,0.18)', color.sun]),
+  }));
   const knob = useAnimatedStyle(() => {
     const x = value ? 23 : 3;
     return { transform: [{ translateX: reduced ? x : withSpring(x, spring.knob) }] };

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
-import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { spring } from '@/theme/motion';
 import { color, layout, radius } from '@/theme/tokens';
 import { haptics } from './haptics';
@@ -25,10 +25,14 @@ export function Segmented<T extends string>({ items, value, onChange, testID }: 
     items.findIndex((i) => i.key === value),
   );
 
-  const indicator = useAnimatedStyle(() => {
-    const x = 4 + index * itemWidth;
-    return { transform: [{ translateX: reduced ? x : withSpring(x, spring.pop) }], width: itemWidth };
-  }, [index, itemWidth, reduced]);
+  const x = useSharedValue(4);
+  const w = useSharedValue(0);
+  useEffect(() => {
+    const target = 4 + index * itemWidth;
+    w.value = itemWidth;
+    x.value = reduced || w.value === 0 ? target : withSpring(target, spring.pop);
+  }, [index, itemWidth, reduced, x, w]);
+  const indicator = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }], width: w.value }));
 
   return (
     <View

@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { font } from '@/theme/fonts';
 import { spring } from '@/theme/motion';
 import { color } from '@/theme/tokens';
@@ -20,10 +21,12 @@ type Props = {
 
 export function Choice({ title, description, checked, disabled, onPress, testID }: Props) {
   const { reduced } = useMotion();
-  const pop = useAnimatedStyle(() => {
-    const s = checked ? 1 : 0.0001;
-    return { transform: [{ scale: reduced ? s : withSpring(s, spring.pop) }], opacity: checked ? 1 : 0 };
-  }, [checked, reduced]);
+  const scale = useSharedValue(checked ? 1 : 0.0001);
+  useEffect(() => {
+    const target = checked ? 1 : 0.0001;
+    scale.value = reduced ? target : withSpring(target, spring.pop);
+  }, [checked, reduced, scale]);
+  const pop = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }], opacity: scale.value > 0.01 ? 1 : 0 }));
 
   return (
     <Pressable
