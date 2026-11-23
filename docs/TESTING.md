@@ -110,7 +110,10 @@ Period sizes:
 | 2027-03-28 (summer time) | 04:57 | 06:33 | 12:48 | 16:19 | 19:04 | 20:34 |
 | 2027-06-21 | 02:51 | 05:06 | 12:45 | 16:49 | 20:24 | 22:28 |
 | 2027-10-31 (winter again) | 04:40 | 06:15 | 11:27 | 14:13 | 16:38 | 18:07 |
-IZ CG method: after A calibrates the offsets, add a test per collected official date with a tolerance of ±2 min.
+Official tables, ±1 min (data in `packages/core/test/golden/`, source copies in `docs/reference/sources/`):
+- `izcg` = the official IZ CG vaktija, Podgorica, all 30 days of November 2026 (`prayer-izcg.ts`). Add each new month
+  as IZ CG publishes it.
+- `turkey` = the Diyanet Ramadan 1448 timetable for Podgorica, 8 Feb–8 Mar 2027 (`prayer-diyanet.ts`).
 
 ### 3.4 Hijri (tabular, shift 0)
 - 1 Ramadan: 1446 → 2025-03-01, 1447 → 2026-02-18, 1448 → 2027-02-08, 1449 → 2028-01-28.

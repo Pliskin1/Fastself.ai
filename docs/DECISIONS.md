@@ -17,7 +17,7 @@ Status: **fixed** (do not revisit this week), **open** (a human decides on Day 0
 | D-10 | Safety answers and exception reasons are stored only on the device, never synced | Health data minimisation; nothing to leak | fixed |
 | D-11 | Sync is last-write-wins per row with `updated_at`, an outbox on the device, and consent per data group | Simple, enough for one user on two phones; conflicts are rare | fixed |
 | D-12 | Public AI endpoint protected by a random install id (hashed) rate limit plus a per-user limit when logged in | Guests can use AI without an account; costs stay capped | fixed |
-| D-13 | Prayer times computed locally with `adhan`. IZCG method = MWL angles plus per-prayer minute offsets calibrated from the official vaktija | No network needed; the official tables are the reference | fixed (offsets **open** until A calibrates) |
+| D-13 | Prayer times computed locally with `adhan`. IZCG method = IZ CG's stated angles (fajr 19.5°, isha 17.5°, Shafi asr) plus per-prayer minute offsets calibrated from the official vaktija | No network needed; the official tables are the reference. MWL angles were dropped because the fajr error drifts (7–8 min), so fixed offsets cannot correct it | fixed (calibrated 2026-11-23 on November 2026; recheck monthly) |
 | D-14 | Islamic dates: tabular Hijri with a user shift of ±1 day for the start of Ramadan | Moon sighting differs by authority; the user follows their own jamaat | fixed |
 | D-15 | Mjera posta (strictness cap: voda, ulje, riba) lowers the shown level, never raises it | People follow their priest's guidance; the app must not be stricter than they chose | fixed |
 | D-16 | IF is blocked for under-18s; the religious calendar stays available | Safety; App Store 1.4.1 | fixed |

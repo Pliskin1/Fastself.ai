@@ -11,11 +11,15 @@ export type MinuteOffsets = {
   isha: number;
 };
 
+/** Twilight angles stated by IZ CG on monteislam.com/vaktija: 19.5° for zora, 17.5° for jacija, standard ikindija. */
+export const IZCG_ANGLES = { fajr: 19.5, isha: 17.5 } as const;
+
 /**
- * Minute offsets of the "izcg" method on top of Muslim World League.
- * UNCALIBRATED: all zero until D-13 is closed (official IZ CG vaktija values are not in docs/reference/sources yet).
+ * Minute offsets of the "izcg" method on top of IZCG_ANGLES (D-13). Calibrated 2026-11-23 against the official
+ * IZ CG vaktija for Podgorica, November 2026 (docs/reference/sources/monteislam-vaktija-podgorica-2026-11-23.md):
+ * with these, all 30 days x 6 times match within 1 minute. Sunrise -8 and maghrib +8 are IZ CG's safety minutes.
  */
-export const IZCG_OFFSETS: Readonly<MinuteOffsets> = { fajr: 0, sunrise: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 };
+export const IZCG_OFFSETS: Readonly<MinuteOffsets> = { fajr: 1, sunrise: -8, dhuhr: 1, asr: 1, maghrib: 8, isha: 2 };
 
 /** adhan parameters for a method (Shafi asr). */
 export function methodParams(method: PrayerMethod): CalculationParameters {
@@ -27,12 +31,16 @@ export function methodParams(method: PrayerMethod): CalculationParameters {
     case 'ummalqura':
       p = CalculationMethod.UmmAlQura();
       break;
-    case 'mwl':
     case 'izcg':
+      p = CalculationMethod.Other();
+      p.fajrAngle = IZCG_ANGLES.fajr;
+      p.ishaAngle = IZCG_ANGLES.isha;
+      p.methodAdjustments = { ...IZCG_OFFSETS };
+      break;
+    case 'mwl':
     default:
       p = CalculationMethod.MuslimWorldLeague();
       p.methodAdjustments = { ...p.methodAdjustments, dhuhr: 0 };
-      if (method === 'izcg') p.methodAdjustments = { ...p.methodAdjustments, ...IZCG_OFFSETS };
       break;
   }
   p.madhab = Madhab.Shafi;

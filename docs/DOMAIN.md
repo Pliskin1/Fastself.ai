@@ -133,8 +133,10 @@ The card shows within 60 days. Text:
   - `mwl`: fajr 18°, isha 17°.
   - `turkey`: Diyanet.
   - `ummalqura`: fajr 18.5°, isha 90 min after maghrib.
-  - `izcg` (default): MWL plus per-prayer minute offsets calibrated by A on Day 0 from the official IZ CG vaktija
-    for Podgorica. Put the numbers in `prayer/methods.ts` with a comment naming the source dates.
+  - `izcg` (default): fajr 19.5°, isha 17.5°, standard (Shafi) asr, as IZ CG states on monteislam.com/vaktija.
+    Per-prayer minute offsets on top: fajr +1, sunrise −8, dhuhr +1, asr +1, maghrib +8, isha +2. The ±8 are IZ CG's
+    safety minutes. Calibrated 2026-11-23 against the official vaktija for Podgorica, November 2026 (all 30 days within
+    ±1 min; `docs/reference/sources/monteislam-vaktija-podgorica-2026-11-23.md`). Recheck against each new month.
 - User offsets (`offsets.fajr`, `offsets.maghrib`) are added last.
 - Output: minutes from local midnight for fajr, sunrise, dhuhr, asr, maghrib and isha, plus `HH:MM` formatting.
   Must agree with the engine values in TESTING.md §3.3 within ±1 min (MWL).

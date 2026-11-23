@@ -14,8 +14,10 @@ import {
 import type { Settings } from '../../src/index';
 
 const day = (iso: string) => parseIsoDate(iso)!;
+// TESTING 3.5 is specified for city Podgorica, MWL, offsets 0, so pin the method instead of using the default (izcg).
 const mk = (p: Partial<Settings['practices']>, rest: Partial<Settings> = {}): Settings => ({
   ...DEFAULT_SETTINGS,
+  prayerMethod: 'mwl',
   ...rest,
   practices: { ...DEFAULT_SETTINGS.practices, ...p },
 });

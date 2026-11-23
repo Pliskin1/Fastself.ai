@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { CITIES, closestCity, formatHm, parseIsoDate, prayerTimes } from '../../src/index';
 import type { CityId, PrayerMethod } from '../../src/index';
 import { PRAYER_GOLDEN } from '../golden/prayer';
+import { PRAYER_DIYANET_GOLDEN } from '../golden/prayer-diyanet';
+import { PRAYER_IZCG_GOLDEN } from '../golden/prayer-izcg';
 
 const day = (iso: string) => parseIsoDate(iso)!;
 const mins = (hm: string) => Number(hm.slice(0, 2)) * 60 + Number(hm.slice(3));
@@ -26,10 +28,32 @@ describe('prayerTimes MWL Podgorica (TESTING 3.3, +-1 min)', () => {
   });
 });
 
+const goldenSuite = (
+  title: string,
+  method: PrayerMethod,
+  rows: readonly (readonly [string, string, string, string, string, string, string])[],
+) =>
+  describe(title, () => {
+    it.each(rows)('%s', (iso, ...hm) => {
+      const t = prayerTimes(day(iso), 'podgorica', method);
+      KEYS.forEach((k, i) => {
+        const want = mins(hm[i]!);
+        expect(Math.abs(t[k] - want), `${iso} ${k}: got ${formatHm(t[k])}, want ${hm[i]}`).toBeLessThanOrEqual(1);
+      });
+    });
+  });
+
+goldenSuite('prayerTimes izcg Podgorica = official IZ CG vaktija, November 2026 (+-1 min)', 'izcg', PRAYER_IZCG_GOLDEN);
+goldenSuite('prayerTimes turkey Podgorica = Diyanet Ramadan 1448 timetable (+-1 min)', 'turkey', PRAYER_DIYANET_GOLDEN);
+
 describe('methods and offsets', () => {
   const n = day('2026-12-02');
-  it('izcg equals mwl while its offsets are uncalibrated', () => {
-    expect(prayerTimes(n, 'podgorica', 'izcg')).toEqual(prayerTimes(n, 'podgorica', 'mwl'));
+  it('izcg is not plain mwl: iftar carries the IZ CG safety minutes', () => {
+    const izcg = prayerTimes(n, 'podgorica', 'izcg');
+    const mwl = prayerTimes(n, 'podgorica', 'mwl');
+    expect(izcg.maghrib - mwl.maghrib).toBeGreaterThanOrEqual(7);
+    expect(mwl.sunrise - izcg.sunrise).toBeGreaterThanOrEqual(7);
+    expect(izcg.fajr).toBeLessThan(mwl.fajr); // 19.5 deg zora is earlier than 18 deg
   });
   it('user offsets are added last, only to fajr and maghrib', () => {
     const base = prayerTimes(n, 'podgorica', 'izcg');
