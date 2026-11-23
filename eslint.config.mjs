@@ -20,5 +20,6 @@ export default tseslint.config(
     plugins: { 'react-hooks': reactHooks },
     rules: { 'react-hooks/rules-of-hooks': 'error', 'react-hooks/exhaustive-deps': 'warn', 'no-console': 'error' },
   },
+  { files: ['apps/mobile/plugins/**'], rules: { '@typescript-eslint/no-require-imports': 'off' } },
   { files: ['packages/core/scripts/**'], rules: { 'no-console': 'off' } },
 );

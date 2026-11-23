@@ -62,7 +62,7 @@ eas submit -p ios --latest                      # uploads to App Store Connect
 - **Age rating**: answer the questionnaire honestly (no violence and no user-generated content; health or wellness topics
   yes). The app itself blocks IF for under-18s.
 - **Price**: free. Availability: all countries, or ME + region first.
-- **Screenshots**: 6.9" iPhone (iPhone 17 Pro Max Simulator), 5–6 shots from `e2e/maestro/screenshots.yaml`:
+- **Screenshots**: 6.9" iPhone (iPhone 18 Pro Max Simulator), 5–6 shots from `e2e/maestro/screenshots.yaml`:
   - Danas dusk (Božićni post + IF), Danas Ramadan iftar countdown.
   - Kalendar, Šta da jedem (validated recipe + rejected).
   - Tajmer, Privatnost.

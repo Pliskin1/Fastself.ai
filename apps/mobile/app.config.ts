@@ -34,6 +34,7 @@ const config: ExpoConfig = {
     blockedPermissions: ['android.permission.ACCESS_BACKGROUND_LOCATION', 'android.permission.RECORD_AUDIO'],
   },
   plugins: [
+    './plugins/with-no-user-script-sandboxing',
     'expo-router',
     ['expo-splash-screen', { backgroundColor: BG, image: './assets/images/splash-icon.png', imageWidth: 76 }],
     'expo-font',

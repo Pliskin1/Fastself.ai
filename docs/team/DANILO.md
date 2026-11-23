@@ -194,7 +194,7 @@ You run `eas build -p ios --profile production` and `eas submit -p ios --latest`
 
 ### Fri: T25 screenshots, T23 iOS bugs, T27 submit
 - T25: `xcrun simctl status_bar booted override --time 9:41 --batteryState charged --batteryLevel 100`, then
-  `maestro test e2e/maestro/screenshots.yaml` on the iPhone 17 Pro Max Simulator.
+  `maestro test e2e/maestro/screenshots.yaml` on the iPhone 18 Pro Max Simulator.
 - T23, one session per bug:
   ```
   Bug QA-<n> from docs/QA-LOG.md. Owner D. Reproduce with a failing jest test first, then fix. Only D's paths.

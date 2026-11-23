@@ -19,7 +19,7 @@ component that owns the difference, never scattered across screens.
 ## 2. Running the app
 | Target | Command | First run | Notes |
 |---|---|---|---|
-| iOS Simulator | `pnpm ios` | 5–10 min (native build) | picks "iPhone 17"; `pnpm ios -- --device "iPhone 17 Pro Max"` for another |
+| iOS Simulator | `pnpm ios` | 5–10 min (native build) | picks "iPhone 18 Pro"; `pnpm ios -- --device "iPhone 18 Pro Max"` for another |
 | iPhone (USB) | `pnpm ios:device` | 5–10 min | Developer Mode on; Xcode → Settings → Accounts has the Apple ID |
 | Android phone (USB) | `pnpm android` | 5–15 min | USB debugging on; `adb devices` lists it |
 | Android emulator | start it in Android Studio → Device Manager, then `pnpm android` | 5–15 min | Pixel, Android 15+ image |

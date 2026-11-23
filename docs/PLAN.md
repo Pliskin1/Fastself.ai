@@ -304,7 +304,7 @@ DESIGN-SYSTEM.md §6: entering stagger, odometer digits, dial draw-in, sun breat
 Everything is off under Reduce Motion.
 
 ### T21 E2E (D, test-runner, about 2 h)
-TESTING.md §6: write the Maestro flows in `e2e/maestro/` and make them pass on the iPhone 17 Simulator dev build
+TESTING.md §6: write the Maestro flows in `e2e/maestro/` and make them pass on the iPhone 18 Pro Simulator dev build
 (iOS only). The same evening A runs the Android smoke list (PLATFORMS.md §8).
 
 ### T22 First release build (D, human-run skill `/release-ios`, about 1 h + queue, after A sets up prod)
@@ -319,7 +319,7 @@ Only if the mentors ask for Android: A runs `eas build -p android --profile prev
 ## Day 5, Fri 27 Nov: QA, compliance, submit
 - T23 Bug bash: fix everything marked P0 from round 1. One Claude session per bug, then `/clear`.
 - T24 Run the `appstore-auditor` subagent. Fix every finding.
-- T25 Screenshots, 6.9" (iPhone 17 Pro Max Simulator), via the Maestro `takeScreenshot` flow `e2e/maestro/screenshots.yaml`.
+- T25 Screenshots, 6.9" (iPhone 18 Pro Max Simulator), via the Maestro `takeScreenshot` flow `e2e/maestro/screenshots.yaml`.
 - T26 App Store Connect metadata, privacy labels, age rating, review notes per APPSTORE.md. Privacy and support pages live.
 - T27 Final build: build (EAS raises the build number), submit and **Submit for Review**. Post the TestFlight link to the mentors.
 

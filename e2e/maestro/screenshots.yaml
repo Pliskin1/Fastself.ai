@@ -1,4 +1,4 @@
-# App Store screenshots, 6.9" display: run on the "iPhone 17 Pro Max" Simulator with the dev build.
+# App Store screenshots, 6.9" display: run on the "iPhone 18 Pro Max" Simulator with the dev build.
 # maestro test e2e/maestro/screenshots.yaml   → PNGs in store/screenshots/
 # Before running: Simulator → Features → Toggle Appearance not needed (app is dark); set the status bar clean:
 #   xcrun simctl status_bar booted override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4
