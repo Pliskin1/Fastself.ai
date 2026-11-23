@@ -1,0 +1,62 @@
+// Golden data: TESTING.md 3.2 Orthodox day rules (strictness voda). Data only.
+// Rows: [date, level, reason labels in order]. Annotations in parentheses in the doc are not labels.
+export type OrthodoxDayRow = readonly [string, string, readonly string[]];
+
+export const ORTHODOX_DAY_ROWS: readonly OrthodoxDayRow[] = [
+  ['2026-11-27', 'voda', ['Petak']],
+  ['2026-11-28', 'riba', ['Božićni post']],
+  ['2026-12-02', 'voda', ['Božićni post', 'Srijeda']],
+  ['2026-12-04', 'riba', ['Božićni post', 'Petak', 'Vavedenje']],
+  ['2026-12-19', 'riba', ['Božićni post']],
+  ['2027-01-01', 'voda', ['Božićni post', 'Petak']],
+  ['2027-01-02', 'ulje', ['Božićni post']],
+  ['2027-01-06', 'voda', ['Badnji dan']],
+  ['2027-01-07', 'mrsno', ['Svjatki']],
+  ['2027-01-13', 'mrsno', ['Svjatki']],
+  ['2027-01-18', 'voda', ['Krstovdan']],
+  ['2027-01-19', 'mrsno', ['Bogojavljenje']],
+  ['2027-01-20', 'voda', ['Srijeda']],
+  ['2027-03-01', 'mrsno', ['Običan dan']],
+  ['2027-03-10', 'bezmesa', ['Bijela sedmica']],
+  ['2027-03-15', 'voda', ['Veliki post']],
+  ['2027-03-20', 'ulje', ['Veliki post']],
+  ['2027-04-07', 'riba', ['Veliki post', 'Srijeda', 'Blagovijesti']],
+  ['2027-04-25', 'riba', ['Veliki post', 'Cvijeti']],
+  ['2027-05-01', 'ulje', ['Veliki post']],
+  ['2027-05-02', 'mrsno', ['Svijetla sedmica']],
+  ['2027-05-05', 'mrsno', ['Svijetla sedmica']],
+  ['2027-06-23', 'mrsno', ['Trojičina sedmica']],
+  ['2027-06-28', 'voda', ['Petrovski post']],
+  ['2027-06-30', 'voda', ['Petrovski post', 'Srijeda']],
+  ['2027-07-03', 'riba', ['Petrovski post']],
+  ['2027-07-11', 'riba', ['Petrovski post']],
+  ['2027-07-12', 'mrsno', ['Običan dan']],
+  ['2027-08-14', 'ulje', ['Gospojinski post']],
+  ['2027-08-19', 'riba', ['Gospojinski post', 'Preobraženje']],
+  ['2027-08-27', 'voda', ['Gospojinski post', 'Petak']],
+  ['2027-09-11', 'voda', ['Usekovanje']],
+  ['2027-09-27', 'voda', ['Krstovdan (Vozdviženje)']],
+  // svetosavlje.org rows
+  ['2026-12-28', 'voda', ['Božićni post']],
+  ['2028-12-30', 'riba', ['Božićni post']],
+  ['2028-12-31', 'ulje', ['Božićni post']],
+  ['2027-05-12', 'ulje', ['Srijeda']],
+  ['2027-05-14', 'ulje', ['Petak']],
+  ['2027-05-26', 'riba', ['Srijeda', 'Prepolovljenje']],
+  ['2027-06-09', 'riba', ['Srijeda', 'Odanije Vaskrsa']],
+  ['2028-07-12', 'riba', ['Srijeda', 'Petrovdan']],
+  ['2030-08-28', 'riba', ['Srijeda', 'Velika Gospojina']],
+];
+
+/** [date, expected period id, index, length] */
+export const ORTHODOX_PERIOD_ROWS: readonly (readonly [string, string, number, number])[] = [
+  ['2026-12-02', 'bozicni', 5, 40],
+  ['2027-01-06', 'bozicni', 40, 40],
+  ['2027-03-15', 'veliki', 1, 48],
+  ['2027-05-01', 'veliki', 48, 48],
+  ['2027-06-28', 'petrovski', 1, 14],
+  ['2027-07-11', 'petrovski', 14, 14],
+  ['2026-06-08', 'petrovski', 1, 34],
+  ['2027-08-14', 'gospojinski', 1, 14],
+  ['2027-08-27', 'gospojinski', 14, 14],
+];

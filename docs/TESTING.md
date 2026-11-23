@@ -42,7 +42,7 @@ These were checked against the rules in DOMAIN.md §2. A must also confirm them 
 |---|---|---|---|
 | 2026-11-27 | Fri | voda | Petak |
 | 2026-11-28 | Sat | riba | Božićni post |
-| 2026-12-02 | Wed | voda | Božićni post (ulje), Srijeda (voda) |
+| 2026-12-02 | Wed | voda | Božićni post (voda), Srijeda (voda) |
 | 2026-12-04 | Fri | riba | Božićni post, Petak, Vavedenje (riba) |
 | 2026-12-19 | Sat | riba | Božićni post |
 | 2027-01-01 | Fri | voda | Božićni post, Petak |

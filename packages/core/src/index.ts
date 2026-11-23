@@ -4,3 +4,5 @@ export type * from './types';
 export { DEFAULT_SETTINGS, SettingsSchema, parseSettings } from './settings';
 export * from './calendar';
 export * from './sky';
+export * from './rules';
+export * from './prayer';
