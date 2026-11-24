@@ -44,8 +44,8 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 ## Task board, A (Andrej)
 | task | status | branch | notes |
 |---|---|---|---|
-| T2 core port | review | t/T2-core-port | pushed, PR to open; rule packs: orthodox (svetosavlje.org), islamic (Diyanet-based); izcg calibrated (D-13) |
-| T4 local DB + hooks | todo | | |
+| T2 core port | done | t/T2-core-port | merged (PR #4); rule packs: orthodox (svetosavlje.org), islamic (Diyanet-based); izcg calibrated (D-13) |
+| T4 local DB + hooks | PR | t/T4-local-db-hooks | Android restart check pending; adds zustand + expo-crypto (rebuild the dev build) |
 | T9 schema + RLS | todo | | |
 | T10 edge functions + report sheet | todo | | |
 | T15 notifications | todo | | |
@@ -62,8 +62,9 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: T2 in review; next T4 local DB + hooks (due Tue 11:00).
-- Waiting for D: review and merge of the T2 PR.
+- Now: T4 in review; next T9 schema + RLS.
+- Waiting for D: review and merge of the T4 PR.
 - Log:
+  - 2026-11-24 13:30 | T4 | SQLite v1 + repos, settings store, hooks, dev link + clock, permissions, @/test/utils; 108 jest tests green on in-memory SQLite | Android restart check, PR, then T9
   - 2026-11-23 18:40 | T2 | core ported, 456 tests, coverage rules 98% / plan 100% / meals 100%, build:edge ok | T4
   - 2026-11-23 13:00 | kit | kit received | setup
