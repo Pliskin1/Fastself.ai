@@ -1,7 +1,8 @@
 import { epochFromLocal } from '@fastself/core';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Animated from 'react-native-reanimated';
 import { ScreenScroll, useMotion } from '@/components';
+import { Actions, Complications, ExceptionCard, Legend, PlateCard, WhyReceipt } from '@/features/danas/DayContent';
 import { DanasHeader } from '@/features/danas/DanasHeader';
 import { DayDial } from '@/features/danas/DayDial';
 import { dialModel } from '@/features/danas/model';
@@ -14,6 +15,7 @@ export default function DanasScreen() {
   const plan = useDayPlan();
   const settings = useSettings();
   const { now, minute } = useNow();
+  const [whyOpen, setWhyOpen] = useState(false);
   const dayStartMs = useMemo(() => epochFromLocal(today, 0), [today]);
   const model = useMemo(() => dialModel(plan, minute), [plan, minute]);
 
@@ -27,6 +29,14 @@ export default function DanasScreen() {
       </Animated.View>
       <Animated.View entering={enter(2)}>
         <DayDial model={model} dayStartMs={dayStartMs} minute={minute} now={now} />
+      </Animated.View>
+      <Animated.View entering={enter(3)} style={{ gap: 18 }}>
+        <Legend model={model} />
+        <Complications plan={plan} />
+        <ExceptionCard plan={plan} settings={settings} />
+        <PlateCard plan={plan} settings={settings} />
+        <Actions plan={plan} onToggleWhy={() => setWhyOpen((v) => !v)} />
+        {whyOpen ? <WhyReceipt plan={plan} /> : null}
       </Animated.View>
     </ScreenScroll>
   );

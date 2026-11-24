@@ -32,6 +32,8 @@ export function Chip({ label, variant = 'readonly', selected = false, onPress, t
       style={[styles.chip, { backgroundColor: t.bg, borderColor: t.border }, interactive ? styles.tall : styles.short]}
     >
       {variant === 'add' ? <Icon name="plus" size={14} color={t.ink} /> : null}
+      {variant === 'yes' ? <Icon name="check" size={13} color={t.ink} /> : null}
+      {variant === 'no' ? <Icon name="close" size={13} color={t.ink} /> : null}
       <Text variant="small" style={{ color: t.ink }}>
         {label}
       </Text>

@@ -1,6 +1,16 @@
-import { render, screen } from '@testing-library/react-native';
+import { toDayNum } from '@fastself/core';
+import { fireEvent, render, screen } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { renderUI } from '@/components/test-utils';
 import DanasScreen from '@/app/(tabs)/danas';
+import IzuzetakSheet from '@/app/(sheets)/izuzetak';
+import { getSettings } from '@/store/settings';
 import { at, fixtureSettings, withProviders } from '@/test/utils';
+
+jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn() } }));
+
+const DEC_2 = toDayNum(2026, 12, 2);
+const NOW = at('2026-12-02T16:30');
 
 describe('Danas', () => {
   it('2.12.2026 16:30, orthodox + IF 16:8 with mjera ulje', async () => {
@@ -42,5 +52,45 @@ describe('Danas', () => {
     expect(screen.getByText('iftar u 17:06')).toBeTruthy();
     expect(screen.getByText('Ramazan')).toBeTruthy();
     expect(screen.getByRole('timer').props.accessibilityLabel).toBe('Do iftara 0 sati i 36 minuta. iftar u 17:06.');
+  });
+
+  it('lists what is allowed and what is not, marking allergies', async () => {
+    await render(
+      withProviders(<DanasScreen />, {
+        settings: fixtureSettings({ orthodox: true, allergies: ['orasasto'] }),
+        now: NOW,
+      }),
+    );
+    expect(screen.getByText('povrće')).toBeTruthy();
+    expect(screen.getByText('meso')).toBeTruthy();
+    expect(screen.getByText('orašaste plodove (alergija)')).toBeTruthy();
+  });
+
+  it('shows the receipt and sends a report with the date and context', async () => {
+    await render(withProviders(<DanasScreen />, { settings: fixtureSettings({ orthodox: true }), now: NOW }));
+    expect(screen.queryByTestId('why-receipt')).toBeNull();
+    await fireEvent.press(screen.getByTestId('btn-why'));
+    expect(screen.getByTestId('why-receipt')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('btn-report-day'));
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: '/(sheets)/prijava-greske',
+      params: { date: '2026-12-02', context: 'danas' },
+    });
+    await fireEvent.press(screen.getByTestId('btn-cant-fast'));
+    expect(router.push).toHaveBeenCalledWith('/(sheets)/izuzetak');
+  });
+
+  it('records an exception from the sheet and undoes it on Danas', async () => {
+    await render(withProviders(<IzuzetakSheet />, { settings: fixtureSettings({ orthodox: true }), now: NOW }));
+    expect(screen.getByTestId('btn-confirm-exception').props.accessibilityState.disabled).toBe(true);
+    await fireEvent.press(screen.getByTestId('chip-reason-zdravlje'));
+    await fireEvent.press(screen.getByTestId('btn-confirm-exception'));
+    expect(getSettings().exceptions[DEC_2]).toBe('zdravlje');
+    expect(router.back).toHaveBeenCalled();
+
+    await renderUI(<DanasScreen />);
+    expect(screen.getByText('Danas ne postiš')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('btn-undo-exception'));
+    expect(getSettings().exceptions[DEC_2]).toBeUndefined();
   });
 });
