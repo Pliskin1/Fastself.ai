@@ -243,21 +243,9 @@ var recipes_sr_default = [
     id: "corba",
     title: "\u010Corba od pasulja i povr\u0107a",
     timeMin: 45,
-    meals: [
-      "rucak",
-      "vecera",
-      "iftar"
-    ],
-    cats: [
-      "mahunarke",
-      "povrce"
-    ],
-    ingredients: [
-      "pasulj",
-      "\u0161argarepa",
-      "crni luk",
-      "lovorov list"
-    ],
+    meals: ["rucak", "vecera", "iftar"],
+    cats: ["mahunarke", "povrce"],
+    ingredients: ["pasulj", "\u0161argarepa", "crni luk", "lovorov list"],
     steps: [
       "Potopljen pasulj kuvaj 30 minuta u svje\u017Eoj vodi.",
       "Dodaj sitno sjeckanu \u0161argarepu i luk direktno u vodu.",
@@ -268,19 +256,9 @@ var recipes_sr_default = [
     id: "krompir",
     title: "Pe\u010Deni krompir sa ruzmarinom",
     timeMin: 50,
-    meals: [
-      "rucak",
-      "vecera"
-    ],
-    cats: [
-      "povrce"
-    ],
-    ingredients: [
-      "krompir",
-      "ruzmarin",
-      "so",
-      "biber"
-    ],
+    meals: ["rucak", "vecera"],
+    cats: ["povrce"],
+    ingredients: ["krompir", "ruzmarin", "so", "biber"],
     steps: [
       "Isijeci krompir na kri\u0161ke i osu\u0161i ga krpom.",
       "Posoli, pobiberi i pospi ruzmarinom.",
@@ -291,21 +269,9 @@ var recipes_sr_default = [
     id: "sarma",
     title: "Posna sarma",
     timeMin: 90,
-    meals: [
-      "rucak",
-      "vecera"
-    ],
-    cats: [
-      "povrce",
-      "zitarice",
-      "ulje"
-    ],
-    ingredients: [
-      "kiseli kupus",
-      "pirina\u010D",
-      "crni luk",
-      "aleva paprika"
-    ],
+    meals: ["rucak", "vecera"],
+    cats: ["povrce", "zitarice", "ulje"],
+    ingredients: ["kiseli kupus", "pirina\u010D", "crni luk", "aleva paprika"],
     steps: [
       "Listove kiselog kupusa operi i odvoji.",
       "Propr\u017Eite luk na ulju, pa dodajte pirina\u010D i za\u010Dine.",
@@ -316,44 +282,18 @@ var recipes_sr_default = [
     id: "salata",
     title: "Salata od kupusa i oraha",
     timeMin: 10,
-    meals: [
-      "rucak",
-      "vecera"
-    ],
-    cats: [
-      "povrce",
-      "orasasto"
-    ],
-    ingredients: [
-      "kupus",
-      "\u0161argarepa",
-      "orasi",
-      "sir\u0107e"
-    ],
-    steps: [
-      "Tanko naribaj kupus i \u0161argarepu.",
-      "Posoli i prelij sir\u0107etom.",
-      "Pospi grubo sjeckanim orasima."
-    ]
+    meals: ["rucak", "vecera"],
+    cats: ["povrce", "orasasto"],
+    ingredients: ["kupus", "\u0161argarepa", "orasi", "sir\u0107e"],
+    steps: ["Tanko naribaj kupus i \u0161argarepu.", "Posoli i prelij sir\u0107etom.", "Pospi grubo sjeckanim orasima."]
   },
   {
     id: "rizoto",
     title: "Ri\u017Eoto sa pe\u010Durkama",
     timeMin: 35,
-    meals: [
-      "rucak",
-      "vecera"
-    ],
-    cats: [
-      "zitarice",
-      "povrce"
-    ],
-    ingredients: [
-      "pirina\u010D",
-      "pe\u010Durke",
-      "crni luk",
-      "per\u0161un"
-    ],
+    meals: ["rucak", "vecera"],
+    cats: ["zitarice", "povrce"],
+    ingredients: ["pirina\u010D", "pe\u010Durke", "crni luk", "per\u0161un"],
     steps: [
       "Luk dinstaj na malo vode, bez ulja.",
       "Dodaj pirina\u010D i pe\u010Durke, pa postepeno dolivaj vodu.",
@@ -364,22 +304,9 @@ var recipes_sr_default = [
     id: "sociva",
     title: "\u010Corba od so\u010Diva sa celerom",
     timeMin: 35,
-    meals: [
-      "rucak",
-      "vecera",
-      "iftar"
-    ],
-    cats: [
-      "mahunarke",
-      "povrce",
-      "celer"
-    ],
-    ingredients: [
-      "crveno so\u010Divo",
-      "celer",
-      "\u0161argarepa",
-      "kumin"
-    ],
+    meals: ["rucak", "vecera", "iftar"],
+    cats: ["mahunarke", "povrce", "celer"],
+    ingredients: ["crveno so\u010Divo", "celer", "\u0161argarepa", "kumin"],
     steps: [
       "So\u010Divo isperi i stavi da se kuva u vodi.",
       "Dodaj sjeckan celer i \u0161argarepu.",
@@ -390,20 +317,9 @@ var recipes_sr_default = [
     id: "prebranac",
     title: "Prebranac",
     timeMin: 60,
-    meals: [
-      "rucak",
-      "vecera"
-    ],
-    cats: [
-      "mahunarke",
-      "ulje"
-    ],
-    ingredients: [
-      "pasulj",
-      "crni luk",
-      "ulje",
-      "aleva paprika"
-    ],
+    meals: ["rucak", "vecera"],
+    cats: ["mahunarke", "ulje"],
+    ingredients: ["pasulj", "crni luk", "ulje", "aleva paprika"],
     steps: [
       "Skuvaj pasulj dok ne omek\u0161a.",
       "Propr\u017Ei luk na ulju sa alevom paprikom.",
@@ -414,23 +330,9 @@ var recipes_sr_default = [
     id: "tjestenina",
     title: "Tjestenina sa paradajz sosom",
     timeMin: 25,
-    meals: [
-      "rucak",
-      "vecera"
-    ],
-    cats: [
-      "zitarice",
-      "gluten",
-      "povrce",
-      "ulje"
-    ],
-    ingredients: [
-      "tjestenina",
-      "paradajz",
-      "bijeli luk",
-      "maslinovo ulje",
-      "bosiljak"
-    ],
+    meals: ["rucak", "vecera"],
+    cats: ["zitarice", "gluten", "povrce", "ulje"],
+    ingredients: ["tjestenina", "paradajz", "bijeli luk", "maslinovo ulje", "bosiljak"],
     steps: [
       "Skuvaj tjesteninu u slanoj vodi.",
       "Paradajz i bijeli luk prodinstaj na maslinovom ulju.",
@@ -441,21 +343,9 @@ var recipes_sr_default = [
     id: "riblja",
     title: "Riblja \u010Dorba sa povr\u0107em",
     timeMin: 40,
-    meals: [
-      "rucak",
-      "vecera",
-      "iftar"
-    ],
-    cats: [
-      "riba",
-      "povrce"
-    ],
-    ingredients: [
-      "osli\u0107",
-      "krompir",
-      "\u0161argarepa",
-      "per\u0161un"
-    ],
+    meals: ["rucak", "vecera", "iftar"],
+    cats: ["riba", "povrce"],
+    ingredients: ["osli\u0107", "krompir", "\u0161argarepa", "per\u0161un"],
     steps: [
       "Skuvaj povr\u0107e u vodi 20 minuta.",
       "Dodaj osli\u0107a isje\u010Denog na komade.",
@@ -466,77 +356,27 @@ var recipes_sr_default = [
     id: "piletina",
     title: "Piletina sa pe\u010Denim povr\u0107em",
     timeMin: 45,
-    meals: [
-      "rucak",
-      "vecera",
-      "iftar"
-    ],
-    cats: [
-      "meso",
-      "ulje",
-      "povrce"
-    ],
-    ingredients: [
-      "piletina",
-      "tikvica",
-      "paprika",
-      "maslinovo ulje"
-    ],
-    steps: [
-      "Piletinu i povr\u0107e isijeci na komade.",
-      "Prelij maslinovim uljem i za\u010Dini.",
-      "Peci 40 minuta na 200 \xB0C."
-    ]
+    meals: ["rucak", "vecera", "iftar"],
+    cats: ["meso", "ulje", "povrce"],
+    ingredients: ["piletina", "tikvica", "paprika", "maslinovo ulje"],
+    steps: ["Piletinu i povr\u0107e isijeci na komade.", "Prelij maslinovim uljem i za\u010Dini.", "Peci 40 minuta na 200 \xB0C."]
   },
   {
     id: "ovsena",
     title: "Ovsena ka\u0161a sa jabukom",
     timeMin: 10,
-    meals: [
-      "dorucak",
-      "sehur"
-    ],
-    cats: [
-      "zitarice",
-      "gluten",
-      "voce"
-    ],
-    ingredients: [
-      "ovsene pahuljice",
-      "jabuka",
-      "cimet",
-      "voda"
-    ],
-    steps: [
-      "Ovsene pahuljice kuvaj u vodi 5 minuta.",
-      "Dodaj narendanu jabuku i cimet.",
-      "Poslu\u017Ei toplo."
-    ]
+    meals: ["dorucak", "sehur"],
+    cats: ["zitarice", "gluten", "voce"],
+    ingredients: ["ovsene pahuljice", "jabuka", "cimet", "voda"],
+    steps: ["Ovsene pahuljice kuvaj u vodi 5 minuta.", "Dodaj narendanu jabuku i cimet.", "Poslu\u017Ei toplo."]
   },
   {
     id: "humus",
     title: "Humus sa povr\u0107em i hljebom",
     timeMin: 15,
-    meals: [
-      "dorucak",
-      "sehur",
-      "vecera"
-    ],
-    cats: [
-      "mahunarke",
-      "susam",
-      "zitarice",
-      "gluten",
-      "ulje",
-      "povrce"
-    ],
-    ingredients: [
-      "slanutak",
-      "tahini",
-      "limun",
-      "maslinovo ulje",
-      "hljeb"
-    ],
+    meals: ["dorucak", "sehur", "vecera"],
+    cats: ["mahunarke", "susam", "zitarice", "gluten", "ulje", "povrce"],
+    ingredients: ["slanutak", "tahini", "limun", "maslinovo ulje", "hljeb"],
     steps: [
       "Izmiksaj kuvani slanutak sa tahinijem i limunom.",
       "Dodaj malo maslinovog ulja.",
@@ -547,44 +387,18 @@ var recipes_sr_default = [
     id: "vocna",
     title: "Vo\u0107na salata sa medom",
     timeMin: 5,
-    meals: [
-      "dorucak",
-      "sehur"
-    ],
-    cats: [
-      "voce",
-      "med"
-    ],
-    ingredients: [
-      "jabuka",
-      "banana",
-      "pomorand\u017Ea",
-      "med"
-    ],
-    steps: [
-      "Isijeci vo\u0107e na kockice.",
-      "Prelij ka\u0161ikom meda.",
-      "Poslu\u017Ei odmah."
-    ]
+    meals: ["dorucak", "sehur"],
+    cats: ["voce", "med"],
+    ingredients: ["jabuka", "banana", "pomorand\u017Ea", "med"],
+    steps: ["Isijeci vo\u0107e na kockice.", "Prelij ka\u0161ikom meda.", "Poslu\u017Ei odmah."]
   },
   {
     id: "omlet",
     title: "Omlet sa sirom i paradajzom",
     timeMin: 10,
-    meals: [
-      "dorucak",
-      "sehur"
-    ],
-    cats: [
-      "jaja",
-      "mlijecno",
-      "povrce"
-    ],
-    ingredients: [
-      "jaja",
-      "sir",
-      "paradajz"
-    ],
+    meals: ["dorucak", "sehur"],
+    cats: ["jaja", "mlijecno", "povrce"],
+    ingredients: ["jaja", "sir", "paradajz"],
     steps: [
       "Umuti jaja sa prstohvatom soli.",
       "Dodaj sitno sjeckan paradajz i sir.",
@@ -595,20 +409,9 @@ var recipes_sr_default = [
     id: "paprikas",
     title: "Krompir paprika\u0161 na vodi",
     timeMin: 40,
-    meals: [
-      "rucak",
-      "vecera"
-    ],
-    cats: [
-      "povrce"
-    ],
-    ingredients: [
-      "krompir",
-      "crni luk",
-      "paprika",
-      "aleva paprika",
-      "lovorov list"
-    ],
+    meals: ["rucak", "vecera"],
+    cats: ["povrce"],
+    ingredients: ["krompir", "crni luk", "paprika", "aleva paprika", "lovorov list"],
     steps: [
       "Luk i papriku izdinstaj na malo vode.",
       "Dodaj krompir na kockice, alevu papriku i lovor.",
@@ -619,23 +422,9 @@ var recipes_sr_default = [
     id: "oslic",
     title: "Osli\u0107 na \u017Earu sa blitvom",
     timeMin: 30,
-    meals: [
-      "rucak",
-      "vecera",
-      "iftar"
-    ],
-    cats: [
-      "riba",
-      "ulje",
-      "povrce"
-    ],
-    ingredients: [
-      "osli\u0107",
-      "blitva",
-      "krompir",
-      "maslinovo ulje",
-      "limun"
-    ],
+    meals: ["rucak", "vecera", "iftar"],
+    cats: ["riba", "ulje", "povrce"],
+    ingredients: ["osli\u0107", "blitva", "krompir", "maslinovo ulje", "limun"],
     steps: [
       "Krompir i blitvu skuvaj u slanoj vodi.",
       "Osli\u0107a peci na \u017Earu po 4 minuta sa svake strane.",
@@ -646,21 +435,9 @@ var recipes_sr_default = [
     id: "heljda",
     title: "Heljda sa pe\u010Durkama i lukom",
     timeMin: 25,
-    meals: [
-      "rucak",
-      "vecera",
-      "sehur"
-    ],
-    cats: [
-      "zitarice",
-      "povrce"
-    ],
-    ingredients: [
-      "heljda",
-      "pe\u010Durke",
-      "crni luk",
-      "per\u0161un"
-    ],
+    meals: ["rucak", "vecera", "sehur"],
+    cats: ["zitarice", "povrce"],
+    ingredients: ["heljda", "pe\u010Durke", "crni luk", "per\u0161un"],
     steps: [
       "Heljdu isperi i kuvaj 15 minuta u dvostrukoj koli\u010Dini vode.",
       "Pe\u010Durke i luk izdinstaj na malo vode.",
@@ -671,19 +448,9 @@ var recipes_sr_default = [
     id: "urme",
     title: "Urme i povrtna supa",
     timeMin: 20,
-    meals: [
-      "iftar"
-    ],
-    cats: [
-      "voce",
-      "povrce"
-    ],
-    ingredients: [
-      "urme",
-      "\u0161argarepa",
-      "tikvica",
-      "crni luk"
-    ],
+    meals: ["iftar"],
+    cats: ["voce", "povrce"],
+    ingredients: ["urme", "\u0161argarepa", "tikvica", "crni luk"],
     steps: [
       "Post prekini sa nekoliko urmi i \u010Da\u0161om vode.",
       "Skuvaj povr\u0107e u vodi 15 minuta i izmiksaj.",

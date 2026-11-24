@@ -11,7 +11,12 @@ if (a === null || b === null) {
 const on = new Set(flags.split(','));
 const settings = {
   ...DEFAULT_SETTINGS,
-  practices: { orthodox: on.has('orthodox'), ramadan: on.has('ramadan'), nafila: on.has('nafila'), ifOn: on.has('ifOn') },
+  practices: {
+    orthodox: on.has('orthodox'),
+    ramadan: on.has('ramadan'),
+    nafila: on.has('nafila'),
+    ifOn: on.has('ifOn'),
+  },
 };
 for (let n = a; n <= b; n++) {
   const p = dayPlan(n, settings);
