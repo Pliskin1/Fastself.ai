@@ -5,6 +5,7 @@ import common from './common';
 import danas from './danas';
 import kalendar from './kalendar';
 import nalog from './nalog';
+import nav from './nav';
 import notif from './notif';
 import onboarding from './onboarding';
 import plan from './plan';
@@ -25,6 +26,7 @@ const strings: Record<string, string> = {
   ...report,
   ...brisanje,
   ...notif,
+  ...nav,
 };
 
 export type CopyParams = Record<string, string | number>;

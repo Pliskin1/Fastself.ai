@@ -18,16 +18,14 @@ import {
   ScreenScroll,
   SecondaryButton,
   Segmented,
-  SkyBackground,
   Switch,
   Title,
-  ToastProvider,
   useToast,
 } from '@/components';
 import { t } from '@/copy/sr';
 import dev from '@/copy/sr/dev';
 import { iconMap, type IconName } from '@/components/Icon';
-import { useAppFonts } from '@/theme/fonts';
+import Notifications from '@/features/dev/sections/notifications';
 import { level, type LevelKey } from '@/theme/tokens';
 
 const d = (key: string) => dev[key] ?? key;
@@ -139,18 +137,13 @@ function Gallery() {
       <Section title={d('dev.section.toast')}>
         <SecondaryButton label={d('dev.toastShow')} onPress={() => toast.show(t('common.saved'))} testID="dev-toast" />
       </Section>
+
+      <Notifications />
     </ScreenScroll>
   );
 }
 
 export default function Dev() {
-  const fontsReady = useAppFonts();
   if (!__DEV__) return <Redirect href="/" />;
-  if (!fontsReady) return null;
-  return (
-    <ToastProvider>
-      <SkyBackground />
-      <Gallery />
-    </ToastProvider>
-  );
+  return <Gallery />;
 }

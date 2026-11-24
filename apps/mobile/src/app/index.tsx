@@ -1,5 +1,7 @@
-import { View } from 'react-native';
+import { Redirect, type Href } from 'expo-router';
+import { useSettings } from '@/hooks';
 
 export default function Index() {
-  return <View style={{ flex: 1, backgroundColor: '#03040D' }} />;
+  const { onboarded } = useSettings();
+  return <Redirect href={(onboarded ? '/(tabs)/danas' : '/(onboarding)/welcome') as Href} />;
 }

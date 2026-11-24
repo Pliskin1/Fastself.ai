@@ -11,9 +11,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 - Schedules: docs/team/DANILO.md, docs/team/ANDREJ.md.
 
 ## D (Danilo): now and log
-- Now: T3 in PR (t/T3-design-system, merged with main incl. T2+T4). Next: T5.
+- Now: T5 done on branch t/T5-navigation, not pushed yet. Next: T6.
 - Waiting for A: nothing.
 - Log:
+  - 2026-11-24 | T5 | 22 route stubs, NativeTabs sf+md, sheets, dev link listener, root layout (fonts, sky, toast); typecheck, lint, test:app 138, expo export ok | simulator check, push, T6
   - 2026-11-23 | T3 | theme, 22 primitives, /dev gallery, brand icons; typecheck, lint, test:app green, expo export ios+android ok | pnpm ios /dev check, merge, A pulls
   - 2026-11-23 14:50 | T1 | monorepo, Expo SDK 58 shell, core (pl), copy wiring; typecheck, lint, test:core, test:app green | merge, A pulls, then T3
   - 2026-11-23 13:00 | kit | kit received | T1
@@ -22,8 +23,8 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | task | status | branch | notes |
 |---|---|---|---|
 | T1 scaffold | merged | t/T1-scaffold | PR #1 |
-| T3 design primitives + icons | PR | t/T3-design-system | sky from core; pnpm ios check done |
-| T5 navigation + route stubs | todo | | |
+| T3 design primitives + icons | merged | t/T3-design-system | PR #7 |
+| T5 navigation + route stubs | done | t/T5-navigation | simulator check pending |
 | T6 onboarding | todo | | |
 | T7 Danas | todo | | |
 | T8 Kalendar | todo | | |
