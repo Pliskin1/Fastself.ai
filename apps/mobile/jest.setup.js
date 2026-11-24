@@ -8,7 +8,7 @@ jest.mock('react-native-reanimated', () => {
   const ease = (t) => t;
   return {
     __esModule: true,
-    default: { View },
+    default: { View, createAnimatedComponent: (c) => c },
     View,
     Easing: { bezier, inOut: () => ease, quad: ease },
     FadeInDown: chain,
@@ -18,6 +18,8 @@ jest.mock('react-native-reanimated', () => {
       return ref.current;
     },
     useAnimatedStyle: (fn) => fn(),
+    useDerivedValue: (fn) => ({ value: fn() }),
+    useAnimatedProps: (fn) => fn(),
     interpolateColor: (_v, _in, out) => out[0],
     withTiming: (v) => v,
     withSpring: (v) => v,
