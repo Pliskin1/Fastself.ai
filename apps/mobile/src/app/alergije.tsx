@@ -1,5 +1,22 @@
-import { StubScreen } from '@/components/StubScreen';
+import { router } from 'expo-router';
+import { Display, PrimaryButton, ScreenScroll, useToast } from '@/components';
+import { t } from '@/copy/sr';
+import { AlergijePicker } from '@/features/onboarding';
 
 export default function AlergijeScreen() {
-  return <StubScreen testID="screen-alergije" titleKey="nav.alergije" />;
+  const toast = useToast();
+  return (
+    <ScreenScroll testID="screen-alergije" contentStyle={{ paddingTop: 12 }} keyboardShouldPersistTaps="handled">
+      <Display>{t('alergije.title')}</Display>
+      <AlergijePicker />
+      <PrimaryButton
+        testID="btn-save"
+        label={t('common.save')}
+        onPress={() => {
+          toast.show(t('alergije.saved'));
+          router.back();
+        }}
+      />
+    </ScreenScroll>
+  );
 }

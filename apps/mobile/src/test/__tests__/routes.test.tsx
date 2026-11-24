@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react-native';
+import { render, screen } from '@testing-library/react-native';
 import type { ComponentType } from 'react';
-import { renderUI } from '@/components/test-utils';
+import { withProviders } from '@/test/utils';
 import R0 from '@/app/(onboarding)/welcome';
 import R1 from '@/app/(onboarding)/prakse';
 import R2 from '@/app/(onboarding)/alergije';
@@ -51,7 +51,7 @@ const routes: [string, ComponentType, string][] = [
 
 describe('route stubs', () => {
   it.each(routes)('%s renders its testID', async (_name, Screen, testID) => {
-    await renderUI(<Screen />);
+    await render(withProviders(<Screen />));
     expect(screen.getByTestId(testID)).toBeTruthy();
   });
 });

@@ -113,6 +113,10 @@ export function SkyBackground({ demoCycle = false, dim = false, width = 390, cit
   const [demoHour, setDemoHour] = useState(0);
 
   useEffect(() => {
+    if (demoCycle && reduced) {
+      setDemoHour(19);
+      return;
+    }
     if (demoCycle) {
       const start = Date.now();
       const id = setInterval(() => setDemoHour((((Date.now() - start) / 20000) * 24) % 24), 400);
@@ -125,7 +129,7 @@ export function SkyBackground({ demoCycle = false, dim = false, width = 390, cit
       clearInterval(id);
       sub.remove();
     };
-  }, [demoCycle]);
+  }, [demoCycle, reduced]);
 
   const target = useMemo(
     () => skyAt(new Date(tick), city, demoCycle ? demoHour : null),
