@@ -1,5 +1,7 @@
-import { StubScreen } from '@/components/StubScreen';
+import { useLocalSearchParams } from 'expo-router';
+import { AccountFlow } from '@/features/onboarding';
 
-export default function NalogScreen() {
-  return <StubScreen testID="screen-ob-nalog" titleKey="nav.nalog" />;
+export default function ObNalogScreen() {
+  const { returning } = useLocalSearchParams<{ returning?: string }>();
+  return <AccountFlow mode="onboarding" returning={returning === '1'} testID="screen-ob-nalog" />;
 }
