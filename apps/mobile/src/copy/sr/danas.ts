@@ -84,4 +84,5 @@ export default {
   'exception.reason.drugo': 'Drugo',
   'a11y.syncStatus': 'Stanje sinhronizacije: {state}. Otvori profil.',
   'danas.sync.local': 'Samo na telefonu',
+  'a11y.weekDay': '{weekday}, {date}: {title}',
 } as Record<string, string>;

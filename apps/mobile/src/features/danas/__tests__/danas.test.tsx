@@ -1,5 +1,5 @@
 import { toDayNum } from '@fastself/core';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, within } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderUI } from '@/components/test-utils';
 import DanasScreen from '@/app/(tabs)/danas';
@@ -36,7 +36,7 @@ describe('Danas', () => {
       }),
     );
     expect(screen.getByText('Riba dozvoljena')).toBeTruthy();
-    expect(screen.getByText('riba')).toBeTruthy();
+    expect(within(screen.getByTestId('day-dial')).getByText('riba')).toBeTruthy();
     expect(screen.queryByText('Prozor za jelo još')).toBeNull();
   });
 
@@ -50,7 +50,7 @@ describe('Danas', () => {
     expect(screen.getByText('1. ramazan')).toBeTruthy();
     expect(screen.getByText('Do iftara')).toBeTruthy();
     expect(screen.getByText('iftar u 17:06')).toBeTruthy();
-    expect(screen.getByText('Ramazan')).toBeTruthy();
+    expect(within(screen.getByTestId('btn-edit-practices')).getByText('Ramazan')).toBeTruthy();
     expect(screen.getByRole('timer').props.accessibilityLabel).toBe('Do iftara 0 sati i 36 minuta. iftar u 17:06.');
   });
 
@@ -92,5 +92,46 @@ describe('Danas', () => {
     expect(screen.getByText('Danas ne postiš')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('btn-undo-exception'));
     expect(getSettings().exceptions[DEC_2]).toBeUndefined();
+  });
+
+  it('Ramadan day 1 shows the month card and the vaktija cells', async () => {
+    await render(
+      withProviders(<DanasScreen />, { settings: fixtureSettings({ ramadan: true }), now: at('2027-02-08T16:30') }),
+    );
+    expect(screen.getByText('1. od 30 dana')).toBeTruthy();
+    expect(screen.getByText('Nema dana za naknadu')).toBeTruthy();
+    expect(screen.getByText('Vaktija, Podgorica')).toBeTruthy();
+    expect(screen.getByText('05:14')).toBeTruthy();
+    expect(screen.getByText('17:06')).toBeTruthy();
+    expect(screen.getByText('Podsjetnik za sehur u 04:44')).toBeTruthy();
+  });
+
+  it('counts the days to Ramadan before it starts', async () => {
+    await render(withProviders(<DanasScreen />, { settings: fixtureSettings({ ramadan: true }), now: NOW }));
+    expect(screen.getByText('68')).toBeTruthy();
+    expect(screen.getByText('dana do Ramazana')).toBeTruthy();
+  });
+
+  it('toggles a suggested nafila fast', async () => {
+    await render(
+      withProviders(<DanasScreen />, { settings: fixtureSettings({ nafila: true }), now: at('2026-11-30T10:00') }),
+    );
+    await fireEvent.press(screen.getByTestId('btn-nafila-on'));
+    expect(getSettings().nafilaDays[toDayNum(2026, 11, 30)]).toBe(true);
+    expect(screen.getByTestId('btn-nafila-off')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('btn-nafila-off'));
+    expect(getSettings().nafilaDays[toDayNum(2026, 11, 30)]).toBeUndefined();
+  });
+
+  it('shows the slava within 60 days and a week of seven days', async () => {
+    await render(
+      withProviders(<DanasScreen />, {
+        settings: fixtureSettings({ orthodox: true, slavaId: 'nikola' }),
+        now: NOW,
+      }),
+    );
+    expect(screen.getByText('Sveti Nikola')).toBeTruthy();
+    expect(screen.getByText('Tvoja slava, za 17 dana')).toBeTruthy();
+    expect(screen.getAllByLabelText(/^(Sri|Čet|Pet|Sub|Ned|Pon|Uto), /)).toHaveLength(7);
   });
 });

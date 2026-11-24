@@ -11,9 +11,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 - Schedules: docs/team/DANILO.md, docs/team/ANDREJ.md.
 
 ## D (Danilo): now and log
-- Now: T6 done on branch t/T6-onboarding (stacked on T5, not pushed). Next: T7.
+- Now: T7 done on branch t/T7-danas (stacked on T6, not pushed). Next: T8.
 - Waiting for A: nothing.
 - Log:
+  - 2026-11-24 | T7 | Danas: dial, plate, receipt, izuzetak sheet, Ramadan/vaktija/nafila/slava cards, week strip; typecheck, lint, test:app 165, expo export ok | simulator + Maestro 01 check, push, T8
   - 2026-11-24 | T6 | 6 onboarding screens, PraksePicker, AlergijePicker, flow tests; typecheck, lint, test:app 150, expo export ok | simulator + Maestro check, push, T7
   - 2026-11-24 | T5 | 22 route stubs, NativeTabs sf+md, sheets, dev link listener, root layout (fonts, sky, toast); typecheck, lint, test:app 138, expo export ok | push, T6. Tab screens must use <ScreenScroll sky> (native tab container hides the root sky)
   - 2026-11-23 | T3 | theme, 22 primitives, /dev gallery, brand icons; typecheck, lint, test:app green, expo export ios+android ok | pnpm ios /dev check, merge, A pulls
@@ -27,7 +28,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T3 design primitives + icons | merged | t/T3-design-system | PR #7 |
 | T5 navigation + route stubs | done | t/T5-navigation | simulator checked, not pushed |
 | T6 onboarding | done | t/T6-onboarding | maestro 01 needs T7 for last assert |
-| T7 Danas | todo | | |
+| T7 Danas | done | t/T7-danas | IF streak complication and sync state deferred |
 | T8 Kalendar | todo | | |
 | T13 Profil + pushed screens | todo | | |
 | T12 Tajmer | todo | | |
