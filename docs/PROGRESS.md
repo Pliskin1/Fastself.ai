@@ -45,7 +45,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | task | status | branch | notes |
 |---|---|---|---|
 | T2 core port | done | t/T2-core-port | merged (PR #4); rule packs: orthodox (svetosavlje.org), islamic (Diyanet-based); izcg calibrated (D-13) |
-| T4 local DB + hooks | PR | t/T4-local-db-hooks | Android restart check pending; adds zustand + expo-crypto (rebuild the dev build) |
+| T4 local DB + hooks | PR | t/T4-local-db-hooks | Android restart check passed (SM-S931B, Android 17); adds zustand + expo-crypto (rebuild the dev build) |
 | T9 schema + RLS | todo | | |
 | T10 edge functions + report sheet | todo | | |
 | T15 notifications | todo | | |
@@ -65,6 +65,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 - Now: T4 in review; next T9 schema + RLS.
 - Waiting for D: review and merge of the T4 PR.
 - Log:
+  - 2026-11-24 15:42 | T4 | on SM-S931B (Android 17) settings, AI consent and a running fast survive a force-stop; wipe keeps install id | D reviews the PR, then T9
   - 2026-11-24 13:30 | T4 | SQLite v1 + repos, settings store, hooks, dev link + clock, permissions, @/test/utils; 108 jest tests green on in-memory SQLite | Android restart check, PR, then T9
   - 2026-11-23 18:40 | T2 | core ported, 456 tests, coverage rules 98% / plan 100% / meals 100%, build:edge ok | T4
   - 2026-11-23 13:00 | kit | kit received | setup
