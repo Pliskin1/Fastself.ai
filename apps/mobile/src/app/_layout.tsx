@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import { Stack } from 'expo-router';
+import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -11,6 +11,11 @@ import { applyDevLink } from '@/lib/dev';
 import { useAppFonts } from '@/theme/fonts';
 
 SplashScreen.preventAutoHideAsync();
+
+const NAV_THEME = {
+  ...DarkTheme,
+  colors: { ...DarkTheme.colors, background: 'transparent', card: 'transparent' },
+};
 
 const SHEET = {
   presentation: 'formSheet' as const,
@@ -48,13 +53,15 @@ export default function RootLayout() {
           <View style={styles.root}>
             <SkyBackground />
             <StatusBar style="light" />
-            <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
-              <Stack.Screen name="(sheets)/prijava-greske" options={SHEET} />
-              <Stack.Screen name="(sheets)/ai-pristanak" options={SHEET} />
-              <Stack.Screen name="(sheets)/brisanje" options={SHEET} />
-              <Stack.Screen name="(sheets)/izuzetak" options={SHEET} />
-              <Stack.Screen name="(sheets)/kupovina" options={SHEET} />
-            </Stack>
+            <ThemeProvider value={NAV_THEME}>
+              <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
+                <Stack.Screen name="(sheets)/prijava-greske" options={SHEET} />
+                <Stack.Screen name="(sheets)/ai-pristanak" options={SHEET} />
+                <Stack.Screen name="(sheets)/brisanje" options={SHEET} />
+                <Stack.Screen name="(sheets)/izuzetak" options={SHEET} />
+                <Stack.Screen name="(sheets)/kupovina" options={SHEET} />
+              </Stack>
+            </ThemeProvider>
           </View>
         </ToastProvider>
       </SafeAreaProvider>

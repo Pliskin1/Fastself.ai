@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { ScrollView, type StyleProp, type ViewStyle } from 'react-native';
+import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { layout } from '@/theme/tokens';
+import { SkyBackground } from './SkyBackground';
 
 type Props = {
   children?: ReactNode;
@@ -10,11 +11,20 @@ type Props = {
   testID?: string;
   contentStyle?: StyleProp<ViewStyle>;
   keyboardShouldPersistTaps?: 'always' | 'never' | 'handled';
+  /** Draw the sky behind this screen. Needed on tab screens: the native tab container hides the root sky. */
+  sky?: boolean;
 };
 
-export function ScreenScroll({ children, bottomInset = 0, testID, contentStyle, keyboardShouldPersistTaps }: Props) {
+export function ScreenScroll({
+  children,
+  bottomInset = 0,
+  testID,
+  contentStyle,
+  keyboardShouldPersistTaps,
+  sky = false,
+}: Props) {
   const insets = useSafeAreaInsets();
-  return (
+  const scroll = (
     <ScrollView
       testID={testID}
       keyboardShouldPersistTaps={keyboardShouldPersistTaps}
@@ -32,4 +42,13 @@ export function ScreenScroll({ children, bottomInset = 0, testID, contentStyle, 
       {children}
     </ScrollView>
   );
+  if (!sky) return scroll;
+  return (
+    <View style={styles.fill}>
+      <SkyBackground />
+      {scroll}
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({ fill: { flex: 1 } });
