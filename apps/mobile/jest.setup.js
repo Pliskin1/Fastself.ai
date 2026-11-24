@@ -2,6 +2,7 @@
 jest.mock('react-native-worklets', () => ({}));
 jest.mock('react-native-reanimated', () => {
   const { View } = require('react-native');
+  const { useRef } = require('react');
   const chain = { duration: () => chain, delay: () => chain, easing: () => chain };
   const bezier = () => (t) => t;
   const ease = (t) => t;
@@ -12,7 +13,10 @@ jest.mock('react-native-reanimated', () => {
     Easing: { bezier, inOut: () => ease, quad: ease },
     FadeInDown: chain,
     useReducedMotion: () => false,
-    useSharedValue: (v) => ({ value: v }),
+    useSharedValue: (v) => {
+      const ref = useRef({ value: v });
+      return ref.current;
+    },
     useAnimatedStyle: (fn) => fn(),
     interpolateColor: (_v, _in, out) => out[0],
     withTiming: (v) => v,
