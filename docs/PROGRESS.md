@@ -45,7 +45,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | task | status | branch | notes |
 |---|---|---|---|
 | T2 core port | done | t/T2-core-port | merged (PR #4); rule packs: orthodox (svetosavlje.org), islamic (Diyanet-based); izcg calibrated (D-13) |
-| T4 local DB + hooks | review | t/T4-local-db-hooks | committed, to push + PR; Android restart check pending; adds zustand + expo-crypto (rebuild the dev build) |
+| T4 local DB + hooks | PR | t/T4-local-db-hooks | Android restart check pending; adds zustand + expo-crypto (rebuild the dev build) |
 | T9 schema + RLS | todo | | |
 | T10 edge functions + report sheet | todo | | |
 | T15 notifications | todo | | |
