@@ -50,7 +50,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 |---|---|---|---|
 | T2 core port | done | t/T2-core-port | merged (PR #4); rule packs: orthodox (svetosavlje.org), islamic (Diyanet-based); izcg calibrated (D-13) |
 | T4 local DB + hooks | done | t/T4-local-db-hooks | merged (PR #5); Android restart check passed (SM-S931B, Android 17); adds zustand + expo-crypto (rebuild the dev build) |
-| T9 schema + RLS | todo | | |
+| T9 schema + RLS | done | t/T9-schema-rls | committed, not pushed; config is supabase/config.jsonc (CLI 3.4, not config.toml); explicit grants, anon gets 401 on user tables |
 | T10 edge functions + report sheet | todo | | |
 | T15 notifications | todo | | |
 | T14 lib/api + mock | todo | | |
@@ -66,9 +66,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: T4 done (PR #5 merged); next T9 schema + RLS.
+- Now: T9 done on branch t/T9-schema-rls (committed, not pushed); next T10.
 - Waiting for D: nothing.
 - Log:
+  - 2026-11-24 23:44 | T9 | 2 migrations (schema, RLS, grants; rule_packs seed), 6 pgTAP files 173 tests, db reset + test db + /verify green; real signup and anon/user REST calls checked on local | push, PR, T10 (insert reports without .select(); private.ai_usage is not reachable through the API)
   - 2026-11-24 15:42 | T4 | on SM-S931B (Android 17) settings, AI consent and a running fast survive a force-stop; wipe keeps install id | T9
   - 2026-11-24 13:30 | T4 | SQLite v1 + repos, settings store, hooks, dev link + clock, permissions, @/test/utils; 108 jest tests green on in-memory SQLite | Android restart check, PR, then T9
   - 2026-11-23 18:40 | T2 | core ported, 456 tests, coverage rules 98% / plan 100% / meals 100%, build:edge ok | T4
