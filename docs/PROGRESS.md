@@ -11,7 +11,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 - Schedules: docs/team/DANILO.md, docs/team/ANDREJ.md.
 
 ## D (Danilo): now and log
-- Now: T3 done on branch t/T3-design-system, waiting for PR merge + pnpm ios check of /dev. Next: T5.
+- Now: T3 in PR (t/T3-design-system, merged with main incl. T2+T4). Next: T5.
 - Waiting for A: nothing.
 - Log:
   - 2026-11-23 | T3 | theme, 22 primitives, /dev gallery, brand icons; typecheck, lint, test:app green, expo export ios+android ok | pnpm ios /dev check, merge, A pulls
@@ -22,7 +22,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | task | status | branch | notes |
 |---|---|---|---|
 | T1 scaffold | merged | t/T1-scaffold | PR #1 |
-| T3 design primitives + icons | PR | t/T3-design-system | sky is local stub until T2; pnpm ios check pending |
+| T3 design primitives + icons | PR | t/T3-design-system | sky from core; pnpm ios check done |
 | T5 navigation + route stubs | todo | | |
 | T6 onboarding | todo | | |
 | T7 Danas | todo | | |
@@ -45,8 +45,8 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 ## Task board, A (Andrej)
 | task | status | branch | notes |
 |---|---|---|---|
-| T2 core port | todo | | |
-| T4 local DB + hooks | todo | | |
+| T2 core port | done | t/T2-core-port | merged (PR #4); rule packs: orthodox (svetosavlje.org), islamic (Diyanet-based); izcg calibrated (D-13) |
+| T4 local DB + hooks | done | t/T4-local-db-hooks | merged (PR #5); Android restart check passed (SM-S931B, Android 17); adds zustand + expo-crypto (rebuild the dev build) |
 | T9 schema + RLS | todo | | |
 | T10 edge functions + report sheet | todo | | |
 | T15 notifications | todo | | |
@@ -63,7 +63,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: setup (Windows, Android Studio, accounts), then T2 after T1 is merged.
-- Waiting for D: T1 merge.
+- Now: T4 done (PR #5 merged); next T9 schema + RLS.
+- Waiting for D: nothing.
 - Log:
+  - 2026-11-24 15:42 | T4 | on SM-S931B (Android 17) settings, AI consent and a running fast survive a force-stop; wipe keeps install id | T9
+  - 2026-11-24 13:30 | T4 | SQLite v1 + repos, settings store, hooks, dev link + clock, permissions, @/test/utils; 108 jest tests green on in-memory SQLite | Android restart check, PR, then T9
+  - 2026-11-23 18:40 | T2 | core ported, 456 tests, coverage rules 98% / plan 100% / meals 100%, build:edge ok | T4
   - 2026-11-23 13:00 | kit | kit received | setup

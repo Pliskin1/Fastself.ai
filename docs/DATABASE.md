@@ -7,8 +7,9 @@ an account. Each user sees only their own rows (RLS). Deleting the account remov
 ```sql
 -- v1
 CREATE TABLE kv (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at INTEGER NOT NULL);
--- keys: settings (JSON of Settings without allergies/exceptions), onboarded, install_id (uuid v4, random),
---       consent_ai, consent_sync_practices, consent_sync_allergies, consent_sync_history, last_sync_at, auth_user_id
+-- keys: settings (JSON of the profile part of Settings: city, prayerMethod, offsets, ramadanShift), onboarded,
+--       install_id (uuid v4, random), consent_ai, consent_sync_practices, consent_sync_allergies,
+--       consent_sync_history, last_sync_at, auth_user_id
 CREATE TABLE practices (id TEXT PRIMARY KEY, practice TEXT NOT NULL CHECK (practice IN ('orthodox','ramadan','nafila','if')),
   active INTEGER NOT NULL, settings TEXT NOT NULL DEFAULT '{}', updated_at INTEGER NOT NULL, deleted INTEGER NOT NULL DEFAULT 0);
 CREATE TABLE allergies (id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK (kind IN ('allergen','custom','diet')),
@@ -26,6 +27,9 @@ CREATE TABLE outbox (seq INTEGER PRIMARY KEY AUTOINCREMENT, tbl TEXT NOT NULL, r
   CHECK (op IN ('upsert','delete')), created_at INTEGER NOT NULL);
 ```
 - ids are uuid v4 generated on the device (`expo-crypto randomUUID`). Times are epoch ms. Days are `YYYY-MM-DD`.
+- Each `Settings` field has one home, and the app rebuilds `Settings` from them on start (`src/db/repo/settings.ts`):
+  `practices` rows hold the practice flags plus `{strictness, slavaId}` (orthodox) and `{ifPlan}` (if); `allergies` rows
+  hold allergens, custom words and diets; `day_marks` hold exceptions and chosen nafila days; `safety` holds `minor`.
 - Every write to a syncable table (practices, allergies, fasting_sessions, day_marks, meal_plans) also inserts into
   `outbox` **only if** the matching consent is on and a user is signed in.
 - The repository layer sits behind an interface (`Db`) so jest can run it on an in-memory adapter.

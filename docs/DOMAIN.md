@@ -23,7 +23,7 @@ interface Reason { label: string; sub: string; level: FoodLevel | 'vrijeme' | 'f
 ```
 
 ## 1. Calendar helpers
-- `dayNum(y,m,d)` = `floor(Date.UTC(y,m-1,d)/864e5)`. `fromDayNum(n)` gives `{y,m,d,wd}` with wd 0=Sunday.
+- `toDayNum(y,m,d)` = `floor(Date.UTC(y,m-1,d)/864e5)`. `fromDayNum(n)` gives `{y,m,d,wd}` with wd 0=Sunday.
 - **Time zone Europe/Podgorica:** UTC+1. EU summer time UTC+2 runs from 01:00 UTC on the last Sunday of March to
   01:00 UTC on the last Sunday of October. For a calendar date, use the date-level rule from the engine (`fsTz`).
   Times on the switch day itself are within 1 h; tests cover 27–28 Mar 2027.
@@ -31,14 +31,23 @@ interface Reason { label: string; sub: string; level: FoodLevel | 'vrijeme' | 'f
   `a=y%4, b=y%7, c=y%19, d=(19c+15)%30, e=(2a+4b−d+34)%7, month=floor((d+e+114)/31), day=((d+e+114)%31)+1`,
   then add 13 days. Results 2020–2040 are in TESTING.md §3.1.
 - **Julian date ("po starom")** = Gregorian date − 13 days, valid until 2100. Shown as "19. novembar po starom".
-- **Hijri** uses the tabular (arithmetic) algorithm from `fsHijri`, applied to `n − ramadanShift`. It is shown with the
-  month names in §4. Ramadan starts are verified in TESTING.md §3.4. The real start depends on moon sighting, so the
-  user can shift by ±1 day in Vaktija.
+- **Hijri** (`hijriDate(n, ramadanShift)`) follows the known month starts in `rule-packs/islamic.v0.1.json`. That
+  data is Diyanet-based, from the Montenegro calendar, and is known from 2026-11-10. It is applied to `n − ramadanShift`.
+  - Months in a gap between known starts take tabular lengths, and the last one absorbs the remainder (always 29/30).
+  - Before the first known start the calendar is plain tabular (`tabularHijri`, from `fsHijri`). After the last one it is
+    tabular, shifted to stay continuous.
+  - Extend the JSON each year when the next calendar is published, and bump its version.
+  - It is shown with the month names in §4, and verified in TESTING.md §3.4.
+  - The user can still shift by ±1 day in Vaktija to follow their own džemat.
 
 ## 2. Orthodox rule engine (`rules/orthodox.ts` + `rule-packs/orthodox.v0.1.json`)
 Rules apply in order. The first matching "free" rule returns immediately. Otherwise fasting rules accumulate and the
 **strictest level wins**, then feast relaxations apply, then the user's strictness cap.
 Let `E` = Easter DayNum of year y, `o = n − E`, `md = m*100+d`, `weekend = wd ∈ {0,6}`.
+Source: [svetosavlje.org, "Pravilo posta za celu godinu"](https://svetosavlje.org/pravilo-posta-za-celu-godinu/)
+(retrieved 2026-11-23) for the weekday levels, the Wed/Fri rule and the fish days. It gives old-style dates, shifted
++13 days here. Rules it does not cover (fast boundaries, one-day fasts, Bogojavljenje, Vavedenje, Sveti Nikola) come
+from `docs/reference/engine.js`. Each JSON entry carries `src` and its old-style date `os`.
 
 ### 2.1 Fast-free periods (return immediately)
 | Rule | Condition | Level |
@@ -51,21 +60,24 @@ Let `E` = Easter DayNum of year y, `o = n − E`, `md = m*100+d`, `weekend = wd 
 | Bijela (Sirna) sedmica | o ∈ [−55, −49] | bezmesa (dairy, eggs and fish allowed, no meat) |
 
 ### 2.2 Fasting periods
-| Period | Dates | Weekdays (Mon–Fri) | Weekend |
-|---|---|---|---|
-| Božićni post | 28.11.–6.1. (40 days) | ulje | riba until 1.1., then ulje |
-| Veliki post | o ∈ [−48, −1] (Čisti ponedjeljak → Velika subota) | voda | ulje |
-| Petrovski post | o ≥ 57 and date ≤ 11.7. (variable length; 14 days in 2027) | ulje | riba |
-| Gospojinski post | 14.8.–27.8. | voda | ulje |
+| Period | Dates | Mon, Wed, Fri | Tue, Thu | Sat, Sun |
+|---|---|---|---|---|
+| Božićni post | 28.11.–6.1. (40 days) | voda | ulje | riba until 30.12. (17.12. old style), then ulje |
+| Veliki post | o ∈ [−48, −1] (Čisti ponedjeljak → Velika subota) | voda | voda | ulje |
+| Petrovski post | o ≥ 57 and date ≤ 11.7. (variable length; 14 days in 2027) | voda | ulje | riba |
+| Gospojinski post | 14.8.–27.8. | voda | voda | ulje |
 - One-day fasts set the level to voda, and the Wed/Fri rule is not applied on top of them:
   Badnji dan 6.1., Krstovdan 18.1., Usekovanje 11.9., Krstovdan (Vozdviženje) 27.9.
 - **Wednesday and Friday** outside the free periods add the reason "Srijeda" or "Petak" at level voda. The stricter level
-  wins, so in Božićni post a Wednesday is voda.
+  wins, so in Božićni post a Wednesday is voda. Exception: from Tomina nedjelja to Duhovi (o ∈ [7, 49]) the reason is
+  at level ulje.
 - Period progress is computed for the subtitle: "Božićni post, 5. dan od 40".
 
 ### 2.3 Feast relaxations
 These apply only if the current level is stricter than riba, and they set it to riba:
-Vavedenje 4.12., Sveti Nikola 19.12., Blagovijesti 7.4., Preobraženje 19.8., Cvijeti (o = −7).
+Vavedenje 4.12., Sveti Nikola 19.12., Blagovijesti 7.4., Preobraženje 19.8., Cvijeti (o = −7),
+Prepolovljenje (o = 24), Odanije Vaskrsa (o = 38), Petrovdan 12.7., Velika Gospojina 28.8. The last four only change a
+Wednesday or Friday, because only then is the level stricter than riba.
 
 ### 2.4 Mjera posta (user strictness cap)
 If `strictness ≠ 'voda'` and `rank(level) > rank(strictness)`, set `level = strictness` and append the reason
@@ -76,17 +88,15 @@ If `strictness ≠ 'voda'` and `rank(level) > rank(strictness)`, set `level = st
 With no rule at all: `{ level: 'mrsno', reasons: [{ label: 'Običan dan', sub: 'nema posta' }] }`.
 
 ### 2.6 Rule pack JSON (data, versioned)
-```json
-{ "id": "orthodox", "version": "0.1", "calendar": "julian",
-  "free": [ {"id":"svjatki","name":"Svjatki","fixed":["01-07","01-17"],"level":"mrsno"},
-            {"id":"svijetla","name":"Svijetla sedmica","easter":[0,6],"level":"mrsno"} ],
-  "periods": [ {"id":"bozicni","name":"Božićni post","fixed":["11-28","01-06"],
-                "weekday":"ulje","weekend":"riba","weekendUntil":"01-01","weekendAfter":"ulje"} ],
-  "oneDay": [ {"id":"badnji","name":"Badnji dan","fixed":"01-06","level":"voda"} ],
-  "weekly": { "days":[3,5], "level":"voda" },
-  "relax": [ {"id":"vavedenje","name":"Vavedenje","fixed":"12-04","to":"riba"},
-             {"id":"cvijeti","name":"Cvijeti","easter":-7,"to":"riba"} ] }
-```
+The file is `packages/core/rule-packs/orthodox.v0.1.json`. Shape:
+- `free[]`, `oneDay[]` and `relax[]` entries select a day with `fixed` (`"MM-DD"`, or `[from, to]` that may wrap the
+  year end) or `easter` (an offset, or `[from, to]`).
+- `periods[]` use the same selectors, plus `easterFrom` and `fixedTo` for Petrovski. Each has a `week` map
+  (`mon`…`sun` → level), or `segments[]` with their own range and `week` (Božićni).
+- `weekly` has `days` (`wed`, `fri` → reason label), `level`, and `overrides[]` by Easter range.
+- `oneDay` entries with `keepsPeriod` keep that period's progress (Badnji dan = Božićni post, day 40 of 40).
+- Every entry has `name`, an optional `sub`, `src`, and `os` for fixed dates.
+
 The engine interprets this. The version `rule pack v0.1` is shown in the why receipt and sent with error reports.
 **Human verification is required** against the church calendar (TESTING.md §3.2). If the church calendar differs,
 fix the JSON, not the code.
@@ -128,8 +138,10 @@ The card shows within 60 days. Text:
   - `mwl`: fajr 18°, isha 17°.
   - `turkey`: Diyanet.
   - `ummalqura`: fajr 18.5°, isha 90 min after maghrib.
-  - `izcg` (default): MWL plus per-prayer minute offsets calibrated by A on Day 0 from the official IZ CG vaktija
-    for Podgorica. Put the numbers in `prayer/methods.ts` with a comment naming the source dates.
+  - `izcg` (default): fajr 19.5°, isha 17.5°, standard (Shafi) asr, as IZ CG states on monteislam.com/vaktija.
+    Per-prayer minute offsets on top: fajr +1, sunrise −8, dhuhr +1, asr +1, maghrib +8, isha +2. The ±8 are IZ CG's
+    safety minutes. Calibrated 2026-11-23 against the official vaktija for Podgorica, November 2026 (all 30 days within
+    ±1 min; `docs/reference/sources/monteislam-vaktija-podgorica-2026-11-23.md`). Recheck against each new month.
 - User offsets (`offsets.fajr`, `offsets.maghrib`) are added last.
 - Output: minutes from local midnight for fajr, sunrise, dhuhr, asr, maghrib and isha, plus `HH:MM` formatting.
   Must agree with the engine values in TESTING.md §3.3 within ±1 min (MWL).
@@ -149,7 +161,7 @@ The card shows within 60 days. Text:
 ```
 orth = practices.orthodox ? orthodoxRule(n) (with strictness) : null
 level = orth?.level ?? 'mrsno'
-hijri = tabularHijri(n − ramadanShift)
+hijri = hijriDate(n, ramadanShift)
 ram = practices.ramadan && hijri.m == 9 ? hijri.d : 0
 naf = practices.nafila && !ram ? nafilaSuggestion(n, hijri) : null
 nafFast = naf && nafilaDays[n]
@@ -180,7 +192,7 @@ food rules take the strictest.
   - Diet-only: svinjetina, alkohol.
 - FORBID by level:
   - voda: meso, mlijecno, jaja, riba, ulje, vino, rakovi, mekusci
-  - ulje: meso, mlijecno, jaja, riba, rakovi, mekusci
+  - ulje: meso, mlijecno, jaja, riba (rakovi, mekusci and vino are allowed, per svetosavlje.org "post na ulju i vinu")
   - riba: meso, mlijecno, jaja
   - bezmesa: meso
   - mrsno: none
@@ -201,7 +213,7 @@ food rules take the strictest.
 - `shoppingList(planDays)` aggregates ingredients and counts meals, sorted with `localeCompare('sr-Latn')`.
 
 ## 9. Sky and moon (`sky/`)
-- `sunAltitude(n, hourLocal, lat, lng)` follows the engine `fsSunAlt`. It returns degrees and morning/evening.
+- `sunAltitude(n, minutes, lat, lng)` (minutes from local midnight) follows the engine `fsSunAlt`. It returns degrees and morning/evening.
 - `skyColors(alt, morning)` interpolates the keyframe tables `FS_SKY_M` and `FS_SKY_E` (3 stops: top, mid, bottom).
   - Stars opacity is `clamp((−alt − 4)/10, 0, 1)`.
   - Horizon glow opacity is `max(0, 1 − |alt|/16) * 0.85`.

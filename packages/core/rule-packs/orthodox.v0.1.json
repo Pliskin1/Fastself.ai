@@ -1,0 +1,250 @@
+{
+  "$comment": "Orthodox fasting rules as data (D-06). Dates are Gregorian MM-DD, already shifted +13 days from the Julian church calendar (valid 1901-2099); 'os' is the old-style date as the source states it. 'easter' offsets are days from Orthodox Easter. Weekday keys: mon..sun. Evaluation order: free (first match returns) -> periods + oneDay + weekly (strictest wins; oneDay suppresses the weekly reason) -> relax (only if stricter than riba) -> user strictness cap. src: 'svetosavlje' = the page below, 'domain' = docs/DOMAIN.md section 2 (not on that page).",
+  "id": "orthodox",
+  "version": "0.1",
+  "calendar": "julian",
+  "dateStyle": "gregorian",
+  "julianOffsetDays": 13,
+  "validYears": [1901, 2099],
+  "sources": {
+    "svetosavlje": {
+      "title": "Pravilo posta za celu godinu",
+      "url": "https://svetosavlje.org/pravilo-posta-za-celu-godinu/",
+      "retrieved": "2026-11-23",
+      "covers": "weekday levels of the four fasts, the Wednesday and Friday rule, fast-free weeks, fish days"
+    },
+    "domain": {
+      "ref": "docs/DOMAIN.md section 2 (from docs/reference/engine.js)",
+      "covers": "fast boundaries, one-day fasts, Bogojavljenje, Vavedenje, Sveti Nikola"
+    }
+  },
+  "free": [
+    {
+      "id": "svjatki",
+      "name": "Svjatki",
+      "sub": "od Božića do Krstovdana, mrsna sedmica",
+      "fixed": ["01-07", "01-17"],
+      "os": ["12-25", "01-04"],
+      "level": "mrsno",
+      "src": "svetosavlje"
+    },
+    {
+      "id": "bogojavljenje",
+      "name": "Bogojavljenje",
+      "sub": "praznik, nema posta",
+      "fixed": "01-19",
+      "os": "01-06",
+      "level": "mrsno",
+      "src": "domain"
+    },
+    {
+      "id": "svijetla",
+      "name": "Svijetla sedmica",
+      "sub": "sedmica poslije Vaskrsa, mrsna",
+      "easter": [0, 6],
+      "level": "mrsno",
+      "src": "svetosavlje"
+    },
+    {
+      "id": "trojicina",
+      "name": "Trojičina sedmica",
+      "sub": "sedmica poslije Duhova, mrsna",
+      "easter": [50, 56],
+      "level": "mrsno",
+      "src": "svetosavlje"
+    },
+    {
+      "id": "mitar",
+      "name": "Sedmica Mitara i fariseja",
+      "sub": "mrsna sedmica",
+      "easter": [-69, -64],
+      "level": "mrsno",
+      "src": "svetosavlje"
+    },
+    {
+      "id": "bijela",
+      "name": "Bijela sedmica",
+      "sub": "bez mesa; mliječno, jaja i riba su dozvoljeni",
+      "easter": [-55, -49],
+      "level": "bezmesa",
+      "src": "svetosavlje"
+    }
+  ],
+  "periods": [
+    {
+      "id": "bozicni",
+      "name": "Božićni post",
+      "sub": "28.11. – 6.1.",
+      "fixed": ["11-28", "01-06"],
+      "os": ["11-15", "12-24"],
+      "src": "svetosavlje",
+      "segments": [
+        {
+          "fixed": ["11-28", "12-30"],
+          "os": ["11-15", "12-17"],
+          "week": {
+            "mon": "voda",
+            "tue": "ulje",
+            "wed": "voda",
+            "thu": "ulje",
+            "fri": "voda",
+            "sat": "riba",
+            "sun": "riba"
+          }
+        },
+        {
+          "fixed": ["12-31", "01-06"],
+          "os": ["12-18", "12-24"],
+          "week": {
+            "mon": "voda",
+            "tue": "ulje",
+            "wed": "voda",
+            "thu": "ulje",
+            "fri": "voda",
+            "sat": "ulje",
+            "sun": "ulje"
+          }
+        }
+      ]
+    },
+    {
+      "id": "veliki",
+      "name": "Veliki post",
+      "sub": "od Čistog ponedjeljka do Velike subote",
+      "easter": [-48, -1],
+      "src": "svetosavlje",
+      "week": {
+        "mon": "voda",
+        "tue": "voda",
+        "wed": "voda",
+        "thu": "voda",
+        "fri": "voda",
+        "sat": "ulje",
+        "sun": "ulje"
+      }
+    },
+    {
+      "id": "petrovski",
+      "name": "Petrovski post",
+      "sub": "od Vaskrsa + 57 dana do 11.7.",
+      "easterFrom": 57,
+      "fixedTo": "07-11",
+      "osTo": "06-28",
+      "src": "svetosavlje",
+      "week": {
+        "mon": "voda",
+        "tue": "ulje",
+        "wed": "voda",
+        "thu": "ulje",
+        "fri": "voda",
+        "sat": "riba",
+        "sun": "riba"
+      }
+    },
+    {
+      "id": "gospojinski",
+      "name": "Gospojinski post",
+      "sub": "14.8. – 27.8.",
+      "fixed": ["08-14", "08-27"],
+      "os": ["08-01", "08-14"],
+      "src": "svetosavlje",
+      "week": {
+        "mon": "voda",
+        "tue": "voda",
+        "wed": "voda",
+        "thu": "voda",
+        "fri": "voda",
+        "sat": "ulje",
+        "sun": "ulje"
+      }
+    }
+  ],
+  "oneDay": [
+    {
+      "id": "badnji",
+      "name": "Badnji dan",
+      "sub": "posljednji dan Božićnog posta",
+      "fixed": "01-06",
+      "os": "12-24",
+      "level": "voda",
+      "keepsPeriod": "bozicni",
+      "src": "domain"
+    },
+    {
+      "id": "krstovdan",
+      "name": "Krstovdan",
+      "sub": "jednodnevni post",
+      "fixed": "01-18",
+      "os": "01-05",
+      "level": "voda",
+      "src": "domain"
+    },
+    {
+      "id": "usekovanje",
+      "name": "Usekovanje",
+      "sub": "jednodnevni post",
+      "fixed": "09-11",
+      "os": "08-29",
+      "level": "voda",
+      "src": "domain"
+    },
+    {
+      "id": "vozdvizenje",
+      "name": "Krstovdan (Vozdviženje)",
+      "sub": "jednodnevni post",
+      "fixed": "09-27",
+      "os": "09-14",
+      "level": "voda",
+      "src": "domain"
+    }
+  ],
+  "weekly": {
+    "days": { "wed": "Srijeda", "fri": "Petak" },
+    "sub": "posni dan u sedmici, strože pravilo pobjeđuje",
+    "level": "voda",
+    "src": "svetosavlje",
+    "overrides": [
+      {
+        "id": "tomina-duhovi",
+        "name": "Od Tomine nedjelje do Duhova",
+        "sub": "srijeda i petak na ulju",
+        "easter": [7, 49],
+        "level": "ulje",
+        "src": "svetosavlje"
+      }
+    ]
+  },
+  "relax": [
+    { "id": "vavedenje", "name": "Vavedenje", "fixed": "12-04", "os": "11-21", "to": "riba", "src": "domain" },
+    { "id": "nikola", "name": "Sveti Nikola", "fixed": "12-19", "os": "12-06", "to": "riba", "src": "domain" },
+    {
+      "id": "blagovijesti",
+      "name": "Blagovijesti",
+      "fixed": "04-07",
+      "os": "03-25",
+      "to": "riba",
+      "src": "svetosavlje"
+    },
+    { "id": "cvijeti", "name": "Cvijeti", "easter": -7, "to": "riba", "src": "svetosavlje" },
+    { "id": "prepolovljenje", "name": "Prepolovljenje", "easter": 24, "to": "riba", "src": "svetosavlje" },
+    { "id": "odanije", "name": "Odanije Vaskrsa", "easter": 38, "to": "riba", "src": "svetosavlje" },
+    { "id": "petrovdan", "name": "Petrovdan", "fixed": "07-12", "os": "06-29", "to": "riba", "src": "svetosavlje" },
+    {
+      "id": "preobrazenje",
+      "name": "Preobraženje",
+      "fixed": "08-19",
+      "os": "08-06",
+      "to": "riba",
+      "src": "svetosavlje"
+    },
+    {
+      "id": "gospojina",
+      "name": "Velika Gospojina",
+      "fixed": "08-28",
+      "os": "08-15",
+      "to": "riba",
+      "src": "svetosavlje"
+    }
+  ],
+  "relaxSub": "praznik, olakšica na ribu"
+}

@@ -1,8 +1,25 @@
-// Prints the day plan for a date range: pnpm --filter @fastself/core run print-days 2026-12-01 2026-12-31
-// dayPlan lands with T2; until then this only validates the arguments.
-const [from, to] = process.argv.slice(2);
-if (!from || !to || !/^\d{4}-\d{2}-\d{2}$/.test(from) || !/^\d{4}-\d{2}-\d{2}$/.test(to)) {
-  console.error('Usage: print-days YYYY-MM-DD YYYY-MM-DD');
+// Prints the day plan for a date range: pnpm --filter @fastself/core run print-days 2026-12-01 2026-12-31 [orthodox,ramadan,nafila,ifOn]
+import { DEFAULT_SETTINGS, dayPlan, formatHm, isoDate, parseIsoDate } from '../src/index';
+
+const [from, to, flags = 'orthodox'] = process.argv.slice(2);
+const a = from ? parseIsoDate(from) : null;
+const b = to ? parseIsoDate(to) : null;
+if (a === null || b === null) {
+  console.error('Usage: print-days YYYY-MM-DD YYYY-MM-DD [orthodox,ramadan,nafila,ifOn]');
   process.exit(1);
 }
-console.log(`print-days ${from}..${to}: dayPlan is not ported yet (T2).`);
+const on = new Set(flags.split(','));
+const settings = {
+  ...DEFAULT_SETTINGS,
+  practices: {
+    orthodox: on.has('orthodox'),
+    ramadan: on.has('ramadan'),
+    nafila: on.has('nafila'),
+    ifOn: on.has('ifOn'),
+  },
+};
+for (let n = a; n <= b; n++) {
+  const p = dayPlan(n, settings);
+  const w = p.window ? ` | ${formatHm(p.window.start)}-${formatHm(p.window.end)} ${p.window.kind}` : '';
+  console.log(`${isoDate(n)} ${p.level.padEnd(7)} ${p.title} | ${p.sub}${w}`);
+}

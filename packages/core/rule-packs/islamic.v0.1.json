@@ -1,0 +1,72 @@
+{
+  "$comment": "Known Hijri month starts (day 1, Gregorian, Europe/Podgorica). Between two known starts the months in a gap take tabular lengths, and the last month in the gap absorbs the remainder; every month must come out at 29 or 30 days. After the last known start the calendar continues as tabular Hijri shifted to match it, so dates stay continuous. Before the first known start it is plain tabular. The user shift (ramadanShift) still applies on top. Extend this file every year when the next calendar is published, then bump the version.",
+  "id": "islamic",
+  "version": "0.1",
+  "authority": "diyanet",
+  "sources": {
+    "praznici": {
+      "title": "Islamski praznici - Crna Gora (2027)",
+      "url": "https://prayer-times.e-corlu.com/?a=montenegro&id=249&p=20&l=9",
+      "retrieved": "2026-11-23",
+      "copy": "docs/reference/sources/diyanet-islamski-praznici-crna-gora-2026-11-23.md"
+    },
+    "podgorica": {
+      "title": "Ramazanska vaktija 2027 Podgorica (Izvor: Diyanet)",
+      "url": "https://ramadan.e-corlu.com/?a=podgorica&id=14875&l=9",
+      "retrieved": "2026-11-23",
+      "copy": "docs/reference/sources/diyanet-ramazan-podgorica-2026-11-23.md"
+    }
+  },
+  "monthStarts": [
+    {
+      "hijri": "1448-06",
+      "start": "2026-11-10",
+      "src": "podgorica",
+      "from": "2026-11-23 is printed as 14 Džumade-l-uhra 1448"
+    },
+    {
+      "hijri": "1448-07",
+      "start": "2026-12-10",
+      "src": "praznici",
+      "from": "Noć Mi'radža 2027-01-04 = 26 Redžeb; Početak blagoslovljenih mjeseci 2026-12-10"
+    },
+    {
+      "hijri": "1448-08",
+      "start": "2027-01-09",
+      "src": "praznici",
+      "from": "Prva teravija 2027-02-07 = 30 Ša'ban; Noć Berata 2027-01-27 = 19 Ša'ban"
+    },
+    {
+      "hijri": "1448-09",
+      "start": "2027-02-08",
+      "src": "praznici",
+      "from": "Početak Ramazana 2027-02-08 = 1 Ramazan; Ramadan 1448 lasts 29 days"
+    },
+    { "hijri": "1448-10", "start": "2027-03-09", "src": "praznici", "from": "Ramazanski bajram 2027-03-09 = 1 Ševval" },
+    {
+      "hijri": "1448-12",
+      "start": "2027-05-07",
+      "src": "praznici",
+      "from": "Kurban bajram 2027-05-16 = 10 Zu-l-hidždže"
+    },
+    {
+      "hijri": "1449-01",
+      "start": "2027-06-06",
+      "src": "praznici",
+      "from": "Islamska nova godina 2027-06-06 = 1 Muharrem; Dan Ašure 2027-06-15 = 10 Muharrem"
+    },
+    {
+      "hijri": "1449-02",
+      "start": "2027-07-05",
+      "src": "praznici",
+      "from": "derived: 1 Muharrem to 1 Rebiu-l-evvel is 58 days, which only splits as 29 + 29"
+    },
+    { "hijri": "1449-03", "start": "2027-08-03", "src": "praznici", "from": "Mevlud 2027-08-13 = 11 Rebiu-l-evvel" },
+    {
+      "hijri": "1449-07",
+      "start": "2027-11-29",
+      "src": "praznici",
+      "from": "derived: Početak blagoslovljenih mjeseci 2027-11-29 and Noć Mi'radža 2027-12-24 (26 Redžeb), no Hijri dates printed"
+    }
+  ]
+}

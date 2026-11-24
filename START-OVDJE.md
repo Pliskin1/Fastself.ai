@@ -124,7 +124,7 @@ Andrej aplikaciju vidi na **svom Android telefonu**. Isti kod, ista aplikacija (
 4. U folderu projekta: `pnpm android`. Prvi build traje 5–15 min, poslije su izmjene odmah vidljive na telefonu.
 
 ## 5. Gdje radiš projekat
-- **Folder:** `~/dev/fastself` na tvom Macu, `C:\dev\fastself` kod Andreja (on klonira repo, ne raspakuje zip).
+- **Folder:** `~/dev/fastself` na tvom Macu, `C:\fastself` kod Andreja (on klonira repo, ne raspakuje zip).
 - **Repo:**
   ```bash
   mkdir -p ~/dev && cd ~/dev && unzip ~/Downloads/fastself-kit.zip && cd fastself
@@ -141,11 +141,11 @@ Andrej aplikaciju vidi na **svom Android telefonu**. Isti kod, ista aplikacija (
 - Ti ručno mijenjaš kod samo za sitnice (tekst, broj, boja). Sve ostalo kroz Claude, da testovi i docs ostanu u skladu.
 - **Kako radite zajedno:** jedan GitHub repo. Svako radi na svom računaru, na svojoj grani (`t/T7-danas`), u svojoj
   Claude sesiji. Kad je zadatak gotov: push → Pull Request → drugi pogleda → merge u `main`. Svako jutro `git pull`.
-  Andrej: `git clone git@github.com:<org>/fastself.git C:\dev\fastself`, pa `pnpm install`.
+  Andrej: `git clone git@github.com:<org>/fastself.git C:\fastself`, pa `pnpm install`.
 - Nikad ne šaljete kod preko Vibera ili zip-a. Samo GitHub.
 
 ## 6. Prvi start Claude Code-a (oba, u VS Code-u)
-1. VS Code → File → Open Folder → `~/dev/fastself` (Andrej: `C:\dev\fastself`).
+1. VS Code → File → Open Folder → `~/dev/fastself` (Andrej: `C:\fastself`).
 2. Terminal → New Terminal → `claude`.
 3. Kad pita "trust this folder" → **Yes** (inače hookovi i dozvole iz `.claude/settings.json` ne rade).
 4. `/status` → mora pisati da su učitani "Project settings" i model **Sonnet**. `/agents` → vidiš 5 agenata.

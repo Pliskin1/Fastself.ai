@@ -1,0 +1,220 @@
+[
+  {
+    "id": "corba",
+    "title": "Čorba od pasulja i povrća",
+    "timeMin": 45,
+    "meals": ["rucak", "vecera", "iftar"],
+    "cats": ["mahunarke", "povrce"],
+    "ingredients": ["pasulj", "šargarepa", "crni luk", "lovorov list"],
+    "steps": [
+      "Potopljen pasulj kuvaj 30 minuta u svježoj vodi.",
+      "Dodaj sitno sjeckanu šargarepu i luk direktno u vodu.",
+      "Kuvaj još 15 minuta i začini solju, biberom i lovorom."
+    ]
+  },
+  {
+    "id": "krompir",
+    "title": "Pečeni krompir sa ruzmarinom",
+    "timeMin": 50,
+    "meals": ["rucak", "vecera"],
+    "cats": ["povrce"],
+    "ingredients": ["krompir", "ruzmarin", "so", "biber"],
+    "steps": [
+      "Isijeci krompir na kriške i osuši ga krpom.",
+      "Posoli, pobiberi i pospi ruzmarinom.",
+      "Peci 45 minuta na 210 °C na papiru za pečenje."
+    ]
+  },
+  {
+    "id": "sarma",
+    "title": "Posna sarma",
+    "timeMin": 90,
+    "meals": ["rucak", "vecera"],
+    "cats": ["povrce", "zitarice", "ulje"],
+    "ingredients": ["kiseli kupus", "pirinač", "crni luk", "aleva paprika"],
+    "steps": [
+      "Listove kiselog kupusa operi i odvoji.",
+      "Propržite luk na ulju, pa dodajte pirinač i začine.",
+      "Zavij filovane listove i kuvaj 90 minuta."
+    ]
+  },
+  {
+    "id": "salata",
+    "title": "Salata od kupusa i oraha",
+    "timeMin": 10,
+    "meals": ["rucak", "vecera"],
+    "cats": ["povrce", "orasasto"],
+    "ingredients": ["kupus", "šargarepa", "orasi", "sirće"],
+    "steps": ["Tanko naribaj kupus i šargarepu.", "Posoli i prelij sirćetom.", "Pospi grubo sjeckanim orasima."]
+  },
+  {
+    "id": "rizoto",
+    "title": "Rižoto sa pečurkama",
+    "timeMin": 35,
+    "meals": ["rucak", "vecera"],
+    "cats": ["zitarice", "povrce"],
+    "ingredients": ["pirinač", "pečurke", "crni luk", "peršun"],
+    "steps": [
+      "Luk dinstaj na malo vode, bez ulja.",
+      "Dodaj pirinač i pečurke, pa postepeno dolivaj vodu.",
+      "Kuvaj 20 minuta i pospi peršunom."
+    ]
+  },
+  {
+    "id": "sociva",
+    "title": "Čorba od sočiva sa celerom",
+    "timeMin": 35,
+    "meals": ["rucak", "vecera", "iftar"],
+    "cats": ["mahunarke", "povrce", "celer"],
+    "ingredients": ["crveno sočivo", "celer", "šargarepa", "kumin"],
+    "steps": [
+      "Sočivo isperi i stavi da se kuva u vodi.",
+      "Dodaj sjeckan celer i šargarepu.",
+      "Kuvaj 25 minuta, pa izmiksaj."
+    ]
+  },
+  {
+    "id": "prebranac",
+    "title": "Prebranac",
+    "timeMin": 60,
+    "meals": ["rucak", "vecera"],
+    "cats": ["mahunarke", "ulje"],
+    "ingredients": ["pasulj", "crni luk", "ulje", "aleva paprika"],
+    "steps": [
+      "Skuvaj pasulj dok ne omekša.",
+      "Proprži luk na ulju sa alevom paprikom.",
+      "Sve složi u posudu i zapeci 30 minuta."
+    ]
+  },
+  {
+    "id": "tjestenina",
+    "title": "Tjestenina sa paradajz sosom",
+    "timeMin": 25,
+    "meals": ["rucak", "vecera"],
+    "cats": ["zitarice", "gluten", "povrce", "ulje"],
+    "ingredients": ["tjestenina", "paradajz", "bijeli luk", "maslinovo ulje", "bosiljak"],
+    "steps": [
+      "Skuvaj tjesteninu u slanoj vodi.",
+      "Paradajz i bijeli luk prodinstaj na maslinovom ulju.",
+      "Sjedini sa tjesteninom i pospi bosiljkom."
+    ]
+  },
+  {
+    "id": "riblja",
+    "title": "Riblja čorba sa povrćem",
+    "timeMin": 40,
+    "meals": ["rucak", "vecera", "iftar"],
+    "cats": ["riba", "povrce"],
+    "ingredients": ["oslić", "krompir", "šargarepa", "peršun"],
+    "steps": [
+      "Skuvaj povrće u vodi 20 minuta.",
+      "Dodaj oslića isječenog na komade.",
+      "Kuvaj još 15 minuta i začini peršunom."
+    ]
+  },
+  {
+    "id": "piletina",
+    "title": "Piletina sa pečenim povrćem",
+    "timeMin": 45,
+    "meals": ["rucak", "vecera", "iftar"],
+    "cats": ["meso", "ulje", "povrce"],
+    "ingredients": ["piletina", "tikvica", "paprika", "maslinovo ulje"],
+    "steps": ["Piletinu i povrće isijeci na komade.", "Prelij maslinovim uljem i začini.", "Peci 40 minuta na 200 °C."]
+  },
+  {
+    "id": "ovsena",
+    "title": "Ovsena kaša sa jabukom",
+    "timeMin": 10,
+    "meals": ["dorucak", "sehur"],
+    "cats": ["zitarice", "gluten", "voce"],
+    "ingredients": ["ovsene pahuljice", "jabuka", "cimet", "voda"],
+    "steps": ["Ovsene pahuljice kuvaj u vodi 5 minuta.", "Dodaj narendanu jabuku i cimet.", "Posluži toplo."]
+  },
+  {
+    "id": "humus",
+    "title": "Humus sa povrćem i hljebom",
+    "timeMin": 15,
+    "meals": ["dorucak", "sehur", "vecera"],
+    "cats": ["mahunarke", "susam", "zitarice", "gluten", "ulje", "povrce"],
+    "ingredients": ["slanutak", "tahini", "limun", "maslinovo ulje", "hljeb"],
+    "steps": [
+      "Izmiksaj kuvani slanutak sa tahinijem i limunom.",
+      "Dodaj malo maslinovog ulja.",
+      "Posluži sa svježim povrćem i hljebom."
+    ]
+  },
+  {
+    "id": "vocna",
+    "title": "Voćna salata sa medom",
+    "timeMin": 5,
+    "meals": ["dorucak", "sehur"],
+    "cats": ["voce", "med"],
+    "ingredients": ["jabuka", "banana", "pomorandža", "med"],
+    "steps": ["Isijeci voće na kockice.", "Prelij kašikom meda.", "Posluži odmah."]
+  },
+  {
+    "id": "omlet",
+    "title": "Omlet sa sirom i paradajzom",
+    "timeMin": 10,
+    "meals": ["dorucak", "sehur"],
+    "cats": ["jaja", "mlijecno", "povrce"],
+    "ingredients": ["jaja", "sir", "paradajz"],
+    "steps": [
+      "Umuti jaja sa prstohvatom soli.",
+      "Dodaj sitno sjeckan paradajz i sir.",
+      "Peci na laganoj vatri 5 minuta."
+    ]
+  },
+  {
+    "id": "paprikas",
+    "title": "Krompir paprikaš na vodi",
+    "timeMin": 40,
+    "meals": ["rucak", "vecera"],
+    "cats": ["povrce"],
+    "ingredients": ["krompir", "crni luk", "paprika", "aleva paprika", "lovorov list"],
+    "steps": [
+      "Luk i papriku izdinstaj na malo vode.",
+      "Dodaj krompir na kockice, alevu papriku i lovor.",
+      "Nalij vodom i kuvaj 30 minuta dok se ne zgusne."
+    ]
+  },
+  {
+    "id": "oslic",
+    "title": "Oslić na žaru sa blitvom",
+    "timeMin": 30,
+    "meals": ["rucak", "vecera", "iftar"],
+    "cats": ["riba", "ulje", "povrce"],
+    "ingredients": ["oslić", "blitva", "krompir", "maslinovo ulje", "limun"],
+    "steps": [
+      "Krompir i blitvu skuvaj u slanoj vodi.",
+      "Oslića peci na žaru po 4 minuta sa svake strane.",
+      "Povrće prelij maslinovim uljem i limunom."
+    ]
+  },
+  {
+    "id": "heljda",
+    "title": "Heljda sa pečurkama i lukom",
+    "timeMin": 25,
+    "meals": ["rucak", "vecera", "sehur"],
+    "cats": ["zitarice", "povrce"],
+    "ingredients": ["heljda", "pečurke", "crni luk", "peršun"],
+    "steps": [
+      "Heljdu isperi i kuvaj 15 minuta u dvostrukoj količini vode.",
+      "Pečurke i luk izdinstaj na malo vode.",
+      "Sjedini i pospi peršunom."
+    ]
+  },
+  {
+    "id": "urme",
+    "title": "Urme i povrtna supa",
+    "timeMin": 20,
+    "meals": ["iftar"],
+    "cats": ["voce", "povrce"],
+    "ingredients": ["urme", "šargarepa", "tikvica", "crni luk"],
+    "steps": [
+      "Post prekini sa nekoliko urmi i čašom vode.",
+      "Skuvaj povrće u vodi 15 minuta i izmiksaj.",
+      "Supu posluži toplu, nakon akšama."
+    ]
+  }
+]

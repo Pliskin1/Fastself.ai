@@ -11,7 +11,17 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import Svg, { Defs, Ellipse, Path, RadialGradient, Stop, Circle } from 'react-native-svg';
-import { moonPath, skyColors, sunAltitude, type SkyColors } from '@/theme/sky';
+import {
+  CITIES,
+  horizonGlowOpacity,
+  moonPath,
+  moonPhase,
+  skyColors,
+  starsOpacity,
+  sunAltitude,
+  toDayNum,
+  type CityId,
+} from '@fastself/core';
 import { useMotion } from './useMotion';
 
 const STAR_COUNT = 54;
@@ -32,9 +42,23 @@ function makeStars(width: number) {
   }));
 }
 
-function nowHour(): number {
-  const d = new Date();
-  return d.getHours() + d.getMinutes() / 60;
+type Sky = { top: string; mid: string; bottom: string; glow: number; stars: number; phase: number; alt: number };
+
+function skyAt(now: Date, city: CityId, demoHour: number | null): Sky {
+  const n = toDayNum(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  const minutes = demoHour === null ? now.getHours() * 60 + now.getMinutes() : demoHour * 60;
+  const { lat, lng } = CITIES[city];
+  const { alt, morning } = sunAltitude(n, minutes, lat, lng);
+  const [top, mid, bottom] = skyColors(alt, morning);
+  return {
+    top,
+    mid,
+    bottom,
+    glow: horizonGlowOpacity(alt),
+    stars: starsOpacity(alt),
+    phase: moonPhase(n).phase,
+    alt,
+  };
 }
 
 type StarProps = { x: number; y: number; size: number; base: number; period: number; animate: boolean };
@@ -80,30 +104,34 @@ type Props = {
   /** Overlay used on push screens and sheets. */
   dim?: boolean;
   width?: number;
+  city?: CityId;
 };
 
-export function SkyBackground({ demoCycle = false, dim = false, width = 390 }: Props) {
+export function SkyBackground({ demoCycle = false, dim = false, width = 390, city = 'podgorica' }: Props) {
   const { reduced } = useMotion();
-  const [hour, setHour] = useState(nowHour);
+  const [tick, setTick] = useState(() => Date.now());
+  const [demoHour, setDemoHour] = useState(0);
 
   useEffect(() => {
     if (demoCycle) {
       const start = Date.now();
-      const id = setInterval(() => setHour((((Date.now() - start) / 20000) * 24) % 24), 400);
+      const id = setInterval(() => setDemoHour((((Date.now() - start) / 20000) * 24) % 24), 400);
       return () => clearInterval(id);
     }
-    const tick = () => setHour(nowHour());
-    const id = setInterval(tick, 60000);
-    const sub = AppState.addEventListener('change', (s) => s === 'active' && tick());
+    const update = () => setTick(Date.now());
+    const id = setInterval(update, 60000);
+    const sub = AppState.addEventListener('change', (st) => st === 'active' && update());
     return () => {
       clearInterval(id);
       sub.remove();
     };
   }, [demoCycle]);
 
-  const altitude = sunAltitude(hour);
-  const target = useMemo(() => skyColors(altitude), [altitude]);
-  const [layers, setLayers] = useState<{ prev: SkyColors; cur: SkyColors }>({ prev: target, cur: target });
+  const target = useMemo(
+    () => skyAt(new Date(tick), city, demoCycle ? demoHour : null),
+    [tick, city, demoCycle, demoHour],
+  );
+  const [layers, setLayers] = useState<{ prev: Sky; cur: Sky }>({ prev: target, cur: target });
   const fade = useSharedValue(1);
 
   useEffect(() => {
@@ -114,7 +142,7 @@ export function SkyBackground({ demoCycle = false, dim = false, width = 390 }: P
 
   const curStyle = useAnimatedStyle(() => ({ opacity: fade.value }));
   const stars = useMemo(() => makeStars(width), [width]);
-  const moonVisible = altitude < -4;
+  const moonVisible = target.alt < -4;
   const { prev, cur } = layers;
 
   return (
@@ -152,7 +180,7 @@ export function SkyBackground({ demoCycle = false, dim = false, width = 390 }: P
         {moonVisible ? (
           <Svg style={styles.moon} width={60} height={60} viewBox="0 0 60 60">
             <Circle cx={30} cy={30} r={29} fill="rgba(233,238,255,0.10)" />
-            <Path d={moonPath} fill="rgba(233,238,255,0.92)" />
+            <Path d={moonPath(cur.phase, 30, 30, 24)} fill="rgba(233,238,255,0.92)" />
           </Svg>
         ) : null}
       </Animated.View>
