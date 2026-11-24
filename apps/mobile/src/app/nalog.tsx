@@ -1,5 +1,5 @@
-import { StubScreen } from '@/components/StubScreen';
+import { AccountFlow } from '@/features/onboarding';
 
 export default function NalogScreen() {
-  return <StubScreen testID="screen-nalog" titleKey="nav.nalog" />;
+  return <AccountFlow mode="push" testID="screen-nalog" />;
 }

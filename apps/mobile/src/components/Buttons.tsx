@@ -10,6 +10,7 @@ import { Text } from './Text';
 
 type ButtonProps = {
   label: string;
+  tone?: 'teal';
   onPress?: () => void;
   disabled?: boolean;
   testID?: string;
@@ -39,7 +40,7 @@ export function PrimaryButton({ label, onPress, disabled, testID, style }: Butto
   );
 }
 
-export function SecondaryButton({ label, onPress, disabled, testID, style }: ButtonProps) {
+export function SecondaryButton({ label, onPress, disabled, testID, style, tone }: ButtonProps) {
   return (
     <PressScale
       accessibilityRole="button"
@@ -50,8 +51,14 @@ export function SecondaryButton({ label, onPress, disabled, testID, style }: But
       onPress={onPress}
       style={[disabled && styles.disabled, style]}
     >
-      <GlassCard radius={radius.button} contentStyle={styles.secondary}>
-        <Text variant="bodyStrong">{label}</Text>
+      <GlassCard
+        radius={radius.button}
+        style={tone === 'teal' ? styles.tealBorder : undefined}
+        contentStyle={styles.secondary}
+      >
+        <Text variant="bodyStrong" style={tone === 'teal' ? { color: color.tealInk } : undefined}>
+          {label}
+        </Text>
       </GlassCard>
     </PressScale>
   );
@@ -111,6 +118,7 @@ const styles = StyleSheet.create({
   secondary: { height: 54, alignItems: 'center', justifyContent: 'center' },
   link: { minHeight: layout.minHit, alignItems: 'center', justifyContent: 'center' },
   linkLabel: { color: color.sunLink, fontFamily: font.sansBold },
+  tealBorder: { borderColor: color.teal },
   disabled: { opacity: 0.45 },
   iconButton: { width: layout.minHit, height: layout.minHit },
   iconInner: { width: layout.minHit - 2, height: layout.minHit - 2, alignItems: 'center', justifyContent: 'center' },

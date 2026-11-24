@@ -12,6 +12,7 @@ type Props = {
   selected?: boolean;
   onPress?: () => void;
   testID?: string;
+  accessibilityLabel?: string;
 };
 
 const tint: Record<ChipVariant, { bg: string; border: string; ink: string }> = {
@@ -19,11 +20,11 @@ const tint: Record<ChipVariant, { bg: string; border: string; ink: string }> = {
   no: { bg: 'rgba(255,143,115,0.20)', border: 'rgba(255,143,115,0.45)', ink: color.emberInk },
   toggle: { bg: 'rgba(255,255,255,0.08)', border: color.glassBorder, ink: color.paper },
   add: { bg: 'transparent', border: 'rgba(255,255,255,0.3)', ink: color.sunLink },
-  remove: { bg: 'rgba(255,255,255,0.08)', border: color.glassBorder, ink: color.paper },
+  remove: { bg: 'rgba(255,143,115,0.20)', border: 'rgba(255,143,115,0.45)', ink: color.emberInk },
   readonly: { bg: 'rgba(255,255,255,0.08)', border: color.glassBorder, ink: color.mist },
 };
 
-export function Chip({ label, variant = 'readonly', selected = false, onPress, testID }: Props) {
+export function Chip({ label, variant = 'readonly', selected = false, onPress, testID, accessibilityLabel }: Props) {
   const interactive = variant !== 'readonly' && !!onPress;
   const t = variant === 'toggle' && selected ? { bg: color.sun, border: color.sun, ink: color.sunInk } : tint[variant];
   const body = (
@@ -39,7 +40,7 @@ export function Chip({ label, variant = 'readonly', selected = false, onPress, t
   );
   if (!interactive) {
     return (
-      <View accessible accessibilityLabel={label} testID={testID}>
+      <View accessible accessibilityLabel={accessibilityLabel ?? label} testID={testID}>
         {body}
       </View>
     );
@@ -47,7 +48,7 @@ export function Chip({ label, variant = 'readonly', selected = false, onPress, t
   return (
     <Pressable
       accessibilityRole={variant === 'toggle' ? 'checkbox' : 'button'}
-      accessibilityLabel={label}
+      accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={variant === 'toggle' ? { checked: selected } : undefined}
       testID={testID}
       onPress={() => {

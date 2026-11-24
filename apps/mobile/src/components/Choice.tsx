@@ -15,11 +15,12 @@ type Props = {
   description?: string;
   checked: boolean;
   disabled?: boolean;
+  role?: 'radio' | 'checkbox';
   onPress?: () => void;
   testID?: string;
 };
 
-export function Choice({ title, description, checked, disabled, onPress, testID }: Props) {
+export function Choice({ title, description, checked, disabled, role = 'radio', onPress, testID }: Props) {
   const { reduced } = useMotion();
   const scale = useSharedValue(checked ? 1 : 0.0001);
   useEffect(() => {
@@ -30,7 +31,7 @@ export function Choice({ title, description, checked, disabled, onPress, testID 
 
   return (
     <Pressable
-      accessibilityRole="radio"
+      accessibilityRole={role}
       accessibilityLabel={description ? `${title}. ${description}` : title}
       accessibilityState={{ checked, disabled: !!disabled }}
       disabled={disabled}
