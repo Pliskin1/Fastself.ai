@@ -1,4 +1,4 @@
-import type { Settings } from '@fastself/core';
+import type { Reminders, Settings } from '@fastself/core';
 
 export type SqlValue = string | number | null;
 
@@ -16,5 +16,8 @@ export interface Db {
   transaction<T>(fn: () => T): T;
 }
 
-/** Core settings plus the app-only onboarding flag. It is assignable to core `Settings`. */
-export type AppSettings = Settings & { onboarded: boolean };
+/**
+ * Core settings plus the app-only parts: the onboarding flag and the reminder switches (local only, never synced).
+ * It is assignable to core `Settings`.
+ */
+export type AppSettings = Settings & { onboarded: boolean; reminders: Reminders };

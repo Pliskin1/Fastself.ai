@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS, toDayNum } from '@fastself/core';
+import { DEFAULT_REMINDERS, DEFAULT_SETTINGS, toDayNum } from '@fastself/core';
 import { router } from 'expo-router';
 import { consents, fastingSessions } from '@/db/repo';
 import { freezeClock, nowMs, setDevClock } from '@/lib/clock';
@@ -40,7 +40,7 @@ describe('applyDevLink', () => {
 
     await applyDevLink('fastself://dev?reset=1');
 
-    expect(getSettings()).toEqual({ ...DEFAULT_SETTINGS, onboarded: false });
+    expect(getSettings()).toEqual({ ...DEFAULT_SETTINGS, onboarded: false, reminders: DEFAULT_REMINDERS });
     expect(consents.get('ai')).toBe(false);
     expect(fastingSessions.current()).toBeNull();
     expect(replace).toHaveBeenCalledWith('/');
@@ -57,7 +57,13 @@ describe('applyDevLink', () => {
 
     await applyDevLink(`fastself://dev?preset=${id}`);
 
-    expect(getSettings()).toEqual({ ...DEFAULT_SETTINGS, practices, ifPlan, onboarded: true });
+    expect(getSettings()).toEqual({
+      ...DEFAULT_SETTINGS,
+      practices,
+      ifPlan,
+      onboarded: true,
+      reminders: DEFAULT_REMINDERS,
+    });
     expect(replace).toHaveBeenCalledWith('/');
   });
 
@@ -114,6 +120,7 @@ describe('applyDevLink', () => {
       ...DEFAULT_SETTINGS,
       practices: { orthodox: true, ramadan: false, nafila: false, ifOn: true },
       onboarded: true,
+      reminders: DEFAULT_REMINDERS,
     });
     expect(nowMs()).toBe(at('2026-12-02T16:30'));
     expect(replace).toHaveBeenCalledTimes(1);
