@@ -1,1 +1,19 @@
-export default {} as Record<string, string>;
+export default {
+  'report.title': 'Šta nije u redu?',
+  'report.type.group': 'Vrsta greške',
+  'report.type.rule': 'Pogrešno pravilo',
+  'report.type.time': 'Pogrešno vrijeme',
+  'report.type.recipe': 'Problem sa receptom',
+  'report.type.other': 'Nešto drugo',
+  'report.context': 'Odnosi se na: {value}',
+  'report.context.general': 'Opšta prijava',
+  'report.context.danas': 'ekran Danas',
+  'report.context.kalendar': 'ekran Kalendar',
+  'report.context.profil': 'ekran Profil',
+  'report.context.asistent': 'Asistent',
+  'report.input.label': 'Opis',
+  'report.input.placeholder': 'Opiši ukratko šta si očekivao',
+  'report.note': 'Šaljemo samo ovaj opis, datum i verziju pravila. Bez imena i lokacije.',
+  'report.send': 'Pošalji prijavu',
+  'report.sent': 'Prijava je poslata. Hvala.',
+} as Record<string, string>;
