@@ -51,7 +51,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T2 core port | done | t/T2-core-port | merged (PR #4); rule packs: orthodox (svetosavlje.org), islamic (Diyanet-based); izcg calibrated (D-13) |
 | T4 local DB + hooks | done | t/T4-local-db-hooks | merged (PR #5); Android restart check passed (SM-S931B, Android 17); adds zustand + expo-crypto (rebuild the dev build) |
 | T9 schema + RLS | done | t/T9-schema-rls | pushed, PR in review; config is supabase/config.jsonc (CLI 3.4, not config.toml); explicit grants, anon gets 401 on user tables |
-| T10 edge functions + report sheet | code done | t/T10-edge-functions | committed locally, not pushed; phone check of the sheet pending; Anthropic request sends no temperature (haiku-5-5 answers 400), API.md §5 still lists it |
+| T10 edge functions + report sheet | done | t/T10-edge-functions | committed locally, not pushed; phone check passed (SM-S931B); Anthropic request sends no temperature (haiku-5-5 answers 400), API.md §5 still lists it |
 | T15 notifications | todo | | |
 | T14 lib/api + mock | todo | | |
 | T11 Plan tab + kupovina | todo | | |
@@ -66,9 +66,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: T10 code done on branch t/T10-edge-functions (local commit, not pushed); phone check of the report sheet, then PR; next T15.
+- Now: T10 done on branch t/T10-edge-functions (local commits, not pushed); next: push + PR, deploy to dev, T15.
 - Waiting for D: nothing.
 - Log:
+  - 2026-11-25 10:02 | T10 | report sent from SM-S931B (Android 17) to local Supabase: 201, row saved with type, day, context, rule pack 0.1, app 1.0.0, no user id | push, PR (the phone needs `adb reverse tcp:54321 tcp:54321`; the forward dropped several times during the check)
   - 2026-11-25 09:40 | T10 | meal-suggest + health, public.bump_ai_usage (definer, service role only), report sheet + sendReport; pgTAP 184, deno 31, jest report 10 + api 14; serve + curl on local: 21st call 429, report insert 201 | phone check, PR, deploy to dev, T15 (serve needs a scratch env file: the bash hook blocks any command naming supabase/.env.local)
   - 2026-11-24 23:44 | T9 | 2 migrations (schema, RLS, grants; rule_packs seed), 6 pgTAP files 173 tests, db reset + test db + /verify green; real signup and anon/user REST calls checked on local | PR review and merge, T10 (insert reports without .select(); private.ai_usage is not reachable through the API)
   - 2026-11-24 15:42 | T4 | on SM-S931B (Android 17) settings, AI consent and a running fast survive a force-stop; wipe keeps install id | T9
