@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react-native';
 import type { ComponentType } from 'react';
 import { withProviders } from '@/test/utils';
+
+jest.mock('@/features/profil/useConsent', () => ({ useConsent: () => [false, () => undefined] }));
 import R0 from '@/app/(onboarding)/welcome';
 import R1 from '@/app/(onboarding)/prakse';
 import R2 from '@/app/(onboarding)/alergije';

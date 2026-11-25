@@ -1,13 +1,14 @@
 import { router } from 'expo-router';
-import { Display, PrimaryButton, ScreenScroll, useToast } from '@/components';
+import { PrimaryButton, ScreenScroll, useToast } from '@/components';
 import { t } from '@/copy/sr';
+import { ScreenHeader } from '@/features/profil/ScreenHeader';
 import { AlergijePicker } from '@/features/onboarding';
 
 export default function AlergijeScreen() {
   const toast = useToast();
   return (
     <ScreenScroll testID="screen-alergije" contentStyle={{ paddingTop: 12 }} keyboardShouldPersistTaps="handled">
-      <Display>{t('alergije.title')}</Display>
+      <ScreenHeader title={t('alergije.title')} />
       <AlergijePicker />
       <PrimaryButton
         testID="btn-save"

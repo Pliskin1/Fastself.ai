@@ -30,7 +30,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T6 onboarding | done | t/T6-onboarding | maestro 01 needs T7 for last assert |
 | T7 Danas | done | t/T7-danas | IF streak complication and sync state deferred |
 | T8 Kalendar | todo | | |
-| T13 Profil + pushed screens | todo | | |
+| T13 Profil + pushed screens | done | t/T13-profil | not pushed; policy URL and support email are placeholders |
 | T12 Tajmer | todo | | |
 | T14 Asistent UI | todo | | |
 | T17 auth UI | todo | | |
