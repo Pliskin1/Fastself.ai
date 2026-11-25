@@ -65,8 +65,8 @@ export function ShoppingSheet() {
 }
 
 const styles = StyleSheet.create({
-  // Same solid-ish sheet background as the report sheet, so Android shows a readable sheet.
-  fill: { flex: 1, backgroundColor: 'rgba(11,13,36,0.96)' },
+  // Opaque on purpose: the route background is transparent, and at 0.96 the screen behind ghosted through on Android.
+  fill: { flex: 1, backgroundColor: color.ink },
   title: { fontSize: 30, lineHeight: 34 },
   list: { gap: 2 },
   row: { minHeight: layout.minHit, flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 8 },
