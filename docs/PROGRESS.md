@@ -54,7 +54,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T10 edge functions + report sheet | done | t/T10-edge-functions | merged (PR #14); phone check passed (SM-S931B); Anthropic request sends no temperature (haiku-5-5 answers 400), API.md §5 still lists it |
 | T15 notifications | done | t/T15-notifications | merged (PR #15); Android check passed (SM-S931B); adds `settings.reminders` (kv, local only); needs D's one-line `startNotificationSync()` call in `_layout.tsx` |
 | T14 lib/api + mock | done | t/T14-api-mock | merged (PR #17); `@supabase/supabase-js` is on main (PR #16, run `pnpm install`); mock is on with `EXPO_PUBLIC_API_MOCK=1` in dev builds only; emulator check passed (app starts, report 201); the four api calls have not run on a device, not checked on SM-S931B |
-| T11 Plan tab + kupovina | built | t/T11-plan-kupovina | /verify green; not checked on the phone, not pushed; Jelovnik card behind `flags.mealPlan` (`src/features/plan/flags.ts`, on in dev builds only) |
+| T11 Plan tab + kupovina | done | t/T11-plan-kupovina | pushed, PR not opened yet; phone check passed (SM-S931B) for Plan 7/30, the consent gate and the kupovina sheet; the meal plan run and the checklist rows are not checked on a device (AI consent cannot be granted until ai-pristanak is built); Jelovnik card behind `flags.mealPlan` (`src/features/plan/flags.ts`, on in dev builds only) |
 | T16 spec document (due Thu 26 Nov) | todo | | |
 | legal pages (fastself-site) | todo | | |
 | T17 auth backend | todo | | |
@@ -66,9 +66,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: T11 Plan tab + kupovina built on branch t/T11-plan-kupovina (/verify green; phone check and push pending); T14 merged (PR #17); next: T16 spec.
+- Now: T11 Plan tab + kupovina done on branch t/T11-plan-kupovina (pushed, phone check passed, PR to open); T14 merged (PR #17); next: T16 spec.
 - Waiting for D: nothing.
 - Log:
+  - 2026-11-25 16:40 | T11 | on SM-S931B (Android 17), dev clock 2.12.2026: Plan 7 and 30 days look right (header, bar and stats, timeline line and glow); the Jelovnik button opens the consent sheet while consent is off; the kupovina sheet ghosted the screen behind at 0.96 alpha, now opaque (color.ink) | open the PR, T16 (not checked on a device: the meal plan run, meal lines and checklist rows, they need AI consent; prijava-greske has the same 0.96 background, one-line fix for T23; Android sheets have square corners and no grabber, SHEET in _layout.tsx)
   - 2026-11-25 15:35 | T11 | Plan tab (7/30, stacked bar + stats, timeline with Ramadan, IF and slava lines), Jelovnik card behind flags.mealPlan (consent, mealPlan(), device validateRecipe, stored in meal_plans), kupovina sheet (ticks in shopping_checks); jest plan 26, app 343, typecheck, lint green | Android phone check, push, PR, T16 (storage lives in src/features/plan/storage.ts, move to src/db/repo with T18; the consent round trip cannot be checked until D builds ai-pristanak: Plan runs the pending action on focus once consents 'ai' is on)
   - 2026-11-25 15:35 | T11 | ZAHTJEV ZA D: a Ramadan (sun) tone on Pill (Timeline has a local gold pill), a token for the "bez posta" segment (level.mrsno.hex is used, brighter than the prototype), and these new keys in COPY.md: plan.stat.ramadan, plan.stat.free, plan.days.label, plan.meal.line, plan.meal.name.*, plan.meal.error.rate, plan.meal.error.server, plan.line.ifInside, plan.line.nafila, plan.line.slava | D's answer
   - 2026-11-25 | T14 | emulator check on merged main 8e4fa22 (AVD Medium_Phone_API_37.0): app starts on Danas, no JS errors in the app log, the report sheet sent a report to local Supabase and got 201 with adb reverse; suggestMeals, mealPlan, appleToken, deleteAccount have not run on a device, and it was not the SM-S931B | T11 (on Android the prijava-greske sheet is see-through, the Danas text shows behind the form: T23 candidate; kupovina uses the same background, check it too)
