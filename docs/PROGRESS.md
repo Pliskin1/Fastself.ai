@@ -52,8 +52,8 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T4 local DB + hooks | done | t/T4-local-db-hooks | merged (PR #5); Android restart check passed (SM-S931B, Android 17); adds zustand + expo-crypto (rebuild the dev build) |
 | T9 schema + RLS | done | t/T9-schema-rls | pushed, PR in review; config is supabase/config.jsonc (CLI 3.4, not config.toml); explicit grants, anon gets 401 on user tables |
 | T10 edge functions + report sheet | done | t/T10-edge-functions | merged (PR #14); phone check passed (SM-S931B); Anthropic request sends no temperature (haiku-5-5 answers 400), API.md §5 still lists it |
-| T15 notifications | done | t/T15-notifications | pushed, PR in review; Android check passed (SM-S931B); adds `settings.reminders` (kv, local only); needs D's one-line `startNotificationSync()` call in `_layout.tsx` |
-| T14 lib/api + mock | todo | | |
+| T15 notifications | done | t/T15-notifications | merged (PR #15); Android check passed (SM-S931B); adds `settings.reminders` (kv, local only); needs D's one-line `startNotificationSync()` call in `_layout.tsx` |
+| T14 lib/api + mock | done | t/T14-api-mock | not pushed; stacked on t/chore-add-supabase-js (adds `@supabase/supabase-js`, merge that PR first); mock is on with `EXPO_PUBLIC_API_MOCK=1` in dev builds only; not checked on the phone |
 | T11 Plan tab + kupovina | todo | | |
 | T16 spec document (due Thu 26 Nov) | todo | | |
 | legal pages (fastself-site) | todo | | |
@@ -66,9 +66,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: T15 done on branch t/T15-notifications (pushed, PR in review); next: T14 api + mock.
+- Now: T14 lib/api done on branch t/T14-api-mock (not pushed); next: T11 Plan tab.
 - Waiting for D: nothing.
 - Log:
+  - 2026-11-25 12:11 | T14 | lib/api: suggestMeals, mealPlan, appleToken, deleteAccount through the Supabase client (30 s timeout), getSupabase() (null without env), api.mock (3 passing recipes + 1 with a forbidden food); jest lib 146, app 317, typecheck, lint, android export green | push both branches, 2 PRs (dependency first), T11 (suggestMeals takes { forbidden, avoid, meal, ingredients } and adds locale, install id and rule pack version itself; meal-plan, apple-token and delete-account are not on the server yet and answer 'server'; T10 functions are still not deployed to dev; settings.customAvoid has no shape limit but meal-suggest takes only letters and spaces, 30 chars, 10 words, so other words answer 'invalid')
   - 2026-11-25 11:20 | T15 | on SM-S931B (Android 17): test notification arrived on channel podsjetnici; after "Zakaži ponovo" /dev lists 6 evening reminders (26.11–1.12 at 20:00, Orthodox only on the phone); IF window and Ramadan reminders not checked on the phone | PR review, T14 api (the dev screen opens only through `fastself://dev`; nothing reschedules by itself until D adds startNotificationSync())
   - 2026-11-25 10:48 | T15 | core planNotifications (7 days, max 60) + src/notifications (scheduleIfEnd, cancelIfEnd, rescheduleAll, sendTestNotification, listScheduled, startNotificationSync), reminder switches in settings.reminders, /dev section; core 473, jest 220, typecheck, lint green | Android check, push, PR, T14 api (ZAHTJEV ZA D: call startNotificationSync() once in _layout.tsx; Profil switches read and write settings.reminders)
   - 2026-11-25 10:02 | T10 | report sent from SM-S931B (Android 17) to local Supabase: 201, row saved with type, day, context, rule pack 0.1, app 1.0.0, no user id | push, PR (the phone needs `adb reverse tcp:54321 tcp:54321`; the forward dropped several times during the check)
