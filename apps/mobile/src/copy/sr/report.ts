@@ -10,7 +10,7 @@ export default {
   'report.context.danas': 'ekran Danas',
   'report.context.kalendar': 'ekran Kalendar',
   'report.context.profil': 'ekran Profil',
-  'report.context.asistent': 'Asistent',
+  'report.context.recipe': 'recept',
   'report.input.label': 'Opis',
   'report.input.placeholder': 'Opiši ukratko šta si očekivao',
   'report.note': 'Šaljemo samo ovaj opis, datum i verziju pravila. Bez imena i lokacije.',

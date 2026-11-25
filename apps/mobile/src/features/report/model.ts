@@ -23,9 +23,13 @@ export function buildReport(args: {
   text: string;
   date?: string;
   context?: string;
+  recipeId?: string;
   appVersion: string;
 }): ReportInput {
-  const context = args.context?.trim().slice(0, MAX_CONTEXT) ?? '';
+  const base = args.context?.trim() ?? '';
+  const recipeId = args.recipeId?.trim();
+  // reports has no recipe column, so the id travels in the context: "recipe:<id>".
+  const context = (base === 'recipe' && recipeId ? `recipe:${recipeId}` : base).slice(0, MAX_CONTEXT);
   return {
     type: args.type,
     day: validDay(args.date),

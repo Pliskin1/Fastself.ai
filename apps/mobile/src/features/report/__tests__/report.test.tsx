@@ -18,7 +18,7 @@ const send = sendReport as jest.MockedFunction<typeof sendReport>;
 const NOW = at('2026-12-02T16:30');
 const SENT = 'Prijava je poslata. Hvala.';
 
-const renderForm = (props: { date?: string; context?: string } = {}) =>
+const renderForm = (props: { date?: string; context?: string; recipeId?: string } = {}) =>
   render(withProviders(<ReportForm {...props} />, { now: NOW }));
 
 const sendButton = () => screen.getByTestId('btn-send-report');
@@ -87,6 +87,24 @@ describe('prijava greske sheet', () => {
     await fireEvent.press(sendButton());
     expect(send.mock.calls[0]?.[0]).toMatchObject({ type: 'drugo', day: null, context: null });
     expect(screen.queryByText(/Odnosi se na: .*februar/)).toBeNull();
+  });
+
+  it('opened from a recipe: the recipe type is chosen, the line says so and the id travels in the context', async () => {
+    await renderForm({ date: '2026-12-02', context: 'recipe', recipeId: 'corba' });
+    expect(screen.getByText('Odnosi se na: Srijeda, 2. decembar, recept')).toBeTruthy();
+    expect(screen.getByTestId('chip-report-recept').props.accessibilityState.selected).toBe(true);
+    await fireEvent.changeText(screen.getByTestId('input-report'), 'Recept sadrži ulje');
+    await fireEvent.press(sendButton());
+    expect(send.mock.calls[0]?.[0]).toMatchObject({ type: 'recept', day: '2026-12-02', context: 'recipe:corba' });
+  });
+
+  it('shows the known entry points by name and never a raw context value', async () => {
+    const view = await renderForm({ context: 'kalendar' });
+    expect(screen.getByText('Odnosi se na: ekran Kalendar')).toBeTruthy();
+    await view.unmount();
+    await renderForm({ context: 'nepoznato' });
+    expect(screen.getByText('Odnosi se na: Opšta prijava')).toBeTruthy();
+    expect(screen.queryByText(/nepoznato/)).toBeNull();
   });
 
   it('cuts the context to 200 characters', async () => {

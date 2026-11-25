@@ -19,9 +19,10 @@ import { sendReport, type ReportType } from '@/lib/api';
 import { color, layout, radius } from '@/theme/tokens';
 import { buildReport, canSend, MAX_LENGTH, REPORT_TYPES, validDay } from './model';
 
-type Props = { date?: string; context?: string };
+// The entry point contract (docs/team/ANDREJ.md): context is one of these, and 'recipe' may come with a recipeId.
+type Props = { date?: string; context?: string; recipeId?: string };
 
-const KNOWN_CONTEXTS = ['danas', 'kalendar', 'profil', 'asistent'];
+const KNOWN_CONTEXTS = ['danas', 'kalendar', 'profil', 'recipe'];
 
 function contextLine(date?: string, context?: string): string {
   const parts: string[] = [];
@@ -29,13 +30,15 @@ function contextLine(date?: string, context?: string): string {
   const n = day ? parseIsoDate(day) : null;
   if (n !== null) parts.push(longDate(n));
   const ctx = context?.trim();
-  if (ctx) parts.push(KNOWN_CONTEXTS.includes(ctx) ? t(`report.context.${ctx}`) : ctx);
+  // An unknown context is still sent, but a raw slug is never shown.
+  if (ctx && KNOWN_CONTEXTS.includes(ctx)) parts.push(t(`report.context.${ctx}`));
   return t('report.context', { value: parts.length > 0 ? parts.join(', ') : t('report.context.general') });
 }
 
-export function ReportForm({ date, context }: Props) {
+export function ReportForm({ date, context, recipeId }: Props) {
   const toast = useToast();
-  const [type, setType] = useState<ReportType | null>(null);
+  // Coming from a recipe, the recipe type is already chosen; the user can still change it.
+  const [type, setType] = useState<ReportType | null>(context === 'recipe' ? 'recept' : null);
   const [text, setText] = useState('');
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -53,7 +56,7 @@ export function ReportForm({ date, context }: Props) {
     setPending(true);
     setFailed(false);
     const result = await sendReport(
-      buildReport({ type, text, date, context, appVersion: Constants.expoConfig?.version ?? '' }),
+      buildReport({ type, text, date, context, recipeId, appVersion: Constants.expoConfig?.version ?? '' }),
     );
     if (!mounted.current) {
       if (result.ok) toast.show(t('report.sent'));
