@@ -32,7 +32,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T7 Danas | done | t/T7-danas | IF streak complication and sync state deferred |
 | T8 Kalendar | done | t/T8-kalendar | not pushed; Maestro 03 file does not exist in repo |
 | T13 Profil + pushed screens | todo | | |
-| T12 Tajmer | todo | | |
+| T12 Tajmer | done | t/T12-tajmer | not pushed; digit cells duplicated from DayDial |
 | T14 Asistent UI | todo | | |
 | T17 auth UI | todo | | |
 | T20 motion | todo | | |
