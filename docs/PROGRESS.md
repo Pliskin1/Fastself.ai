@@ -11,9 +11,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 - Schedules: docs/team/DANILO.md, docs/team/ANDREJ.md.
 
 ## D (Danilo): now and log
-- Now: T7 done on branch t/T7-danas (stacked on T6, not pushed). Next: T8.
+- Now: T8 done on branch t/T8-kalendar (off main, not pushed). Next: T13.
 - Waiting for A: nothing.
 - Log:
+  - 2026-11-25 | T8 | Kalendar: month grid with orbs, today/selected/slava/nafila marks, month slide across years, day card, report; typecheck, lint, test:app 326, expo export ok | simulator check, push, T13
   - 2026-11-24 | T7 | Danas: dial, plate, receipt, izuzetak sheet, Ramadan/vaktija/nafila/slava cards, week strip; typecheck, lint, test:app 165, expo export ok | simulator + Maestro 01 check, push, T8
   - 2026-11-24 | T6 | 6 onboarding screens, PraksePicker, AlergijePicker, flow tests; typecheck, lint, test:app 150, expo export ok | simulator + Maestro check, push, T7
   - 2026-11-24 | T5 | 22 route stubs, NativeTabs sf+md, sheets, dev link listener, root layout (fonts, sky, toast); typecheck, lint, test:app 138, expo export ok | push, T6. Tab screens must use <ScreenScroll sky> (native tab container hides the root sky)
@@ -29,7 +30,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T5 navigation + route stubs | done | t/T5-navigation | simulator checked, not pushed |
 | T6 onboarding | done | t/T6-onboarding | maestro 01 needs T7 for last assert |
 | T7 Danas | done | t/T7-danas | IF streak complication and sync state deferred |
-| T8 Kalendar | todo | | |
+| T8 Kalendar | done | t/T8-kalendar | not pushed; Maestro 03 file does not exist in repo |
 | T13 Profil + pushed screens | todo | | |
 | T12 Tajmer | todo | | |
 | T14 Asistent UI | todo | | |
