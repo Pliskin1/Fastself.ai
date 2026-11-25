@@ -9,3 +9,4 @@ export * from './prayer';
 export * from './plan';
 export * from './meals';
 export * from './slava';
+export * from './notifications';

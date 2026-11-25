@@ -255,3 +255,23 @@ export interface SunPosition {
   alt: number;
   morning: boolean;
 }
+
+// ---- Notifications ----
+export interface Reminders {
+  evening: boolean;
+  ramadan: boolean;
+  window: boolean;
+  ifEnd: boolean;
+}
+export type ReminderKind = 'eve' | 'nafila' | 'sehur' | 'iftar' | 'windowOpen' | 'windowClose';
+export interface PlannedNotification {
+  /** `plan:<kind>:<n>` */
+  id: string;
+  /** Epoch ms when it fires. */
+  at: number;
+  kind: ReminderKind;
+  /** Podgorica day it fires on. */
+  n: DayNum;
+  /** Values for the copy template of this kind. */
+  params: Record<string, string>;
+}
