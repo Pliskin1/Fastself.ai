@@ -465,6 +465,11 @@
     // },
   },
 
+  "functions": {
+    // Public so a plain curl (and the keepalive cron) works without a key.
+    "health": { "verify_jwt": false },
+  },
+
   "analytics": {
     "enabled": true,
     "port": 54327,

@@ -1,5 +1,7 @@
-import { StubScreen } from '@/components/StubScreen';
+import { useLocalSearchParams } from 'expo-router';
+import { ReportForm } from '@/features/report/ReportForm';
 
 export default function PrijavaGreskeScreen() {
-  return <StubScreen testID="screen-prijava-greske" titleKey="nav.prijavaGreske" />;
+  const { date, context, recipeId } = useLocalSearchParams<{ date?: string; context?: string; recipeId?: string }>();
+  return <ReportForm date={date} context={context} recipeId={recipeId} />;
 }
