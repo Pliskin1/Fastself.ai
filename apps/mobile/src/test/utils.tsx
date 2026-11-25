@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS } from '@fastself/core';
+import { DEFAULT_REMINDERS, DEFAULT_SETTINGS } from '@fastself/core';
 import type { Practices, Settings } from '@fastself/core';
 import type { ReactElement } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -40,7 +40,14 @@ export function fixtureSettings(patch: FixturePatch = {}): AppSettings {
   if (ramadan !== undefined) merged.ramadan = ramadan;
   if (nafila !== undefined) merged.nafila = nafila;
   if (ifOn !== undefined) merged.ifOn = ifOn;
-  return { ...DEFAULT_SETTINGS, prayerMethod: 'mwl', onboarded: true, ...rest, practices: merged };
+  return {
+    ...DEFAULT_SETTINGS,
+    prayerMethod: 'mwl',
+    onboarded: true,
+    reminders: { ...DEFAULT_REMINDERS },
+    ...rest,
+    practices: merged,
+  };
 }
 
 /**

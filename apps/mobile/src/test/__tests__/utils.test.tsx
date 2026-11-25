@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS, toDayNum } from '@fastself/core';
+import { DEFAULT_REMINDERS, DEFAULT_SETTINGS, toDayNum } from '@fastself/core';
 import { render, screen } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { getDb } from '@/db';
@@ -43,7 +43,12 @@ describe('at', () => {
 
 describe('fixtureSettings', () => {
   it('defaults to the conditions of the golden tables: onboarded, Podgorica, MWL, offsets 0, no practices', () => {
-    expect(fixtureSettings()).toEqual({ ...DEFAULT_SETTINGS, prayerMethod: 'mwl', onboarded: true });
+    expect(fixtureSettings()).toEqual({
+      ...DEFAULT_SETTINGS,
+      prayerMethod: 'mwl',
+      onboarded: true,
+      reminders: DEFAULT_REMINDERS,
+    });
   });
 
   it('takes practice flags at the top level and any other setting as it is', () => {
@@ -99,6 +104,6 @@ describe('withProviders', () => {
 
   it('accepts plain core settings and treats them as onboarded', () => {
     withProviders(<Probe />, { settings: { ...DEFAULT_SETTINGS, city: 'bar' } });
-    expect(getSettings()).toEqual({ ...DEFAULT_SETTINGS, city: 'bar', onboarded: true });
+    expect(getSettings()).toEqual({ ...DEFAULT_SETTINGS, city: 'bar', onboarded: true, reminders: DEFAULT_REMINDERS });
   });
 });

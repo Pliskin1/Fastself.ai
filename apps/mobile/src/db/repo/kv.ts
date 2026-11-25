@@ -4,6 +4,7 @@ import type { Db } from '../types';
 export type KvKey =
   | 'settings'
   | 'onboarded'
+  | 'reminders'
   | 'install_id'
   | 'consent_ai'
   | 'consent_sync_practices'

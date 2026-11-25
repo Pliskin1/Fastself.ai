@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS, isoDate, localFromEpoch, parseIsoDate } from '@fastself/core';
+import { DEFAULT_REMINDERS, DEFAULT_SETTINGS, isoDate, localFromEpoch, parseIsoDate } from '@fastself/core';
 import { router, type Href } from 'expo-router';
 import type { AppSettings } from '@/db/types';
 import { resetLocalData, updateSettings } from '@/store/settings';
@@ -52,7 +52,7 @@ export async function applyDevLink(url: string): Promise<void> {
 
   // A preset is a complete known state: defaults (city Podgorica, no allergies) plus its practices, onboarded.
   const preset = PRESETS.get(params.get('preset') ?? '');
-  if (preset) updateSettings({ ...DEFAULT_SETTINGS, ...preset, onboarded: true });
+  if (preset) updateSettings({ ...DEFAULT_SETTINGS, reminders: DEFAULT_REMINDERS, ...preset, onboarded: true });
 
   const date = params.get('date');
   const time = params.get('time');

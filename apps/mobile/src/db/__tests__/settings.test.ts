@@ -1,8 +1,8 @@
-import { DEFAULT_SETTINGS, toDayNum } from '@fastself/core';
+import { DEFAULT_REMINDERS, DEFAULT_SETTINGS, toDayNum } from '@fastself/core';
 import { setDb } from '@/db';
 import { kvGet, kvSet } from '@/db/repo/kv';
 import type { AppSettings, Db } from '@/db/types';
-import { getSettings, rehydrateSettings, updateSettings } from '@/store/settings';
+import { getSettings, rehydrateSettings, resetLocalData, updateSettings } from '@/store/settings';
 import { installTestDb } from '@/test/utils';
 
 const DEC_2 = toDayNum(2026, 12, 2);
@@ -26,6 +26,7 @@ const FULL: AppSettings = {
   exceptions: { [DEC_2]: 'zdravlje', [FEB_8]: 'putovanje' },
   nafilaDays: { [NOV_30]: true },
   onboarded: true,
+  reminders: { evening: false, ramadan: true, window: false, ifEnd: true },
 };
 
 /** An app restart: memory is gone, the same database is opened and read again. */
@@ -40,7 +41,29 @@ const rows = <T>(db: Db, sql: string): T[] => db.all<T>(sql);
 describe('settings persistence', () => {
   it('a fresh install has the default settings and is not onboarded', () => {
     installTestDb();
-    expect(getSettings()).toEqual({ ...DEFAULT_SETTINGS, onboarded: false });
+    expect(getSettings()).toEqual({ ...DEFAULT_SETTINGS, onboarded: false, reminders: DEFAULT_REMINDERS });
+  });
+
+  it('the reminder switches are stored on the phone and survive a restart', () => {
+    const db = installTestDb();
+    updateSettings({ reminders: { ...DEFAULT_REMINDERS, evening: false } });
+    expect(JSON.parse(kvGet(db, 'reminders') ?? '{}')).toEqual({ ...DEFAULT_REMINDERS, evening: false });
+    expect(restart(db).reminders).toEqual({ ...DEFAULT_REMINDERS, evening: false });
+  });
+
+  it('broken or partial stored reminder switches fall back to on', () => {
+    const db = installTestDb();
+    kvSet(db, 'reminders', '{oops');
+    expect(restart(db).reminders).toEqual(DEFAULT_REMINDERS);
+    kvSet(db, 'reminders', '{"window":false,"ifEnd":"no"}');
+    expect(restart(db).reminders).toEqual({ ...DEFAULT_REMINDERS, window: false });
+  });
+
+  it('wiping the phone turns every reminder switch back on', () => {
+    installTestDb();
+    updateSettings({ reminders: { evening: false, ramadan: false, window: false, ifEnd: false } });
+    resetLocalData();
+    expect(getSettings().reminders).toEqual(DEFAULT_REMINDERS);
   });
 
   it('every field survives an app restart', () => {
@@ -171,6 +194,7 @@ describe('settings persistence', () => {
       ...DEFAULT_SETTINGS,
       practices: { ...DEFAULT_SETTINGS.practices, orthodox: true, ifOn: true },
       onboarded: false,
+      reminders: DEFAULT_REMINDERS,
     });
 
     kvSet(db, 'settings', '{"city":"atlantida","prayerMethod":"mwl","offsets":"x","ramadanShift":1}');

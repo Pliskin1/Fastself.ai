@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS, SettingsSchema, isoDate, parseIsoDate } from '@fastself/core';
+import { DEFAULT_SETTINGS, SettingsSchema, isoDate, parseIsoDate, parseReminders } from '@fastself/core';
 import type { AllergenId, DayNum, ExceptionReason, Settings } from '@fastself/core';
 import { newId } from '../ids';
 import { enqueue } from '../outbox';
@@ -8,6 +8,7 @@ import { kvGet, kvSet } from './kv';
 // Where each part of Settings lives (docs/DATABASE.md §1). Every field has exactly one home:
 //   kv 'settings'   city, prayerMethod, offsets, ramadanShift (the profile part)
 //   kv 'onboarded'  onboarded
+//   kv 'reminders'  the reminder switches (local only, never synced)
 //   practices       one row per practice: orthodox {strictness, slavaId}, ramadan, nafila, if {ifPlan}
 //   allergies       allergen ids, custom avoid words and diets (kind = allergen | custom | diet)
 //   day_marks       exceptions (with the local-only reason) and chosen nafila days
@@ -159,7 +160,11 @@ export function loadSettings(db: Db): AppSettings {
 
   raw.minor = db.first<{ value: number }>("SELECT value FROM safety WHERE key = 'minor'")?.value === 1;
 
-  return { ...sanitize(raw), onboarded: kvGet(db, 'onboarded') === '1' };
+  return {
+    ...sanitize(raw),
+    onboarded: kvGet(db, 'onboarded') === '1',
+    reminders: parseReminders(parseObject(kvGet(db, 'reminders'))),
+  };
 }
 
 /**
@@ -172,6 +177,7 @@ export function saveSettings(db: Db, prev: AppSettings, next: AppSettings): void
 
     if (!same(profileOf(prev), profileOf(next))) kvSet(db, 'settings', JSON.stringify(profileOf(next)));
     if (prev.onboarded !== next.onboarded) kvSet(db, 'onboarded', next.onboarded ? '1' : '0');
+    if (!same(prev.reminders, next.reminders)) kvSet(db, 'reminders', JSON.stringify(next.reminders));
     if (prev.minor !== next.minor) {
       db.run(
         "INSERT INTO safety (key, value) VALUES ('minor', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
