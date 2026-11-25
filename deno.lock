@@ -1,0 +1,24 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@zod/zod@^4.1.0": "4.6.7"
+  },
+  "jsr": {
+    "@zod/zod@4.6.7": {
+      "integrity": "6706868ce1e1907362e1bf008e298e482723345f0ba4125c43e5b9fd7960b186"
+    }
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:esbuild@~0.28.2",
+        "npm:eslint-plugin-react-hooks@^7.1.1",
+        "npm:eslint@^10.15.0",
+        "npm:prettier@^3.10.1",
+        "npm:sharp@~0.35.5",
+        "npm:typescript-eslint@^8.73.0",
+        "npm:typescript@^5.9.3"
+      ]
+    }
+  }
+}
