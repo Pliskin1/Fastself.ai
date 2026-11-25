@@ -1,1 +1,27 @@
-export default {} as Record<string, string>;
+export default {
+  'tajmer.title': 'Isprekidani post',
+  'tajmer.off.title': 'IF nije uključen',
+  'tajmer.off.body': 'Uključi ga u praksama i izaberi 12:12, 14:10 ili 16:8. Ide uz pravoslavni post ili Ramazan.',
+  'tajmer.off.cta': 'Uključi IF',
+  'tajmer.minor.title': 'Nije dostupno',
+  'tajmer.minor.body': 'Isprekidani post je isključen za mlađe od 18 godina. Kalendar vjerskog posta radi normalno.',
+  'tajmer.state.idle': 'Pokreni kad završiš posljednji obrok',
+  'tajmer.state.fasting': 'Postiš',
+  'tajmer.state.window': 'Prozor za jelo je otvoren',
+  'tajmer.goal': 'Cilj {h} h, do {time}',
+  'tajmer.goal.idle': 'Cilj {h} h',
+  'tajmer.start': 'Započni post',
+  'tajmer.stop': 'Završi post',
+  'tajmer.stat.start': 'Početak',
+  'tajmer.stat.end': 'Kraj',
+  'tajmer.stat.reminder': 'Podsjetnik',
+  'tajmer.stat.none': '—',
+  'tajmer.reminder.off': 'Isključen',
+  'tajmer.done': 'Post je završen: {h} h {m} min.',
+  'tajmer.early': 'Završio si poslije {h} h {m} min. I to se računa.',
+  'tajmer.combo': 'Danas je i {level}. Prozor za jelo prati IF, a tanjir prati post.',
+  'tajmer.week': 'Zadnjih 7 dana',
+  'tajmer.safety':
+    'Ako osjetiš vrtoglavicu, slabost ili mučninu, prekini post. Tajmer radi i kad je aplikacija zatvorena.',
+  'tajmer.ring.a11y': '{state}. Proteklo {h} h {m} min od {goal} h.',
+} as Record<string, string>;
