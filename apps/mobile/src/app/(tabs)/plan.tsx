@@ -1,5 +1,5 @@
-import { StubScreen } from '@/components/StubScreen';
+import { PlanScreen } from '@/features/plan/PlanScreen';
 
-export default function PlanScreen() {
-  return <StubScreen testID="screen-plan" titleKey="nav.plan" bottomInset={80} sky />;
+export default function PlanTab() {
+  return <PlanScreen />;
 }

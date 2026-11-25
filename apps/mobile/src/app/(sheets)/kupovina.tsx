@@ -1,5 +1,5 @@
-import { StubScreen } from '@/components/StubScreen';
+import { ShoppingSheet } from '@/features/plan/ShoppingSheet';
 
 export default function KupovinaScreen() {
-  return <StubScreen testID="screen-kupovina" titleKey="nav.kupovina" />;
+  return <ShoppingSheet />;
 }

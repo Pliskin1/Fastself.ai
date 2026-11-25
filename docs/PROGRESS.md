@@ -11,9 +11,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 - Schedules: docs/team/DANILO.md, docs/team/ANDREJ.md.
 
 ## D (Danilo): now and log
-- Now: T7 done on branch t/T7-danas (stacked on T6, not pushed). Next: T8.
+- Now: T8 done on branch t/T8-kalendar (off main, not pushed). Next: T13.
 - Waiting for A: nothing.
 - Log:
+  - 2026-11-25 | T8 | Kalendar: month grid with orbs, today/selected/slava/nafila marks, month slide across years, day card, report; typecheck, lint, test:app 326, expo export ok | simulator check, push, T13
   - 2026-11-24 | T7 | Danas: dial, plate, receipt, izuzetak sheet, Ramadan/vaktija/nafila/slava cards, week strip; typecheck, lint, test:app 165, expo export ok | simulator + Maestro 01 check, push, T8
   - 2026-11-24 | T6 | 6 onboarding screens, PraksePicker, AlergijePicker, flow tests; typecheck, lint, test:app 150, expo export ok | simulator + Maestro check, push, T7
   - 2026-11-24 | T5 | 22 route stubs, NativeTabs sf+md, sheets, dev link listener, root layout (fonts, sky, toast); typecheck, lint, test:app 138, expo export ok | push, T6. Tab screens must use <ScreenScroll sky> (native tab container hides the root sky)
@@ -29,9 +30,9 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T5 navigation + route stubs | done | t/T5-navigation | simulator checked, not pushed |
 | T6 onboarding | done | t/T6-onboarding | maestro 01 needs T7 for last assert |
 | T7 Danas | done | t/T7-danas | IF streak complication and sync state deferred |
-| T8 Kalendar | todo | | |
-| T13 Profil + pushed screens | done | t/T13-profil | not pushed; policy URL and support email are placeholders |
-| T12 Tajmer | todo | | |
+| T8 Kalendar | done | t/T8-kalendar | not pushed; Maestro 03 file does not exist in repo |
+| T13 Profil + pushed screens | todo | | |
+| T12 Tajmer | done | t/T12-tajmer | not pushed; digit cells duplicated from DayDial |
 | T14 Asistent UI | todo | | |
 | T17 auth UI | todo | | |
 | T20 motion | todo | | |
@@ -53,8 +54,8 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T9 schema + RLS | done | t/T9-schema-rls | pushed, PR in review; config is supabase/config.jsonc (CLI 3.4, not config.toml); explicit grants, anon gets 401 on user tables |
 | T10 edge functions + report sheet | done | t/T10-edge-functions | merged (PR #14); phone check passed (SM-S931B); Anthropic request sends no temperature (haiku-5-5 answers 400), API.md §5 still lists it |
 | T15 notifications | done | t/T15-notifications | merged (PR #15); Android check passed (SM-S931B); adds `settings.reminders` (kv, local only); needs D's one-line `startNotificationSync()` call in `_layout.tsx` |
-| T14 lib/api + mock | done | t/T14-api-mock | pushed, PR #17 in review; `@supabase/supabase-js` is on main (PR #16, run `pnpm install`); mock is on with `EXPO_PUBLIC_API_MOCK=1` in dev builds only; not checked on the phone |
-| T11 Plan tab + kupovina | todo | | |
+| T14 lib/api + mock | done | t/T14-api-mock | merged (PR #17); `@supabase/supabase-js` is on main (PR #16, run `pnpm install`); mock is on with `EXPO_PUBLIC_API_MOCK=1` in dev builds only; emulator check passed (app starts, report 201); the four api calls have not run on a device, not checked on SM-S931B |
+| T11 Plan tab + kupovina | done | t/T11-plan-kupovina | pushed, PR not opened yet; phone check passed (SM-S931B) for Plan 7/30, the consent gate and the kupovina sheet; the meal plan run and the checklist rows are not checked on a device (AI consent cannot be granted until ai-pristanak is built); Jelovnik card behind `flags.mealPlan` (`src/features/plan/flags.ts`, on in dev builds only) |
 | T16 spec document (due Thu 26 Nov) | todo | | |
 | legal pages (fastself-site) | todo | | |
 | T17 auth backend | todo | | |
@@ -66,9 +67,13 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: T14 lib/api done on branch t/T14-api-mock (pushed, PR #17 in review); next: T11 Plan tab.
+- Now: T11 Plan tab + kupovina done on branch t/T11-plan-kupovina (pushed, phone check passed, PR to open); T14 merged (PR #17); next: T16 spec.
 - Waiting for D: nothing.
 - Log:
+  - 2026-11-25 16:40 | T11 | on SM-S931B (Android 17), dev clock 2.12.2026: Plan 7 and 30 days look right (header, bar and stats, timeline line and glow); the Jelovnik button opens the consent sheet while consent is off; the kupovina sheet ghosted the screen behind at 0.96 alpha, now opaque (color.ink) | open the PR, T16 (not checked on a device: the meal plan run, meal lines and checklist rows, they need AI consent; prijava-greske has the same 0.96 background, one-line fix for T23; Android sheets have square corners and no grabber, SHEET in _layout.tsx)
+  - 2026-11-25 15:35 | T11 | Plan tab (7/30, stacked bar + stats, timeline with Ramadan, IF and slava lines), Jelovnik card behind flags.mealPlan (consent, mealPlan(), device validateRecipe, stored in meal_plans), kupovina sheet (ticks in shopping_checks); jest plan 26, app 343, typecheck, lint green | Android phone check, push, PR, T16 (storage lives in src/features/plan/storage.ts, move to src/db/repo with T18; the consent round trip cannot be checked until D builds ai-pristanak: Plan runs the pending action on focus once consents 'ai' is on)
+  - 2026-11-25 15:35 | T11 | ZAHTJEV ZA D: a Ramadan (sun) tone on Pill (Timeline has a local gold pill), a token for the "bez posta" segment (level.mrsno.hex is used, brighter than the prototype), and these new keys in COPY.md: plan.stat.ramadan, plan.stat.free, plan.days.label, plan.meal.line, plan.meal.name.*, plan.meal.error.rate, plan.meal.error.server, plan.line.ifInside, plan.line.nafila, plan.line.slava | D's answer
+  - 2026-11-25 | T14 | emulator check on merged main 8e4fa22 (AVD Medium_Phone_API_37.0): app starts on Danas, no JS errors in the app log, the report sheet sent a report to local Supabase and got 201 with adb reverse; suggestMeals, mealPlan, appleToken, deleteAccount have not run on a device, and it was not the SM-S931B | T11 (on Android the prijava-greske sheet is see-through, the Danas text shows behind the form: T23 candidate; kupovina uses the same background, check it too)
   - 2026-11-25 12:11 | T14 | lib/api: suggestMeals, mealPlan, appleToken, deleteAccount through the Supabase client (30 s timeout), getSupabase() (null without env), api.mock (3 passing recipes + 1 with a forbidden food); jest lib 146, app 317, typecheck, lint, android export green | push both branches, 2 PRs (dependency first), T11 (suggestMeals takes { forbidden, avoid, meal, ingredients } and adds locale, install id and rule pack version itself; meal-plan, apple-token and delete-account are not on the server yet and answer 'server'; T10 functions are still not deployed to dev; settings.customAvoid has no shape limit but meal-suggest takes only letters and spaces, 30 chars, 10 words, so other words answer 'invalid')
   - 2026-11-25 11:20 | T15 | on SM-S931B (Android 17): test notification arrived on channel podsjetnici; after "Zakaži ponovo" /dev lists 6 evening reminders (26.11–1.12 at 20:00, Orthodox only on the phone); IF window and Ramadan reminders not checked on the phone | PR review, T14 api (the dev screen opens only through `fastself://dev`; nothing reschedules by itself until D adds startNotificationSync())
   - 2026-11-25 10:48 | T15 | core planNotifications (7 days, max 60) + src/notifications (scheduleIfEnd, cancelIfEnd, rescheduleAll, sendTestNotification, listScheduled, startNotificationSync), reminder switches in settings.reminders, /dev section; core 473, jest 220, typecheck, lint green | Android check, push, PR, T14 api (ZAHTJEV ZA D: call startNotificationSync() once in _layout.tsx; Profil switches read and write settings.reminders)
