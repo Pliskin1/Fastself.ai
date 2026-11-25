@@ -67,7 +67,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: T16 spec written on branch t/T16-spec (docs/SPEC.md, SPEC.docx exported, not committed); T11 merged (PR #21); T14 merged (PR #17); next: legal pages, then T17 auth backend.
+- Now: T16 spec on branch t/T16-spec (pushed, PR to open; check the SPEC.docx page count before sending); T11 merged (PR #21); T14 merged (PR #17); next: legal pages, then T17 auth backend.
 - Waiting for D: nothing.
 - Log:
   - 2026-11-25 17:45 | T16 | docs/SPEC.md: the 12 template sections in Montenegrin, summarised from the docs, with the state on 25 Nov (core 473 and jest 392 run on main today; pgTAP 184 and deno 31 are the T10 numbers, not rerun); exported to SPEC.docx with pandoc | open SPEC.docx and check it is at most 12 pages (estimated 10 to 11 at pandoc's default 12 pt), commit, PR, send Thursday morning, legal pages
