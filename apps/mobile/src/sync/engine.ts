@@ -48,7 +48,8 @@ import {
  *  3. Push. The outbox is read up to its highest seq, one entry per row; natural-key rows get their fixed id; rows go
  *     up per table in upserts of 100 with no `updated_at` (the server stamps it) and no `reason`. The returned
  *     stamps are kept for step 2's echo check. A refused chunk is sent row by row and a row refused alone leaves the
- *     queue (it stays on the phone). `offline` and `server` stop the run and keep the queue. Entries are deleted
+ *     queue (it stays on the phone). `offline` and `server` stop the run and keep the queue. The consent is asked
+ *     again before every upload, so a group turned off during the run sends nothing more. Entries are deleted
  *     only up to the seq read at the start, so an edit made during the push stays queued.
  *
  * Known limits: the server stamps a row when it arrives, so of two offline edits the later upload wins. Rows edited
@@ -69,6 +70,11 @@ export interface EngineOptions {
    * then, so whoever caches local rows (the settings store) must read them again before the next local write.
    */
   onPulled?: (result: RunResult) => void;
+  /**
+   * Asked again before every upload. `groups` is read once when the run starts; without this a run already in
+   * flight would go on sending a group after its consent was turned off. Default: every group in `groups`.
+   */
+  isConsented?: (group: SyncGroup) => boolean;
 }
 
 export interface RunResult {
@@ -89,6 +95,7 @@ export function createEngine(options: EngineOptions): { run(): Promise<RunResult
   const { db, remote, userId } = options;
   const groups = SYNC_GROUPS.filter((group) => options.groups.includes(group));
   const specs = TABLES.filter((spec) => groups.includes(spec.group));
+  const consented = (group: SyncGroup): boolean => options.isConsented?.(group) ?? true;
 
   // --- Local rows ---------------------------------------------------------------------------------------------
 
@@ -300,6 +307,9 @@ export function createEngine(options: EngineOptions): { run(): Promise<RunResult
     maxSeq: number,
     state: SyncState,
   ): Promise<void> {
+    // The consent went off during this run: nothing more of the group is sent. Its entries stay queued and the next
+    // run drops them (step 0).
+    if (!consented(spec.group)) return;
     try {
       const stamps = await remote.upsert(
         spec.server,
@@ -365,7 +375,7 @@ export function createEngine(options: EngineOptions): { run(): Promise<RunResult
 
   async function pushProfile(state: SyncState): Promise<void> {
     const kv = readSettingsKv();
-    if (!kv || kv.updated_at === state.profileSentAt) return;
+    if (!kv || kv.updated_at === state.profileSentAt || !consented('practices')) return;
     try {
       state.profileMark = await remote.updateProfile(profileToServer(kv.value));
     } catch (error) {
@@ -399,7 +409,8 @@ export function createEngine(options: EngineOptions): { run(): Promise<RunResult
 /**
  * Deletes the user's server rows of these groups. For practices the profile columns go back to their defaults and
  * the `profiles` row stays (every other table hangs off it). The groups' marks and first-sync flags are forgotten,
- * so turning the consent on again uploads everything.
+ * so turning the consent on again uploads everything. They are forgotten before the deletes: if a delete fails part
+ * way, the phone must not go on believing that the group is still on the server.
  */
 export async function deleteServerGroups(
   options: Pick<EngineOptions, 'db' | 'remote' | 'userId'>,
@@ -408,8 +419,6 @@ export async function deleteServerGroups(
   const { db, remote, userId } = options;
   for (const group of SYNC_GROUPS.filter((g) => kinds.includes(g))) {
     const tables = tablesOf(group);
-    for (const spec of tables) await remote.deleteRows(spec.server);
-    if (group === 'practices') await remote.updateProfile(EMPTY_PROFILE);
     db.transaction(() => {
       const state = loadState(db);
       const locals = tables.map((spec) => spec.local);
@@ -419,5 +428,7 @@ export async function deleteServerGroups(
       }
       db.run(`DELETE FROM outbox WHERE tbl IN (${locals.map(() => '?').join(', ')})`, locals);
     });
+    for (const spec of tables) await remote.deleteRows(spec.server);
+    if (group === 'practices') await remote.updateProfile(EMPTY_PROFILE);
   }
 }

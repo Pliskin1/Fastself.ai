@@ -1,4 +1,11 @@
-import { RemoteError, type RemoteErrorKind, type ServerProfile, type ServerRow, type SyncRemote } from '../remote';
+import {
+  RemoteError,
+  remoteError,
+  type RemoteErrorKind,
+  type ServerProfile,
+  type ServerRow,
+  type SyncRemote,
+} from '../remote';
 import type { PullMark } from '../state';
 import type { ServerProfileValues, ServerTable } from '../tables';
 
@@ -208,8 +215,8 @@ export class FakeServer {
         return clone(fn());
       } catch (e) {
         if (!(e instanceof PgError)) throw e;
-        const refused = e.code.startsWith('23') || e.code === '42501';
-        throw new RemoteError(refused ? 'refused' : 'server', e.code);
+        // The same mapping as the real remote, so a Postgres code means one thing in tests and in the app.
+        throw remoteError({ code: e.code, message: e.code }, 400);
       }
     };
 

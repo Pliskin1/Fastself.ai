@@ -10,7 +10,7 @@ import { createEngine, deleteServerGroups } from '../engine';
 import { stableId } from '../ids';
 import { RemoteError } from '../remote';
 import { loadState } from '../state';
-import type { SyncGroup } from '../tables';
+import type { ServerTable, SyncGroup } from '../tables';
 import { FakeServer } from '../testing/fakeServer';
 
 // Two phones are two in-memory SQLite databases with the real schema; the server is one FakeServer.
@@ -466,6 +466,28 @@ describe('pull and push', () => {
     expect(loadSettings(a).customAvoid).toContain(long);
   });
 
+  it('sends nothing more of a group once its consent goes off during the run', async () => {
+    const a = phone();
+    const start = Date.parse('2026-11-01T06:00:00Z');
+    for (let i = 0; i < 250; i++) addSession(a, start + i * 60_000, start + i * 60_000 + 3_600_000);
+    edit(a, () => ({ allergies: ['gluten'] }));
+
+    // The history consent is on until the first chunk of sessions has gone out.
+    const isConsented = (group: SyncGroup) => group !== 'history' || server.upserts('fasting_sessions').length < 1;
+    await createEngine({ db: a, remote: server.remote(U), userId: U, groups: ALL, isConsented }).run();
+
+    expect(server.upserts('fasting_sessions').map((rows) => rows.length)).toEqual([100]);
+    expect(server.live('user_allergies', U)).toHaveLength(1);
+    const waiting = a.first<{ n: number }>(
+      "SELECT COUNT(DISTINCT row_id) AS n FROM outbox WHERE tbl = 'fasting_sessions'",
+    );
+    expect(waiting?.n).toBe(150);
+
+    await run(a, ['practices', 'allergies']); // the next run, with the consent off, drops what was left
+    expect(outbox(a)).toEqual([]);
+    expect(server.rows('fasting_sessions', U)).toHaveLength(100);
+  });
+
   it('keeps the queue when the network fails, and sends it on the next run', async () => {
     const a = phone();
     await run(a);
@@ -592,5 +614,31 @@ describe('deleteServerGroups', () => {
     expect(server.live('fasting_sessions', U)).toHaveLength(1);
     expect(server.profiles.get(U)?.city).toBe('bar');
     expect(loadSettings(a).city).toBe('bar');
+  });
+
+  it('forgets the group before it deletes, so a failure part way still leads to a full upload', async () => {
+    const a = phone();
+    addSession(a, Date.parse('2026-11-26T06:00:00Z'));
+    edit(a, () => ({ exceptions: { [DEC_2]: 'drugo' } }));
+    await run(a);
+
+    const real = server.remote(U);
+    let deletes = 0;
+    const remote = {
+      ...real,
+      deleteRows: (table: ServerTable) =>
+        ++deletes === 2 ? Promise.reject(new RemoteError('offline')) : real.deleteRows(table),
+    };
+    await expect(deleteServerGroups({ db: a, remote, userId: U }, ['history'])).rejects.toMatchObject({
+      kind: 'offline',
+    });
+    expect(server.rows('fasting_sessions', U)).toEqual([]); // the first table was deleted
+    expect(server.rows('day_marks', U)).toHaveLength(1); // the second was not reached
+    expect(loadState(a)?.started).toEqual(['practices', 'allergies']);
+
+    setTime('2026-11-26T10:00:00Z');
+    await run(a);
+    expect(server.live('fasting_sessions', U)).toHaveLength(1);
+    expect(server.live('day_marks', U)).toHaveLength(1);
   });
 });

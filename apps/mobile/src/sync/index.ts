@@ -91,12 +91,21 @@ const failure = (error: unknown): SyncResult => ({
   error: error instanceof RemoteError && error.kind === 'offline' ? 'offline' : 'server',
 });
 
+/**
+ * The client and the signed-in user, or null for a guest or a build with no project. Throws when a user is signed in
+ * on this phone but the session could not be loaded (for example the token refresh failed with no network): "nothing
+ * to do" would then let `deleteServerCopy` report a delete that never reached the server.
+ */
 async function signedInClient() {
   const client = getSupabase();
   if (!client) return null;
-  const { data } = await client.auth.getSession();
+  const { data, error } = await client.auth.getSession();
   const userId = data.session?.user.id;
-  return userId ? { client, userId } : null;
+  if (userId) return { client, userId };
+  if (error || kvGet(getDb(), 'auth_user_id')) {
+    throw new RemoteError(error?.status === 0 ? 'offline' : 'server', 'the session could not be loaded');
+  }
+  return null;
 }
 
 async function runOnce(): Promise<SyncResult> {
@@ -118,7 +127,9 @@ async function runOnce(): Promise<SyncResult> {
       if (pulled.settingsChanged) rehydrateSettings();
       if (pulled.rowsChanged) syncStore().setState((s) => ({ rev: s.rev + 1 }));
     };
-    await createEngine({ db, remote, userId: session.userId, groups, onPulled }).run();
+    // Read live, so a consent turned off while the run is in flight stops that group's uploads.
+    const isConsented = (group: SyncGroup): boolean => consents.get(group);
+    await createEngine({ db, remote, userId: session.userId, groups, onPulled, isConsented }).run();
     if (gen !== generation) return OK;
     setSyncActivity('idle');
     return OK;

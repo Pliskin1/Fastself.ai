@@ -113,6 +113,8 @@ describe('createSupabaseRemote', () => {
     [{ data: null, error: { code: '23514', message: 'check' }, status: 400 }, 'refused'],
     [{ data: null, error: { code: '23505', message: 'duplicate' }, status: 409 }, 'refused'],
     [{ data: null, error: { code: '22007', message: 'invalid date' }, status: 400 }, 'refused'],
+    // No signed-in user (a sign-out during a run): the anon role is denied the table. That says nothing about the row.
+    [{ data: null, error: { code: '42501', message: 'permission denied for table day_marks' }, status: 401 }, 'server'],
     [{ data: null, error: { code: '42501', message: 'row-level security' }, status: 403 }, 'refused'],
     [{ data: null, error: { code: 'PGRST204', message: 'no column' }, status: 400 }, 'server'],
     [{ data: null, error: { code: '', message: 'bad gateway' }, status: 502 }, 'server'],

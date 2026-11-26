@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react-native';
 import { AppState } from 'react-native';
 import { getDb } from '@/db';
 import { consents } from '@/db/repo/consents';
+import { kvSet } from '@/db/repo/kv';
 import { resetAuthForTests } from '@/lib/auth';
 import { getSettings, updateSettings } from '@/store/settings';
 import { installTestDb } from '@/test/utils';
@@ -208,6 +209,36 @@ describe('syncNow', () => {
     expect(getSettings().allergies).toEqual(['jaja']);
     expect(getSettings().customAvoid).toEqual(['kivi']);
     expect(outboxSize()).toBe(1);
+  });
+
+  it('stops sending a group when its consent is turned off while the run is in flight', async () => {
+    consents.set('history', true);
+    getDb().run(
+      "INSERT INTO fasting_sessions (id, started_at, ended_at, target_hours, kind, updated_at) VALUES (?, ?, ?, 16, 'if', ?)",
+      [globalThis.crypto.randomUUID(), 1_000, 2_000, 3_000],
+    );
+    const release = server().hold();
+    const running = syncNow();
+    await act(async () => undefined);
+    consents.set('history', false);
+    release();
+    await expect(running).resolves.toEqual({ ok: true });
+    expect(server().upserts('fasting_sessions')).toEqual([]);
+  });
+
+  it('fails, and does not report success, when the session of a signed-in user cannot be loaded', async () => {
+    kvSet(getDb(), 'auth_user_id', U);
+    consents.set('history', true);
+    mockGetSession.mockResolvedValue({
+      data: { session: null },
+      error: { status: 0, message: 'Network request failed' },
+    });
+    await expect(deleteServerCopy(['history'])).resolves.toEqual({ ok: false, error: 'offline' });
+    await expect(syncNow()).resolves.toEqual({ ok: false, error: 'offline' });
+
+    mockGetSession.mockResolvedValue({ data: { session: null }, error: null });
+    await expect(deleteServerCopy(['history'])).resolves.toEqual({ ok: false, error: 'server' });
+    expect(createRemote).not.toHaveBeenCalled();
   });
 });
 

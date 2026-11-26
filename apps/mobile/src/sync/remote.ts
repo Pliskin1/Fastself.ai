@@ -9,7 +9,8 @@ export type RemoteErrorKind = 'offline' | 'server' | 'refused';
 
 /**
  * `offline`: no answer (status 0 or a thrown fetch). `refused`: the server answered and will never take this payload
- * (bad data, Postgres `22xxx`; a constraint, `23xxx`; or row-level security, `42501`). `server`: any other failure.
+ * (bad data, Postgres `22xxx`; a constraint, `23xxx`; or row-level security for a signed-in user, `42501`).
+ * `server`: any other failure, including every 401: a request with no signed-in user is not a verdict on its rows.
  */
 export class RemoteError extends Error {
   readonly kind: RemoteErrorKind;
@@ -44,6 +45,9 @@ export interface SyncRemote {
 /** Maps a PostgREST answer to the error kind. */
 export function remoteError(error: { code?: string; message?: string } | null, status: number): RemoteError {
   if (status === 0) return new RemoteError('offline', error?.message);
+  // 401: no signed-in user (a sign-out during a run) or a token that was not accepted. PostgREST then answers 42501
+  // for the anon role (checked on local Supabase), which must not empty the queue.
+  if (status === 401) return new RemoteError('server', error?.message);
   const code = error?.code ?? '';
   if (code.startsWith('22') || code.startsWith('23') || code === '42501') {
     return new RemoteError('refused', error?.message);
