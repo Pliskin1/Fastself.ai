@@ -59,10 +59,10 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T16 spec document (due Thu 26 Nov) | done | t/T16-spec | `docs/SPEC.md` (Montenegrin, 12 sections, about 2,700 words); export: `pandoc docs/SPEC.md -o SPEC.docx` (the .docx stays untracked); page count not measured (no Word on the Windows machine), estimated 10 to 11 of the 12 allowed |
 | legal pages (fastself-site) | todo | | |
 | T17 auth backend | done | t/T17-auth-backend | pushed, merged before the phone check so D can start the UI; OTP round trip passed on local Supabase with curl + Mailpit; email code sign-in passed on SM-S931B against local Supabase (26 Nov, during the T18 check); Apple exchange not run with a real key; dev project still needs db push, function deploy, Apple secrets, Apple provider, OTP 600 s and the email template |
-| T18 sync | done | t/T18-sync | PR #24; jest sync 60, app 501, typecheck, lint green; phone check passed on SM-S931B against local Supabase (first sync, phone to server, a second sign-in to the phone, deletes); the check with D's iPhone on the dev project is still open; `docs/DATABASE.md` §1 and §4 are behind the code (request to D in the log) |
-| T19 delete + export | todo | | |
+| T18 sync | done | t/T18-sync | PR #24; jest sync 65, app 506, typecheck, lint green; `/code-review` and `/security-review` run (no security findings, four bugs fixed); phone check passed on SM-S931B against local Supabase (first sync, phone to server, a second sign-in to the phone, deletes); the check with D's iPhone on the dev project is still open; `docs/DATABASE.md` §1 and §4 are behind the code (request to D in the log) |
+| T19 delete + export | todo | | from the T18 review: the wipe must wait for a running sync to end, and must not leave a signed-in session without kv `auth_user_id` (sign out with it, or keep the key) |
 | prod backend | todo | | |
-| T23 Android + backend bugs | todo | | |
+| T23 Android + backend bugs | todo | | from the T18 review: run `validateRecipe` when a stored or pulled meal plan is read (`features/plan`; the card is dev-only today); `fastingSessions.stop()` leaves a second open fast running when both phones started one; a pull can overwrite an edit made while signed out or with the consent off; a signed-in cold start runs the sync twice |
 | T24 store audit | todo | | |
 | T26 ASC metadata | todo | | |
 
