@@ -10,4 +10,5 @@ export default {
   'delete.done.account': 'Nalog i podaci na serveru su obrisani',
   'delete.alsoLocal': 'Obrisati i podatke sa ovog telefona?',
   'delete.keepLocal': 'Zadrži podatke na telefonu',
+  'delete.error': 'Brisanje nije uspjelo. Pokušaj ponovo.',
 } as Record<string, string>;

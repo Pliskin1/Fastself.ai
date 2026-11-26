@@ -12,6 +12,8 @@ export interface AppleConfig {
 export const APPLE_AUDIENCE = 'https://appleid.apple.com';
 export const APPLE_TOKEN_URL = 'https://appleid.apple.com/auth/token';
 export const APPLE_REVOKE_URL = 'https://appleid.apple.com/auth/revoke';
+/** Every request to Apple is aborted after this long; an abort ends as the `network` result. */
+export const APPLE_TIMEOUT_MS = 8000;
 
 export function readAppleConfig(env: (name: string) => string | undefined): AppleConfig | null {
   const teamId = env('APPLE_TEAM_ID')?.trim();
@@ -76,6 +78,7 @@ export async function exchangeAuthorizationCode(
     const clientSecret = await appleClientSecret(cfg, nowSec);
     res = await fetchFn(APPLE_TOKEN_URL, {
       method: 'POST',
+      signal: AbortSignal.timeout(APPLE_TIMEOUT_MS),
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         client_id: cfg.clientId,
@@ -110,8 +113,11 @@ export async function exchangeAuthorizationCode(
 
 export type RevokeResult =
   | { ok: true; status: number }
-  /** `status` 0 with `network` when the request never got an answer (or the secret could not be signed). */
-  | { ok: false; status: number; code: 'network' | 'rejected' | 'apple_server' };
+  /**
+   * `status` 0: `bad_key` when the client secret could not be signed (nothing was sent), `network` when the request
+   * failed or timed out. Otherwise Apple's status with `rejected` (4xx) or `apple_server` (5xx).
+   */
+  | { ok: false; status: number; code: 'bad_key' | 'network' | 'rejected' | 'apple_server' };
 
 /** Revokes a refresh token (account deletion). Apple answers 200 with an empty body on success. */
 export async function revokeRefreshToken(
@@ -120,11 +126,17 @@ export async function revokeRefreshToken(
   fetchFn: typeof fetch,
   nowSec: number,
 ): Promise<RevokeResult> {
+  let clientSecret: string;
+  try {
+    clientSecret = await appleClientSecret(cfg, nowSec);
+  } catch {
+    return { ok: false, status: 0, code: 'bad_key' };
+  }
   let res: Response;
   try {
-    const clientSecret = await appleClientSecret(cfg, nowSec);
     res = await fetchFn(APPLE_REVOKE_URL, {
       method: 'POST',
+      signal: AbortSignal.timeout(APPLE_TIMEOUT_MS),
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         client_id: cfg.clientId,

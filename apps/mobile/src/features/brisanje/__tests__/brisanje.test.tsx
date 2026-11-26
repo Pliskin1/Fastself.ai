@@ -17,7 +17,8 @@ jest.mock('expo-router', () => ({
 }));
 jest.mock('@/lib/account', () => ({ wipeDevice: jest.fn(), deleteAccountAndSignOut: jest.fn() }));
 const mockSession: { current: Session } = { current: { user: null, provider: null } };
-jest.mock('@/lib/auth', () => ({ useSession: () => mockSession.current }));
+const mockStored = jest.fn<Promise<boolean>, []>();
+jest.mock('@/lib/auth', () => ({ useSession: () => mockSession.current, hasStoredSession: () => mockStored() }));
 
 const wipe = jest.mocked(wipeDevice);
 const removeAccount = jest.mocked(deleteAccountAndSignOut);
@@ -40,15 +41,20 @@ const TEXT = {
   done: 'Nalog i podaci na serveru su obrisani',
   alsoLocal: 'Obrisati i podatke sa ovog telefona?',
   keepLocal: 'Zadrži podatke na telefonu',
-  error: 'Veza nije uspjela. Provjeri internet i pokušaj ponovo.',
+  network: 'Veza nije uspjela. Provjeri internet i pokušaj ponovo.',
+  failed: 'Brisanje nije uspjelo. Pokušaj ponovo.',
 };
 
-const renderSheet = (session: Session = GUEST) => {
+/** `stored` is what `hasStoredSession` answers; by default whether `useSession` has a user. */
+const renderSheet = (session: Session = GUEST, stored: boolean | Promise<boolean> = session.user !== null) => {
   mockSession.current = session;
+  mockStored.mockImplementation(() => (typeof stored === 'boolean' ? Promise.resolve(stored) : stored));
   return render(withProviders(<BrisanjeScreen />));
 };
 const confirmButton = () => screen.getByTestId('btn-confirm-delete');
 const isDisabled = (testID: string) => screen.getByTestId(testID).props.accessibilityState.disabled === true;
+// The spinner is hidden from screen readers, and the queries skip hidden elements unless told otherwise.
+const spinner = () => screen.queryByTestId('btn-confirm-delete-busy', { includeHiddenElements: true });
 
 /** A call that stays in flight until the test resolves it. */
 function held<T>(): { promise: Promise<T>; resolve: (value: T) => void } {
@@ -79,6 +85,7 @@ describe('brisanje sheet', () => {
     expect(confirmButton().props.accessibilityRole).toBe('button');
     expect(screen.queryByText(TEXT.titleAccount)).toBeNull();
     expect(screen.queryByText(TEXT.apple)).toBeNull();
+    expect(screen.queryByTestId('delete-done')).toBeNull();
 
     await fireEvent.press(confirmButton());
 
@@ -88,6 +95,34 @@ describe('brisanje sheet', () => {
     expect(replace).toHaveBeenCalledWith('/');
     expect(dismissAll.mock.invocationCallOrder[0]).toBeLessThan(replace.mock.invocationCallOrder[0] ?? 0);
     expect(back).not.toHaveBeenCalled();
+  });
+
+  it('keeps confirm disabled until it knows whether a session is stored; cancel works meanwhile', async () => {
+    const answer = held<boolean>();
+    await renderSheet(GUEST, answer.promise);
+    expect(isDisabled('btn-confirm-delete')).toBe(true);
+    expect(isDisabled('btn-cancel-delete')).toBe(false);
+    await fireEvent.press(confirmButton());
+    expect(wipe).not.toHaveBeenCalled();
+
+    await act(async () => answer.resolve(false));
+    expect(isDisabled('btn-confirm-delete')).toBe(false);
+    expect(screen.getByText(TEXT.titleLocal)).toBeTruthy();
+    await fireEvent.press(confirmButton());
+    expect(wipe).toHaveBeenCalledTimes(1);
+  });
+
+  it('treats a stored session that is not loaded yet as an account: delete, never wipe', async () => {
+    await renderSheet(GUEST, true);
+    expect(screen.getByText(TEXT.titleAccount)).toBeTruthy();
+    expect(screen.getByText(TEXT.bodyAccount)).toBeTruthy();
+    expect(screen.queryByText(TEXT.titleLocal)).toBeNull();
+    expect(confirmButton().props.accessibilityLabel).toBe(TEXT.confirmAccount);
+
+    await fireEvent.press(confirmButton());
+    expect(removeAccount).toHaveBeenCalledTimes(1);
+    expect(wipe).not.toHaveBeenCalled();
+    expect(screen.getByText(TEXT.alsoLocal)).toBeTruthy();
   });
 
   it('shows the account texts when signed in, and the Apple note only for an Apple account', async () => {
@@ -104,7 +139,7 @@ describe('brisanje sheet', () => {
     expect(screen.getByText(TEXT.apple)).toBeTruthy();
   });
 
-  it('deletes the account, shows the toast and then asks about the phone although no one is signed in', async () => {
+  it('deletes the account, shows the toast and the done line, then asks about the phone', async () => {
     await renderSheet(signedIn('apple'));
     await fireEvent.press(confirmButton());
 
@@ -112,6 +147,9 @@ describe('brisanje sheet', () => {
     expect(wipe).not.toHaveBeenCalled();
     expect(mockShow).toHaveBeenCalledWith(TEXT.done);
     expect(mockSession.current.user).toBeNull();
+    const done = screen.getByTestId('delete-done');
+    expect(done.props.children).toBe(TEXT.done);
+    expect(done.props.accessibilityLiveRegion).toBeUndefined();
     expect(screen.getByText(TEXT.alsoLocal)).toBeTruthy();
     expect(screen.getByText(TEXT.bodyLocal)).toBeTruthy();
     expect(screen.queryByText(TEXT.titleLocal)).toBeNull();
@@ -143,7 +181,7 @@ describe('brisanje sheet', () => {
     expect(replace).not.toHaveBeenCalled();
   });
 
-  it('shows the alert after a failed delete, wipes nothing, and a second press retries', async () => {
+  it('shows the network alert after an offline delete, wipes nothing, and a second press retries', async () => {
     removeAccount.mockImplementationOnce(deleteSignsOut({ ok: false, error: 'offline' }));
     await renderSheet(signedIn('email'));
     await fireEvent.press(confirmButton());
@@ -151,7 +189,8 @@ describe('brisanje sheet', () => {
     const alert = screen.getByTestId('delete-error');
     expect(alert.props.accessibilityRole).toBe('alert');
     expect(alert.props.accessibilityLiveRegion).toBe('assertive');
-    expect(screen.getByText(TEXT.error)).toBeTruthy();
+    expect(alert.props.children).toBe(TEXT.network);
+    expect(screen.queryByText(TEXT.failed)).toBeNull();
     expect(screen.getByText(TEXT.titleAccount)).toBeTruthy();
     expect(mockShow).not.toHaveBeenCalled();
     expect(wipe).not.toHaveBeenCalled();
@@ -159,16 +198,37 @@ describe('brisanje sheet', () => {
 
     await fireEvent.press(confirmButton());
     expect(removeAccount).toHaveBeenCalledTimes(2);
-    expect(screen.queryByText(TEXT.error)).toBeNull();
+    expect(screen.queryByTestId('delete-error')).toBeNull();
     expect(screen.getByText(TEXT.alsoLocal)).toBeTruthy();
   });
 
-  it('shows the alert when the wipe throws, and lets the user try again', async () => {
+  it.each(['server', 'rate_limited', 'invalid'] as const)(
+    'shows "Brisanje nije uspjelo" for a %s failure',
+    async (error) => {
+      removeAccount.mockImplementationOnce(deleteSignsOut({ ok: false, error }));
+      await renderSheet(signedIn('email'));
+      await fireEvent.press(confirmButton());
+
+      expect(screen.getByTestId('delete-error').props.children).toBe(TEXT.failed);
+      expect(screen.queryByText(TEXT.network)).toBeNull();
+      expect(isDisabled('btn-confirm-delete')).toBe(false);
+    },
+  );
+
+  it('shows "Brisanje nije uspjelo" when the delete throws', async () => {
+    removeAccount.mockRejectedValueOnce(new Error('db'));
+    await renderSheet(signedIn('email'));
+    await fireEvent.press(confirmButton());
+    expect(screen.getByTestId('delete-error').props.children).toBe(TEXT.failed);
+    expect(mockShow).not.toHaveBeenCalled();
+  });
+
+  it('shows "Brisanje nije uspjelo" when the wipe throws, and lets the user try again', async () => {
     wipe.mockRejectedValueOnce(new Error('disk'));
     await renderSheet();
     await fireEvent.press(confirmButton());
 
-    expect(screen.getByText(TEXT.error)).toBeTruthy();
+    expect(screen.getByTestId('delete-error').props.children).toBe(TEXT.failed);
     expect(replace).not.toHaveBeenCalled();
     expect(isDisabled('btn-confirm-delete')).toBe(false);
 
@@ -177,16 +237,23 @@ describe('brisanje sheet', () => {
     expect(replace).toHaveBeenCalledWith('/');
   });
 
-  it('disables both buttons while a call is pending and makes one call for a double press', async () => {
+  it('disables both buttons and shows a spinner while a call is pending; a double press makes one call', async () => {
     const call = held<DeleteAccountResult>();
     removeAccount.mockReturnValueOnce(call.promise);
-    await renderSheet(signedIn('email'));
+    // No stored-session answer to lean on: the account texts must hold through the sign-out on their own.
+    await renderSheet(signedIn('email'), false);
+    expect(spinner()).toBeNull();
     await fireEvent.press(confirmButton());
     await fireEvent.press(confirmButton());
 
     expect(removeAccount).toHaveBeenCalledTimes(1);
     expect(isDisabled('btn-confirm-delete')).toBe(true);
     expect(isDisabled('btn-cancel-delete')).toBe(true);
+    expect(confirmButton().props.accessibilityState.busy).toBe(true);
+    const busy = spinner();
+    expect(busy).not.toBeNull();
+    expect(busy?.props.accessibilityElementsHidden).toBe(true);
+    expect(busy?.props.importantForAccessibility).toBe('no-hide-descendants');
     // The sign-out lands before the call returns: the account texts stay until the second step.
     mockSession.current = GUEST;
     await screen.rerender(withProviders(<BrisanjeScreen />));
@@ -197,6 +264,7 @@ describe('brisanje sheet', () => {
     expect(screen.getByText(TEXT.alsoLocal)).toBeTruthy();
     expect(isDisabled('btn-confirm-delete')).toBe(false);
     expect(isDisabled('btn-keep-local')).toBe(false);
+    expect(spinner()).toBeNull();
   });
 
   it('does not navigate for another screen when the sheet was swiped away during the delete', async () => {

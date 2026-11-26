@@ -105,8 +105,20 @@ export function clearExportFiles(): void {
   }
 }
 
-/** Writes the export into the cache directory and opens the share sheet. Never throws. */
-export async function exportData(): Promise<ExportResult> {
+let inFlight: Promise<ExportResult> | null = null;
+
+/**
+ * Writes the export into the cache directory and opens the share sheet. Never throws. A call that arrives while an
+ * export is running gets that export's promise, so a second tap cannot delete or rewrite the file being shared.
+ */
+export function exportData(): Promise<ExportResult> {
+  inFlight ??= runExport().finally(() => {
+    inFlight = null;
+  });
+  return inFlight;
+}
+
+async function runExport(): Promise<ExportResult> {
   try {
     if (!(await Sharing.isAvailableAsync())) return { ok: false, error: 'unavailable' };
     clearExportFiles();

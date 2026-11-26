@@ -1,4 +1,4 @@
-import { createHandler, type Admin } from './handler.ts';
+import { createHandler, type Admin, type AuthUser } from './handler.ts';
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -11,6 +11,8 @@ function assertEquals<T>(actual: T, expected: T, message = ''): void {
 
 const USER = '11111111-2222-4333-8444-555555555555';
 const GOOD = 'good-bearer-token';
+/** A token getUser answers without an error but also without a user. */
+const NO_USER = 'no-user-token';
 const REFRESH = 'r1-refresh-token-ABC';
 const REVOKE_URL = 'https://appleid.apple.com/auth/revoke';
 
@@ -44,6 +46,10 @@ function rig(
     apple?: () => Response | Promise<Response>;
     deleteUser?: () => { error: unknown };
     getUser?: () => never;
+    /** deps.admin() throws (the admin client is not configured). */
+    adminThrows?: boolean;
+    /** app_metadata of the verified user. Default: an email user. */
+    meta?: AuthUser['app_metadata'];
   } = {},
 ): Rig {
   const rpcs: Rig['rpcs'] = [];
@@ -58,8 +64,13 @@ function rig(
         if (opts.getUser) opts.getUser();
         return Promise.resolve(
           t === GOOD
-            ? { data: { user: { id: USER } }, error: null }
-            : { data: { user: null }, error: { message: 'bad' } },
+            ? {
+                data: { user: { id: USER, app_metadata: opts.meta ?? { provider: 'email', providers: ['email'] } } },
+                error: null,
+              }
+            : t === NO_USER
+              ? { data: { user: null }, error: null }
+              : { data: { user: null }, error: { message: 'bad' } },
         );
       },
       admin: {
@@ -81,7 +92,10 @@ function rig(
   const handler = createHandler({
     env: (n) => (opts.env ?? ENV)[n],
     fetch: fetchFn,
-    admin: () => admin,
+    admin: () => {
+      if (opts.adminThrows) throw new Error('admin client is not configured');
+      return admin;
+    },
     now: () => 1_800_000_000_000,
   });
   // Restore the console after each call so a failing test does not leave it patched.
@@ -115,22 +129,15 @@ Deno.test('405 for GET, nothing touched', async () => {
   assertEquals(r.rpcs.length + r.deleted.length + r.sent.length, 0);
 });
 
-Deno.test('401 with no header, a rejected token, a non-bearer header and when getUser throws', async () => {
-  const cases: { token: string | null; opts?: Parameters<typeof rig>[0]; header?: string }[] = [
+Deno.test('401 with no header, a non-bearer header, a rejected token and a token without a user', async () => {
+  const cases: { token: string | null; header?: string }[] = [
     { token: null },
-    { token: 'nope' },
     { token: null, header: `Basic ${GOOD}` },
-    {
-      token: GOOD,
-      opts: {
-        getUser: () => {
-          throw new Error('auth down');
-        },
-      },
-    },
+    { token: 'nope' },
+    { token: NO_USER },
   ];
   for (const c of cases) {
-    const r = rig(c.opts);
+    const r = rig();
     const req = c.header
       ? new Request('http://local/delete-account', { method: 'POST', headers: { authorization: c.header } })
       : call(c.token);
@@ -138,6 +145,28 @@ Deno.test('401 with no header, a rejected token, a non-bearer header and when ge
     assertEquals(res.status, 401);
     assertEquals(await res.json(), { error: 'unauthorized' });
     assertEquals(r.rpcs.length + r.deleted.length + r.sent.length, 0, 'nothing touched');
+  }
+});
+
+Deno.test('500 when the admin client is not configured or getUser throws, logged, nothing touched', async () => {
+  const cases: Parameters<typeof rig>[0][] = [
+    { adminThrows: true },
+    {
+      getUser: () => {
+        throw new Error('auth down');
+      },
+    },
+  ];
+  for (const opts of cases) {
+    const r = rig(opts);
+    const res = await r.handler(call());
+    assertEquals(res.status, 500);
+    assertEquals(await res.json(), { error: 'server' });
+    assertEquals(r.rpcs.length + r.deleted.length + r.sent.length, 0, 'nothing touched');
+    assertEquals(
+      r.logs.map((l) => JSON.parse(l)),
+      [{ fn: 'delete-account', event: 'auth_check_failed' }],
+    );
   }
 });
 
@@ -161,40 +190,89 @@ Deno.test('with a token row: one revoke call with the right form, then the user 
   );
 });
 
-Deno.test('without a token row: no fetch, the user is deleted', async () => {
+Deno.test('an email user without a token row: no fetch, no log line, the user is deleted', async () => {
   for (const rpc of [noToken, () => ({ data: '', error: null })]) {
-    const r = rig({ rpc });
-    const res = await r.handler(call());
-    assertEquals(res.status, 200);
-    assertEquals(await res.json(), { ok: true });
-    assertEquals(r.sent.length, 0);
-    assertEquals(r.deleted, [USER]);
+    for (const meta of [undefined, {}, { provider: 'email', providers: ['email'] }]) {
+      const r = rig({ rpc, meta });
+      const res = await r.handler(call());
+      assertEquals(res.status, 200);
+      assertEquals(await res.json(), { ok: true });
+      assertEquals(r.sent.length, 0);
+      assertEquals(r.deleted, [USER]);
+      assertEquals(r.logs, []);
+    }
   }
 });
 
-Deno.test('revoke is best effort: Apple 400, 500 and a throwing fetch still delete and answer 200', async () => {
-  const cases: [() => Response | Promise<Response>, number][] = [
-    [() => Response.json({ error: 'invalid_client' }, { status: 400 }), 400],
-    [() => new Response('boom', { status: 500 }), 500],
-    [
-      () => {
-        throw new Error('network down');
-      },
-      0,
-    ],
-  ];
-  for (const [apple, status] of cases) {
-    const r = rig({ apple });
-    const res = await r.handler(call());
-    assertEquals(res.status, 200);
-    assertEquals(await res.json(), { ok: true });
-    assertEquals(r.sent.length, 1);
-    assertEquals(r.deleted, [USER]);
-    assert(
-      r.logs.some((l) => JSON.parse(l).event === 'apple_revoke' && JSON.parse(l).status === status),
-      `status ${status} is logged`,
-    );
-  }
+Deno.test(
+  'an Apple user without a token row: apple_token_missing is logged, no fetch, the user is deleted',
+  async () => {
+    const metas: AuthUser['app_metadata'][] = [
+      { provider: 'apple', providers: ['apple'] },
+      { provider: 'email', providers: ['email', 'apple'] },
+    ];
+    for (const meta of metas) {
+      const r = rig({ rpc: noToken, meta });
+      const res = await r.handler(call());
+      assertEquals(res.status, 200);
+      assertEquals(await res.json(), { ok: true });
+      assertEquals(r.sent.length, 0);
+      assertEquals(r.deleted, [USER]);
+      assertEquals(
+        r.logs.map((l) => JSON.parse(l)),
+        [{ fn: 'delete-account', event: 'apple_token_missing' }],
+      );
+    }
+  },
+);
+
+Deno.test(
+  'revoke is best effort: Apple 400, 500, a throwing fetch and a timeout still delete and answer 200',
+  async () => {
+    const cases: [() => Response | Promise<Response>, number, string | undefined][] = [
+      [() => Response.json({ error: 'invalid_client' }, { status: 400 }), 400, 'rejected'],
+      [() => new Response('boom', { status: 500 }), 500, 'apple_server'],
+      [
+        () => {
+          throw new Error('network down');
+        },
+        0,
+        'network',
+      ],
+      [
+        () => {
+          throw new DOMException('Signal timed out.', 'TimeoutError');
+        },
+        0,
+        'network',
+      ],
+    ];
+    for (const [apple, status, code] of cases) {
+      const r = rig({ apple });
+      const res = await r.handler(call());
+      assertEquals(res.status, 200);
+      assertEquals(await res.json(), { ok: true });
+      assertEquals(r.sent.length, 1);
+      assertEquals(r.deleted, [USER]);
+      assertEquals(
+        r.logs.map((l) => JSON.parse(l)),
+        [{ fn: 'delete-account', event: 'apple_revoke', status, code }],
+        `status ${status} is logged`,
+      );
+    }
+  },
+);
+
+Deno.test('a broken Apple key: bad_key is logged, nothing is sent, the user is deleted', async () => {
+  const r = rig({ env: { ...ENV, APPLE_PRIVATE_KEY: 'not a key' } });
+  const res = await r.handler(call());
+  assertEquals(res.status, 200);
+  assertEquals(r.sent.length, 0);
+  assertEquals(r.deleted, [USER]);
+  assertEquals(
+    r.logs.map((l) => JSON.parse(l)),
+    [{ fn: 'delete-account', event: 'apple_revoke', status: 0, code: 'bad_key' }],
+  );
 });
 
 Deno.test('Apple env missing: logged, no fetch, the user is still deleted', async () => {
@@ -261,6 +339,14 @@ Deno.test(
       { env: { ...ENV, APPLE_PRIVATE_KEY: '' } },
       { rpc: () => ({ data: null, error: { message: `${REFRESH} ${USER}` } }) },
       { deleteUser: () => ({ error: { message: `${USER} ${GOOD}` } }) },
+      { rpc: noToken, meta: { provider: 'apple', providers: ['apple'] } },
+      { env: { ...ENV, APPLE_PRIVATE_KEY: `${REFRESH}-not-a-key` } },
+      { adminThrows: true },
+      {
+        getUser: () => {
+          throw new Error(`${USER} ${GOOD}`);
+        },
+      },
     ];
     let logged = 0;
     for (const v of variants) {

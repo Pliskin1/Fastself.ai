@@ -235,6 +235,42 @@ describe('exportData', () => {
     expect(() => clearExportFiles()).not.toThrow();
   });
 
+  it('a second call while an export runs joins it: one write, one share, the same result', async () => {
+    let closeSheet: () => void = () => undefined;
+    share.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          closeSheet = resolve;
+        }),
+    );
+    const first = exportData();
+    const second = exportData();
+    expect(second).toBe(first);
+    for (let i = 0; i < 50 && share.mock.calls.length === 0; i++) await Promise.resolve();
+    expect(share).toHaveBeenCalledTimes(1);
+    const third = exportData(); // the share sheet is open: still the same export
+    expect(third).toBe(first);
+    closeSheet();
+    const results = await Promise.all([first, second, third]);
+    expect(results).toEqual([{ ok: true }, { ok: true }, { ok: true }]);
+    expect(results[1]).toBe(results[0]);
+    expect(mockFs.writes).toHaveLength(1);
+    expect(share).toHaveBeenCalledTimes(1);
+
+    // Once it settled, the next call exports again.
+    await expect(exportData()).resolves.toEqual({ ok: true });
+    expect(mockFs.writes).toHaveLength(2);
+    expect(share).toHaveBeenCalledTimes(2);
+  });
+
+  it('a failed export does not block the next one', async () => {
+    mockFs.failWrite = true;
+    await expect(exportData()).resolves.toEqual({ ok: false, error: 'failed' });
+    mockFs.failWrite = false;
+    await expect(exportData()).resolves.toEqual({ ok: true });
+    expect(share).toHaveBeenCalledTimes(1);
+  });
+
   it('never rejects, whatever throws', async () => {
     isAvailable.mockRejectedValueOnce(new Error('no module'));
     await expect(exportData()).resolves.toEqual({ ok: false, error: 'failed' });

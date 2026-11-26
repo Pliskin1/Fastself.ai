@@ -1,14 +1,16 @@
-import { AuthApiError, AuthRetryableFetchError } from '@supabase/supabase-js';
+import { AuthApiError, AuthRetryableFetchError, AuthSessionMissingError } from '@supabase/supabase-js';
 import { act, renderHook } from '@testing-library/react-native';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Platform } from 'react-native';
 import { getDb } from '@/db';
-import { kvGet } from '@/db/repo/kv';
+import { kvGet, kvSet } from '@/db/repo/kv';
 import { installTestDb } from '@/test/utils';
 import { appleToken } from '../api';
 import {
   AppleSignInUnavailableError,
   OTP_LIFETIME_SECONDS,
+  accountGone,
+  hasStoredSession,
   onAuthChange,
   resetAuthForTests,
   sendEmailCode,
@@ -26,6 +28,8 @@ const mockAuth = {
   signInWithIdToken: jest.fn(),
   signOut: jest.fn(),
   onAuthStateChange: jest.fn(),
+  getSession: jest.fn(),
+  getUser: jest.fn(),
 };
 let mockClient: { auth: typeof mockAuth } | null = null;
 let authCb: AuthCb | null = null;
@@ -92,6 +96,61 @@ describe('without a Supabase client', () => {
     expect(signInAsync).not.toHaveBeenCalled();
     const { result } = await renderHook(() => useSession());
     expect(result.current).toEqual({ user: null, provider: null });
+  });
+
+  it('has no stored session and no account that is gone', async () => {
+    kvSet(getDb(), 'auth_user_id', 'u1');
+    expect(await hasStoredSession()).toBe(false);
+    expect(await accountGone()).toBe(false);
+  });
+});
+
+describe('hasStoredSession', () => {
+  it('is true for a session, and for a stored one whose refresh failed', async () => {
+    mockAuth.getSession.mockResolvedValueOnce({ data: { session: { user: user('u1') } }, error: null });
+    expect(await hasStoredSession()).toBe(true);
+    mockAuth.getSession.mockResolvedValueOnce({
+      data: { session: null },
+      error: new AuthRetryableFetchError('net', 0),
+    });
+    expect(await hasStoredSession()).toBe(true);
+  });
+
+  it('is false with neither a session nor an error', async () => {
+    mockAuth.getSession.mockResolvedValue({ data: { session: null }, error: null });
+    expect(await hasStoredSession()).toBe(false);
+  });
+
+  it('falls back to kv auth_user_id when getSession throws', async () => {
+    mockAuth.getSession.mockRejectedValue(new Error('storage'));
+    expect(await hasStoredSession()).toBe(false);
+    kvSet(getDb(), 'auth_user_id', 'u1');
+    expect(await hasStoredSession()).toBe(true);
+  });
+});
+
+describe('accountGone', () => {
+  it('is true only when the server says the user does not exist', async () => {
+    mockAuth.getUser.mockResolvedValue({
+      data: { user: null },
+      error: new AuthApiError('User from sub claim in JWT does not exist', 403, 'user_not_found'),
+    });
+    expect(await accountGone()).toBe(true);
+  });
+
+  it.each([
+    ['no session', { data: { user: null }, error: new AuthSessionMissingError() }],
+    ['another auth error', { data: { user: null }, error: apiError('bad_jwt', 401) }],
+    ['a network error', { data: { user: null }, error: new AuthRetryableFetchError('net', 0) }],
+    ['a user that exists', { data: { user: user('u1') }, error: null }],
+  ])('is false for %s', async (_name, answer) => {
+    mockAuth.getUser.mockResolvedValue(answer);
+    expect(await accountGone()).toBe(false);
+  });
+
+  it('is false when getUser throws', async () => {
+    mockAuth.getUser.mockRejectedValue(new Error('boom'));
+    expect(await accountGone()).toBe(false);
   });
 });
 

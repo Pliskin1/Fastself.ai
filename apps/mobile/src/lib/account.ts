@@ -5,7 +5,7 @@ import { rescheduleAll } from '@/notifications';
 import { resetLocalData } from '@/store/settings';
 import { bumpSyncRev, refreshSyncConsent, runWhileSyncIdle, setSyncActivity } from '@/sync';
 import { deleteAccount, type ApiError } from './api';
-import { signOut } from './auth';
+import { accountGone, signOut } from './auth';
 import { clearExportFiles } from './export';
 
 // Deleting the account and wiping the phone (docs/SCREENS.md "brisanje", docs/API.md §4). Both wait for any sync run
@@ -19,13 +19,15 @@ const ALL_CONSENTS: readonly ConsentKind[] = ['ai', 'practices', 'allergies', 'h
 /**
  * "Obriši nalog": deletes the account and its server data, then signs out and forgets what belonged to the account
  * (the outbox, the sync state, the four consents). The practices, allergies, history and settings stay on the phone;
- * the sheet then asks whether to wipe them too. When the server delete fails nothing on the phone changes.
+ * the sheet then asks whether to wipe them too. When the server delete fails nothing on the phone changes, unless
+ * the server says the user is gone anyway: a delete whose answer was lost (the client timed out) still deleted the
+ * account, and every retry would fail while the phone stays signed in to it.
  * The consents are turned off locally only: the user no longer exists, so nothing is recorded on the server.
  */
 export async function deleteAccountAndSignOut(): Promise<DeleteAccountResult> {
   const result = await runWhileSyncIdle(async (): Promise<DeleteAccountResult> => {
     const deleted = await deleteAccount();
-    if (!deleted.ok) return { ok: false, error: deleted.error };
+    if (!deleted.ok && !(await accountGone())) return { ok: false, error: deleted.error };
     await signOut();
     const db = getDb();
     db.transaction(() => {

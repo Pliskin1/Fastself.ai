@@ -1,4 +1,12 @@
-import { APPLE_REVOKE_URL, appleClientSecret, readAppleConfig, revokeRefreshToken, type AppleConfig } from './apple.ts';
+import {
+  APPLE_REVOKE_URL,
+  APPLE_TIMEOUT_MS,
+  appleClientSecret,
+  exchangeAuthorizationCode,
+  readAppleConfig,
+  revokeRefreshToken,
+  type AppleConfig,
+} from './apple.ts';
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -82,13 +90,20 @@ Deno.test('readAppleConfig returns the config or null when any name is missing',
 });
 
 function revokeRig(reply: () => Response | Promise<Response>) {
-  const sent: { url: string; method: string; type: string | null; form: URLSearchParams }[] = [];
+  const sent: {
+    url: string;
+    method: string;
+    type: string | null;
+    form: URLSearchParams;
+    signal: AbortSignal | null | undefined;
+  }[] = [];
   const fetchFn: typeof fetch = async (input, init) => {
     sent.push({
       url: String(input),
       method: String(init?.method),
       type: new Headers(init?.headers).get('content-type'),
       form: new URLSearchParams(String(init?.body)),
+      signal: init?.signal,
     });
     return await reply();
   };
@@ -150,9 +165,56 @@ Deno.test('revokeRefreshToken turns a throwing fetch into status 0 / network', a
   assertEquals(r.sent.length, 1);
 });
 
-Deno.test('revokeRefreshToken with a key that does not import sends nothing and does not throw', async () => {
-  const r = revokeRig(() => new Response(null, { status: 200 }));
-  const res = await revokeRefreshToken({ ...base, privateKey: 'not a key' }, 'r', r.fetchFn, 1_800_000_000);
-  assertEquals(res, { ok: false, status: 0, code: 'network' });
-  assertEquals(r.sent.length, 0);
+Deno.test('revokeRefreshToken with a PEM that does not import gives bad_key and sends nothing', async () => {
+  // A well-formed PEM of a P-384 key (the wrong curve), a PEM whose body is not a key, and plain text.
+  const p384 = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-384' }, true, ['sign']);
+  const der = new Uint8Array(await crypto.subtle.exportKey('pkcs8', p384.privateKey));
+  const wrongCurve = `-----BEGIN PRIVATE KEY-----\n${btoa(String.fromCharCode(...der))}\n-----END PRIVATE KEY-----`;
+  for (const privateKey of [wrongCurve, '-----BEGIN PRIVATE KEY-----\nAAAA\n-----END PRIVATE KEY-----', 'not a key']) {
+    const r = revokeRig(() => new Response(null, { status: 200 }));
+    const res = await revokeRefreshToken({ ...base, privateKey }, 'r', r.fetchFn, 1_800_000_000);
+    assertEquals(res, { ok: false, status: 0, code: 'bad_key' });
+    assertEquals(r.sent.length, 0);
+  }
+});
+
+const timeout = () => {
+  throw new DOMException('Signal timed out.', 'TimeoutError');
+};
+
+Deno.test('every request to Apple carries an abort signal', async () => {
+  assertEquals(APPLE_TIMEOUT_MS, 8000);
+  const { pem } = await makeKey();
+  const cfg = { ...base, privateKey: pem };
+  const revoke = revokeRig(() => new Response(null, { status: 200 }));
+  await revokeRefreshToken(cfg, 'r', revoke.fetchFn, 1_800_000_000);
+  const exchange = revokeRig(() => Response.json({ refresh_token: 'rt' }));
+  assertEquals(await exchangeAuthorizationCode(cfg, 'code', exchange.fetchFn, 1_800_000_000), {
+    ok: true,
+    refreshToken: 'rt',
+  });
+  for (const r of [revoke, exchange]) {
+    assertEquals(r.sent.length, 1);
+    const signal = r.sent[0]!.signal;
+    assert(signal instanceof AbortSignal, 'the fetch init has an AbortSignal');
+    assert(!signal.aborted, 'the signal is not aborted up front');
+  }
+});
+
+Deno.test('a fetch that times out ends as status 0 / network', async () => {
+  const { pem } = await makeKey();
+  const cfg = { ...base, privateKey: pem };
+  const revoke = revokeRig(timeout);
+  assertEquals(await revokeRefreshToken(cfg, 'r', revoke.fetchFn, 1_800_000_000), {
+    ok: false,
+    status: 0,
+    code: 'network',
+  });
+  const exchange = revokeRig(timeout);
+  assertEquals(await exchangeAuthorizationCode(cfg, 'code', exchange.fetchFn, 1_800_000_000), {
+    ok: false,
+    kind: 'failed',
+    status: 0,
+    code: 'network',
+  });
 });

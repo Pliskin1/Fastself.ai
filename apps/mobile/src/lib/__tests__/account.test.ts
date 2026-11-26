@@ -4,7 +4,7 @@ import { consents, fastingSessions, type ConsentKind } from '@/db/repo';
 import { kvDelete, kvGet, kvSet } from '@/db/repo/kv';
 import { deleteAccountAndSignOut, wipeDevice } from '@/lib/account';
 import { deleteAccount } from '@/lib/api';
-import { signOut } from '@/lib/auth';
+import { accountGone, signOut } from '@/lib/auth';
 import { clearExportFiles } from '@/lib/export';
 import { rescheduleAll } from '@/notifications';
 import { getSettings, updateSettings } from '@/store/settings';
@@ -12,7 +12,7 @@ import { resetSyncForTests, settleSyncForTests, syncNow } from '@/sync';
 import { installTestDb } from '@/test/utils';
 
 jest.mock('@/lib/api', () => ({ deleteAccount: jest.fn() }));
-jest.mock('@/lib/auth', () => ({ ...jest.requireActual('@/lib/auth'), signOut: jest.fn() }));
+jest.mock('@/lib/auth', () => ({ ...jest.requireActual('@/lib/auth'), signOut: jest.fn(), accountGone: jest.fn() }));
 jest.mock('@/notifications', () => ({ rescheduleAll: jest.fn(() => Promise.resolve()) }));
 jest.mock('@/lib/export', () => ({ clearExportFiles: jest.fn() }));
 // A sync run reaches the client first through getSession, so a held getSession is a run in flight.
@@ -28,6 +28,7 @@ jest.mock('@/lib/supabase', () => ({
 
 const remove = jest.mocked(deleteAccount);
 const signOutMock = jest.mocked(signOut);
+const gone = jest.mocked(accountGone);
 const reschedule = jest.mocked(rescheduleAll);
 
 const U = 'u1';
@@ -71,6 +72,7 @@ beforeEach(() => {
   resetSyncForTests();
   mockGetSession.mockResolvedValue(GUEST);
   remove.mockResolvedValue({ ok: true, data: null });
+  gone.mockResolvedValue(false);
   // Like the real one: the session goes, then kv auth_user_id.
   signOutMock.mockImplementation(async () => {
     kvDelete(getDb(), 'auth_user_id');
@@ -97,6 +99,7 @@ describe('deleteAccountAndSignOut', () => {
     expect(kvGet(getDb(), 'last_sync_at')).toBeNull();
     expect(kvGet(getDb(), 'auth_user_id')).toBeNull();
     for (const kind of ALL) expect(consents.get(kind)).toBe(false);
+    expect(gone).not.toHaveBeenCalled();
   });
 
   it('keeps the local data: practices, allergies, history and settings stay', async () => {
@@ -119,12 +122,32 @@ describe('deleteAccountAndSignOut', () => {
 
     await expect(deleteAccountAndSignOut()).resolves.toEqual({ ok: false, error });
 
+    expect(gone).toHaveBeenCalledTimes(1);
     expect(signOutMock).not.toHaveBeenCalled();
     expect(outboxSize()).toBe(outbox);
     expect(kvGet(getDb(), 'last_sync_at')).toBe(SYNC_STATE);
     expect(kvGet(getDb(), 'auth_user_id')).toBe(U);
     for (const kind of ALL) expect(consents.get(kind)).toBe(true);
   });
+
+  it.each(['offline', 'server'] as const)(
+    'signs out and cleans up when the delete fails (%s) but the server says the user is gone',
+    async (error) => {
+      seedSignedIn();
+      remove.mockResolvedValue({ ok: false, error });
+      gone.mockResolvedValue(true);
+
+      await expect(deleteAccountAndSignOut()).resolves.toEqual({ ok: true });
+
+      expect(gone).toHaveBeenCalledTimes(1);
+      expect(signOutMock).toHaveBeenCalledTimes(1);
+      expect(outboxSize()).toBe(0);
+      expect(kvGet(getDb(), 'last_sync_at')).toBeNull();
+      expect(kvGet(getDb(), 'auth_user_id')).toBeNull();
+      for (const kind of ALL) expect(consents.get(kind)).toBe(false);
+      expect(getSettings()).toMatchObject({ onboarded: true, city: 'bar' }); // the phone keeps its data
+    },
+  );
 
   it('waits for a sync run in flight before it calls the server', async () => {
     seedSignedIn();
