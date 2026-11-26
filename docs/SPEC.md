@@ -233,7 +233,7 @@ Pet radnih dana, dvoje ljudi paralelno na različitim dijelovima koda. Svaka cje
 | IF tajmer obavještava | Test zakazivanja prolazi; provjera na uređaju uz TestFlight verziju |
 | AI vraća jelo u skladu sa pravilom | Funkcija je urađena i testirana; ekran u četvrtak |
 
-**Otvorene odluke.** Formalna potvrda AI provajdera (u kodu je Anthropic), jezik u prodavnici, Apple razvojni nalog (organizacija ili lični nalog), servis za slanje email kodova u produkciji.
+**Otvorene odluke.** Formalna potvrda AI provajdera (u kodu je Cloudflare Workers AI), jezik u prodavnici, Apple razvojni nalog (organizacija ili lični nalog), servis za slanje email kodova u produkciji.
 
 **Rizici.**
 
