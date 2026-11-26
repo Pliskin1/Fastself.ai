@@ -54,7 +54,8 @@ export function remoteError(error: { code?: string; message?: string } | null, s
 /**
  * The PostgREST `or` filter for "after the mark" in (`updated_at`, `id`) order. The timestamp is the server's own
  * string, quoted because it holds `.`, `:` and `+`.
- * NOT YET PROVEN against a real server (only against a mocked client): check it on local Supabase first.
+ * Checked against local Supabase on 2026-11-26: PostgREST takes it, and pages of 2 over rows that share one
+ * timestamp return every row once.
  */
 export function afterMarkFilter(mark: PullMark): string {
   return `updated_at.gt."${mark.ts}",and(updated_at.eq."${mark.ts}",id.gt.${mark.id})`;
