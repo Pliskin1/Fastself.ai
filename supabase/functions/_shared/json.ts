@@ -8,6 +8,7 @@ export function json(status: number, body: unknown, headers: Record<string, stri
 
 export const errors = {
   invalidInput: () => json(400, { error: 'invalid_input' }),
+  unauthorized: () => json(401, { error: 'unauthorized' }),
   methodNotAllowed: () => json(405, { error: 'method_not_allowed' }),
   rateLimited: () => json(429, { error: 'rate_limited' }),
   server: () => json(500, { error: 'server' }),

@@ -25,6 +25,7 @@ import {
 import { t } from '@/copy/sr';
 import dev from '@/copy/sr/dev';
 import { iconMap, type IconName } from '@/components/Icon';
+import Auth from '@/features/dev/sections/auth';
 import Notifications from '@/features/dev/sections/notifications';
 import { level, type LevelKey } from '@/theme/tokens';
 
@@ -139,6 +140,8 @@ function Gallery() {
       </Section>
 
       <Notifications />
+
+      <Auth />
     </ScreenScroll>
   );
 }
