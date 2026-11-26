@@ -5,7 +5,7 @@ import * as Crypto from 'expo-crypto';
 import { Platform } from 'react-native';
 import { useSyncExternalStore } from 'react';
 import { getDb } from '@/db';
-import { kvDelete, kvSet } from '@/db/repo/kv';
+import { kvDelete, kvGet, kvSet } from '@/db/repo/kv';
 import { appleToken } from './api';
 import { getSupabase } from './supabase';
 
@@ -119,6 +119,43 @@ export function useSession(): Session {
 export function onAuthChange(listener: (session: Session) => void): () => void {
   const wrapped = () => listener(snapshot);
   return subscribe(wrapped);
+}
+
+/**
+ * Whether this phone holds a session, also one that could not be loaded yet: true when `getSession` returns a session
+ * or an error (a stored session whose refresh failed, for example offline), false with no client or with neither.
+ * When `getSession` throws, whether kv `auth_user_id` is set. `useSession` is a guest until the first auth event,
+ * so a screen that must never treat a signed-in user as a guest asks this too. Never throws.
+ */
+export async function hasStoredSession(): Promise<boolean> {
+  const supabase = getSupabase();
+  if (!supabase) return false;
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    return !!data.session || !!error;
+  } catch {
+    try {
+      return kvGet(getDb(), 'auth_user_id') !== null;
+    } catch {
+      return false;
+    }
+  }
+}
+
+/**
+ * True only when the server says the user of this session does not exist (`user_not_found`): the account is gone,
+ * for example after a delete whose answer never reached the phone. False for anything else: no client, no session,
+ * a network error, another error or a user that exists. Never throws.
+ */
+export async function accountGone(): Promise<boolean> {
+  const supabase = getSupabase();
+  if (!supabase) return false;
+  try {
+    const { error } = await supabase.auth.getUser();
+    return isAuthApiError(error) && error.code === 'user_not_found';
+  } catch {
+    return false;
+  }
 }
 
 /** Test only: forgets the subscription, the snapshot and the remembered send times. */

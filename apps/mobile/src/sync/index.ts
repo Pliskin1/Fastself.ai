@@ -73,6 +73,11 @@ export function useSyncRev(): number {
   return useStore(syncStore(), (s) => s.rev);
 }
 
+/** Raises the number `useSyncRev` returns. For callers that changed local rows outside a sync run (a wipe). */
+export function bumpSyncRev(): void {
+  syncStore().setState((s) => ({ rev: s.rev + 1 }));
+}
+
 // --- Runs ---------------------------------------------------------------------------------------------------
 
 /** Bumped by `resetSyncForTests`, so a run left over from an earlier test changes nothing. */
@@ -125,7 +130,7 @@ async function runOnce(): Promise<SyncResult> {
     const onPulled = (pulled: RunResult): void => {
       if (gen !== generation) return;
       if (pulled.settingsChanged) rehydrateSettings();
-      if (pulled.rowsChanged) syncStore().setState((s) => ({ rev: s.rev + 1 }));
+      if (pulled.rowsChanged) bumpSyncRev();
     };
     // Read live, so a consent turned off while the run is in flight stops that group's uploads.
     const isConsented = (group: SyncGroup): boolean => consents.get(group);
@@ -217,20 +222,38 @@ async function deleteOnce(kinds: readonly SyncGroup[]): Promise<SyncResult> {
 }
 
 /**
+ * Runs `job` once no sync run is in flight or queued, and holds the place of a run while it works: a `syncNow()`
+ * asked for meanwhile waits and runs after it. For work that a run in flight could undo or race (a server delete, a
+ * sign-out, a wipe). The job's result or rejection goes to the caller, after the place is free again; a rejection
+ * never reaches the runs queued behind it. It changes no status, consent flag or tick bookkeeping.
+ */
+export async function runWhileSyncIdle<T>(job: () => Promise<T>): Promise<T> {
+  while (pending ?? running) await (pending ?? running);
+  const gen = generation;
+  // Called synchronously, so nothing can take the place between the wait and here; a synchronous throw rejects too.
+  const work = (async () => job())();
+  const slot: Promise<SyncResult> = work
+    .then(
+      () => OK,
+      () => OK,
+    )
+    .finally(() => {
+      if (gen === generation && running === slot) running = null;
+    });
+  running = slot;
+  await slot;
+  return work;
+}
+
+/**
  * "Obrisati i kopiju na serveru?": deletes the user's server rows of these groups after any running sync. For
  * practices the profile columns are reset and the `profiles` row stays. Turning the consent on again uploads
  * everything. Nothing to do for a guest or without a client.
  * It takes the place of a run while it works, so a sync asked for meanwhile waits: a run in flight would save its
  * own copy of the sync state over the reset made here.
  */
-export async function deleteServerCopy(kinds: readonly SyncGroup[]): Promise<SyncResult> {
-  while (pending ?? running) await (pending ?? running);
-  const gen = generation;
-  const job: Promise<SyncResult> = deleteOnce(kinds).finally(() => {
-    if (gen === generation && running === job) running = null;
-  });
-  running = job;
-  return job;
+export function deleteServerCopy(kinds: readonly SyncGroup[]): Promise<SyncResult> {
+  return runWhileSyncIdle(() => deleteOnce(kinds));
 }
 
 /** Test only: stops `startSync`, forgets runs in flight and resets the status. */

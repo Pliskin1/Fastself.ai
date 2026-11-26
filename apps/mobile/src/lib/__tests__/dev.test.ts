@@ -7,6 +7,9 @@ import { getSettings, updateSettings } from '@/store/settings';
 import { at, installTestDb } from '@/test/utils';
 
 jest.mock('expo-router', () => ({ router: { replace: jest.fn() } }));
+// reset=1 wipes through lib/account, which drops the pending reminders; the system calls are not under test here.
+jest.mock('@/notifications', () => ({ rescheduleAll: jest.fn(() => Promise.resolve()) }));
+jest.mock('@/lib/export', () => ({ clearExportFiles: jest.fn() }));
 
 const replace = jest.mocked(router.replace);
 const REAL_START = Date.UTC(2026, 10, 24, 9, 0, 0); // 24 Nov 2026, 10:00 in Podgorica

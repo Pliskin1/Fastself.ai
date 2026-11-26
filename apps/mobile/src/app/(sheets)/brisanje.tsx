@@ -1,5 +1,5 @@
-import { StubScreen } from '@/components/StubScreen';
+import { BrisanjeSheet } from '@/features/brisanje/BrisanjeSheet';
 
 export default function BrisanjeScreen() {
-  return <StubScreen testID="screen-brisanje" titleKey="nav.brisanje" />;
+  return <BrisanjeSheet />;
 }
