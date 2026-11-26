@@ -1,6 +1,6 @@
 import { consents, type ConsentKind } from '@/db/repo/consents';
 import { getSupabase } from '@/lib/supabase';
-import { refreshSyncConsent } from './index';
+import { refreshSyncConsent, syncNow } from './index';
 
 // Bump when docs/legal/privacy.md changes what is collected.
 export const POLICY_VERSION = '1';
@@ -18,7 +18,8 @@ export type SetConsentsResult = { ok: true } | { ok: false; error: 'offline' | '
 /**
  * Saves consent changes. The phone is the source of truth, so the local flags are written first. A signed-in user
  * also gets one append-only row per change on the server; a failure there leaves the local flags as written.
- * Only the kind, the flag and the policy version are sent.
+ * Only the kind, the flag and the policy version are sent. Turning a sync kind on then starts a sync run, which the
+ * result does not wait for.
  */
 export async function setConsents(changes: Partial<Record<ConsentKind, boolean>>): Promise<SetConsentsResult> {
   const entries = (Object.entries(changes) as [ConsentKind, boolean | undefined][]).filter(
@@ -27,6 +28,12 @@ export async function setConsents(changes: Partial<Record<ConsentKind, boolean>>
   for (const [kind, on] of entries) consents.set(kind, on);
   refreshSyncConsent();
 
+  const result = await recordOnServer(entries);
+  if (entries.some(([kind, on]) => on && kind !== 'ai')) void syncNow();
+  return result;
+}
+
+async function recordOnServer(entries: [ConsentKind, boolean][]): Promise<SetConsentsResult> {
   try {
     const supabase = getSupabase();
     if (!supabase || entries.length === 0) return { ok: true };
