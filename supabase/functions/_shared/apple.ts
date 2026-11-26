@@ -1,4 +1,4 @@
-// Sign in with Apple helpers shared by apple-token and (T19) delete-account.
+// Sign in with Apple helpers shared by apple-token and delete-account.
 // Nothing here logs. Callers must never log the secret, the code or the refresh token.
 
 export interface AppleConfig {
@@ -11,6 +11,7 @@ export interface AppleConfig {
 
 export const APPLE_AUDIENCE = 'https://appleid.apple.com';
 export const APPLE_TOKEN_URL = 'https://appleid.apple.com/auth/token';
+export const APPLE_REVOKE_URL = 'https://appleid.apple.com/auth/revoke';
 
 export function readAppleConfig(env: (name: string) => string | undefined): AppleConfig | null {
   const teamId = env('APPLE_TEAM_ID')?.trim();
@@ -105,4 +106,42 @@ export async function exchangeAuthorizationCode(
     return { ok: false, kind: 'failed', status: res.status, code: 'no_refresh_token' };
   }
   return { ok: true, refreshToken: token };
+}
+
+export type RevokeResult =
+  | { ok: true; status: number }
+  /** `status` 0 with `network` when the request never got an answer (or the secret could not be signed). */
+  | { ok: false; status: number; code: 'network' | 'rejected' | 'apple_server' };
+
+/** Revokes a refresh token (account deletion). Apple answers 200 with an empty body on success. */
+export async function revokeRefreshToken(
+  cfg: AppleConfig,
+  refreshToken: string,
+  fetchFn: typeof fetch,
+  nowSec: number,
+): Promise<RevokeResult> {
+  let res: Response;
+  try {
+    const clientSecret = await appleClientSecret(cfg, nowSec);
+    res = await fetchFn(APPLE_REVOKE_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: cfg.clientId,
+        client_secret: clientSecret,
+        token: refreshToken,
+        token_type_hint: 'refresh_token',
+      }),
+    });
+  } catch {
+    return { ok: false, status: 0, code: 'network' };
+  }
+  // The body is never read into a result; drain it so the connection is released.
+  try {
+    await res.body?.cancel();
+  } catch {
+    // nothing to release
+  }
+  if (res.ok) return { ok: true, status: res.status };
+  return { ok: false, status: res.status, code: res.status < 500 ? 'rejected' : 'apple_server' };
 }

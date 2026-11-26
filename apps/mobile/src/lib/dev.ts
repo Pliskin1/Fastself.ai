@@ -1,7 +1,8 @@
 import { DEFAULT_REMINDERS, DEFAULT_SETTINGS, isoDate, localFromEpoch, parseIsoDate } from '@fastself/core';
 import { router, type Href } from 'expo-router';
 import type { AppSettings } from '@/db/types';
-import { resetLocalData, updateSettings } from '@/store/settings';
+import { updateSettings } from '@/store/settings';
+import { wipeDevice } from './account';
 import { nowMs, setDevClock } from './clock';
 
 // Dev deep link (docs/SCREENS.md §0), used by Maestro and by hand:
@@ -48,7 +49,8 @@ export async function applyDevLink(url: string): Promise<void> {
   const params = parseQuery(url);
 
   const reset = params.get('reset') === '1';
-  if (reset) resetLocalData();
+  // The same wipe as "Obriši podatke sa telefona": it signs out first and waits for a sync run in flight.
+  if (reset) await wipeDevice();
 
   // A preset is a complete known state: defaults (city Podgorica, no allergies) plus its practices, onboarded.
   const preset = PRESETS.get(params.get('preset') ?? '');

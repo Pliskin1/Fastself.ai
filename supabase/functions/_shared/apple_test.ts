@@ -1,4 +1,4 @@
-import { appleClientSecret, readAppleConfig, type AppleConfig } from './apple.ts';
+import { APPLE_REVOKE_URL, appleClientSecret, readAppleConfig, revokeRefreshToken, type AppleConfig } from './apple.ts';
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -79,4 +79,80 @@ Deno.test('readAppleConfig returns the config or null when any name is missing',
       name,
     );
   }
+});
+
+function revokeRig(reply: () => Response | Promise<Response>) {
+  const sent: { url: string; method: string; type: string | null; form: URLSearchParams }[] = [];
+  const fetchFn: typeof fetch = async (input, init) => {
+    sent.push({
+      url: String(input),
+      method: String(init?.method),
+      type: new Headers(init?.headers).get('content-type'),
+      form: new URLSearchParams(String(init?.body)),
+    });
+    return await reply();
+  };
+  return { sent, fetchFn };
+}
+
+Deno.test('revokeRefreshToken posts the form to the revoke URL', async () => {
+  const { pem, pub } = await makeKey();
+  const r = revokeRig(() => new Response(null, { status: 200 }));
+  const res = await revokeRefreshToken({ ...base, privateKey: pem }, 'r1-refresh', r.fetchFn, 1_800_000_000);
+  assertEquals(res, { ok: true, status: 200 });
+  assertEquals(r.sent.length, 1);
+  const { url, method, type, form } = r.sent[0]!;
+  assertEquals(url, APPLE_REVOKE_URL);
+  assertEquals(url, 'https://appleid.apple.com/auth/revoke');
+  assertEquals(method, 'POST');
+  assertEquals(type, 'application/x-www-form-urlencoded');
+  assertEquals([...form.keys()].sort(), ['client_id', 'client_secret', 'token', 'token_type_hint']);
+  assertEquals(form.get('client_id'), 'ai.fastself.app');
+  assertEquals(form.get('token'), 'r1-refresh');
+  assertEquals(form.get('token_type_hint'), 'refresh_token');
+  // The client secret is the same signed ES256 JWT the token exchange uses.
+  const [h, c, s] = (form.get('client_secret') ?? '').split('.') as [string, string, string];
+  const ok = await crypto.subtle.verify(
+    { name: 'ECDSA', hash: 'SHA-256' },
+    pub,
+    fromB64url(s),
+    new TextEncoder().encode(`${h}.${c}`),
+  );
+  assert(ok, 'client secret verifies with the public key');
+});
+
+Deno.test('revokeRefreshToken reports 400 and 500 as not ok, with the status', async () => {
+  const { pem } = await makeKey();
+  const cfg = { ...base, privateKey: pem };
+  const bad = await revokeRefreshToken(
+    cfg,
+    'r',
+    revokeRig(() => Response.json({ error: 'invalid_client' }, { status: 400 })).fetchFn,
+    1_800_000_000,
+  );
+  assertEquals(bad, { ok: false, status: 400, code: 'rejected' });
+  const down = await revokeRefreshToken(
+    cfg,
+    'r',
+    revokeRig(() => new Response('boom', { status: 500 })).fetchFn,
+    1_800_000_000,
+  );
+  assertEquals(down, { ok: false, status: 500, code: 'apple_server' });
+});
+
+Deno.test('revokeRefreshToken turns a throwing fetch into status 0 / network', async () => {
+  const { pem } = await makeKey();
+  const r = revokeRig(() => {
+    throw new Error('network down');
+  });
+  const res = await revokeRefreshToken({ ...base, privateKey: pem }, 'r', r.fetchFn, 1_800_000_000);
+  assertEquals(res, { ok: false, status: 0, code: 'network' });
+  assertEquals(r.sent.length, 1);
+});
+
+Deno.test('revokeRefreshToken with a key that does not import sends nothing and does not throw', async () => {
+  const r = revokeRig(() => new Response(null, { status: 200 }));
+  const res = await revokeRefreshToken({ ...base, privateKey: 'not a key' }, 'r', r.fetchFn, 1_800_000_000);
+  assertEquals(res, { ok: false, status: 0, code: 'network' });
+  assertEquals(r.sent.length, 0);
 });
