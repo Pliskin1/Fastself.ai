@@ -58,7 +58,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T11 Plan tab + kupovina | done | t/T11-plan-kupovina | merged (PR #21); phone check passed (SM-S931B) for Plan 7/30, the consent gate and the kupovina sheet; the meal plan run and the checklist rows are not checked on a device (AI consent cannot be granted until ai-pristanak is built); Jelovnik card behind `flags.mealPlan` (`src/features/plan/flags.ts`, on in dev builds only) |
 | T16 spec document (due Thu 26 Nov) | done | t/T16-spec | `docs/SPEC.md` (Montenegrin, 12 sections, about 2,700 words); export: `pandoc docs/SPEC.md -o SPEC.docx` (the .docx stays untracked); page count not measured (no Word on the Windows machine), estimated 10 to 11 of the 12 allowed |
 | legal pages (fastself-site) | todo | | |
-| T17 auth backend | done | t/T17-auth-backend | committed, not pushed; OTP round trip passed on local Supabase with curl + Mailpit; not checked on SM-S931B yet (use the auth section at the bottom of `fastself://dev`); Apple exchange not run with a real key; dev project still needs db push, function deploy, Apple secrets, Apple provider, OTP 600 s and the email template |
+| T17 auth backend | done | t/T17-auth-backend | pushed, merged before the phone check so D can start the UI; OTP round trip passed on local Supabase with curl + Mailpit; not checked on SM-S931B yet (use the auth section at the bottom of `fastself://dev`); Apple exchange not run with a real key; dev project still needs db push, function deploy, Apple secrets, Apple provider, OTP 600 s and the email template |
 | T18 sync | todo | | |
 | T19 delete + export | todo | | |
 | prod backend | todo | | |
@@ -67,7 +67,7 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 | T26 ASC metadata | todo | | |
 
 ## A (Andrej): now and log
-- Now: T17 auth backend on branch t/T17-auth-backend (committed, not pushed; phone OTP check open); T16 merged (PR #22); next: phone check, push, PR, then T18 sync; legal pages still todo.
+- Now: T17 auth backend on branch t/T17-auth-backend (pushed, PR to merge; phone OTP check on SM-S931B still open, to do after the merge); T16 merged (PR #22); next: phone check, then T18 sync; legal pages still todo.
 - Waiting for D: nothing.
 - Log:
   - 2026-11-26 09:30 | T17 | lib/auth (signInApple, sendEmailCode, verifyEmailCode, signOut, useSession, onAuthChange), sync/index (useSyncStatus), sync/consents (setConsents), apple-token function + save_apple_token, OTP 600 s and a code-only email template, auth section on /dev; jest 451, pgTAP 195, deno 44, typecheck, lint green; on local Supabase: otp 200, code in Mailpit, verify gives a session, consents insert 201, apple-token 401 without a user and 400 for a junk code | phone check on SM-S931B, push, PR, T18 (wrong and reused codes both answer 403 otp_expired, so the app tells "expired" by its own 600 s clock; the send time is kept in memory only)
