@@ -5,11 +5,12 @@ import { font } from '@/theme/fonts';
 
 export type TextVariant = 'display' | 'hero' | 'dial' | 'title' | 'body' | 'bodyStrong' | 'small' | 'caption' | 'micro';
 
+// Bodoni Moda (display, hero, dial, title) needs about 1.45 x the size (its natural line is 1.525), or iOS cuts the tops of the letters.
 const variants: Record<TextVariant, TextStyle> = {
-  display: { fontFamily: font.serifMedium, fontSize: 40, lineHeight: 44, letterSpacing: -0.6 },
-  hero: { fontFamily: font.serif, fontSize: 44, lineHeight: 46 },
-  dial: { fontFamily: font.serif, fontSize: 62, lineHeight: 66, fontVariant: ['tabular-nums'] },
-  title: { fontFamily: font.serifMedium, fontSize: 22, lineHeight: 26 },
+  display: { fontFamily: font.serifMedium, fontSize: 40, lineHeight: 58, letterSpacing: -0.6 },
+  hero: { fontFamily: font.serif, fontSize: 44, lineHeight: 64 },
+  dial: { fontFamily: font.serif, fontSize: 62, lineHeight: 90, fontVariant: ['tabular-nums'] },
+  title: { fontFamily: font.serifMedium, fontSize: 22, lineHeight: 32 },
   body: { fontFamily: font.sans, fontSize: 16, lineHeight: 22 },
   bodyStrong: { fontFamily: font.sansSemi, fontSize: 16, lineHeight: 22 },
   small: { fontFamily: font.sans, fontSize: 14, lineHeight: 20 },

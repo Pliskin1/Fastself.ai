@@ -55,7 +55,9 @@ function Cell({ text, initial, size }: { text: SharedValue<string>; initial: str
       accessible={false}
       defaultValue={initial}
       animatedProps={props}
-      style={[styles.cell, { width: size * 0.58, fontSize: size, lineHeight: size * 1.1 }]}
+      allowFontScaling={false}
+      // No lineHeight: on iOS it shifts TextInput text up and cuts the digits.
+      style={[styles.cell, { width: size * 0.58, height: size * 1.25, fontSize: size }]}
     />
   );
 }
@@ -154,20 +156,24 @@ export function TimerRing({ model, now }: Props) {
       </Svg>
 
       <View style={styles.center} pointerEvents="none">
-        <Text variant="caption" tone="mist" style={styles.state}>
+        <Text variant="caption" tone="mist" maxFontSizeMultiplier={1.15} style={styles.state}>
           {stateLabel(model.state)}
         </Text>
         <View style={styles.digits}>
           <Cell text={digits.h1} initial={initial.h.charAt(0)} size={46} />
           <Cell text={digits.h2} initial={initial.h.charAt(1)} size={46} />
-          <Text style={styles.colon}>:</Text>
+          <Text style={styles.colon} allowFontScaling={false}>
+            :
+          </Text>
           <Cell text={digits.m1} initial={initial.m.charAt(0)} size={46} />
           <Cell text={digits.m2} initial={initial.m.charAt(1)} size={46} />
-          <Text style={styles.colon}>:</Text>
+          <Text style={styles.colon} allowFontScaling={false}>
+            :
+          </Text>
           <Cell text={digits.s1} initial={initial.s.charAt(0)} size={46} />
           <Cell text={digits.s2} initial={initial.s.charAt(1)} size={46} />
         </View>
-        <Text variant="caption" tone="mist">
+        <Text variant="caption" tone="mist" maxFontSizeMultiplier={1.15}>
           {goalLine}
         </Text>
       </View>
@@ -188,5 +194,5 @@ const styles = StyleSheet.create({
     margin: 0,
     fontVariant: ['tabular-nums'],
   },
-  colon: { fontFamily: font.serif, fontSize: 40, lineHeight: 46, color: color.mist, marginHorizontal: 1 },
+  colon: { fontFamily: font.serif, fontSize: 40, lineHeight: 58, color: color.mist, marginHorizontal: 1 },
 });

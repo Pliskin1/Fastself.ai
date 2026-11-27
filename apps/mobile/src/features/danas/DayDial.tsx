@@ -40,6 +40,9 @@ function arc(start: number, length: number, r: number): string {
   return `M ${a.x} ${a.y} A ${r} ${r} 0 ${length > 720 ? 1 : 0} 1 ${b.x} ${b.y}`;
 }
 
+const DIGIT = 50;
+const SECONDS = 18;
+
 function pad(v: number): string {
   'worklet';
   return (v < 10 ? '0' : '') + v;
@@ -73,7 +76,9 @@ function Cell({ text, initial, size, style }: CellProps) {
       accessible={false}
       defaultValue={initial}
       animatedProps={props}
-      style={[styles.cell, { width: size * 0.58, fontSize: size, lineHeight: size * 1.06 }, style]}
+      allowFontScaling={false}
+      // No lineHeight: on iOS it shifts TextInput text up, so the digits get cut and cover the label.
+      style={[styles.cell, { width: size * 0.58, height: size * 1.25, fontSize: size }, style]}
     />
   );
 }
@@ -238,21 +243,23 @@ export function DayDial({ model, dayStartMs, minute, now }: Props) {
       <View style={styles.center} pointerEvents="none">
         {model.hasWindow ? (
           <>
-            <Text variant="caption" tone="mist">
+            <Text variant="caption" tone="mist" maxFontSizeMultiplier={1.15} style={styles.line}>
               {model.label}
             </Text>
             <View style={styles.digits}>
-              <Cell text={digits.h1} initial={initial.h.charAt(0)} size={62} />
-              <Cell text={digits.h2} initial={initial.h.charAt(1)} size={62} />
-              <Text style={styles.colon}>:</Text>
-              <Cell text={digits.m1} initial={initial.m.charAt(0)} size={62} />
-              <Cell text={digits.m2} initial={initial.m.charAt(1)} size={62} />
-              <View style={styles.seconds}>
-                <Cell text={digits.s1} initial={initial.s.charAt(0)} size={20} style={styles.secondsText} />
-                <Cell text={digits.s2} initial={initial.s.charAt(1)} size={20} style={styles.secondsText} />
-              </View>
+              <Cell text={digits.h1} initial={initial.h.charAt(0)} size={DIGIT} />
+              <Cell text={digits.h2} initial={initial.h.charAt(1)} size={DIGIT} />
+              <Text style={styles.colon} allowFontScaling={false}>
+                :
+              </Text>
+              <Cell text={digits.m1} initial={initial.m.charAt(0)} size={DIGIT} />
+              <Cell text={digits.m2} initial={initial.m.charAt(1)} size={DIGIT} />
             </View>
-            <Text variant="caption" tone="mist">
+            <View style={styles.seconds}>
+              <Cell text={digits.s1} initial={initial.s.charAt(0)} size={SECONDS} />
+              <Cell text={digits.s2} initial={initial.s.charAt(1)} size={SECONDS} />
+            </View>
+            <Text variant="caption" tone="mist" maxFontSizeMultiplier={1.15} style={styles.line}>
               {model.sub}
             </Text>
           </>
@@ -268,18 +275,18 @@ export function DayDial({ model, dayStartMs, minute, now }: Props) {
 
 const styles = StyleSheet.create({
   wrap: { width: SIZE, height: SIZE, alignSelf: 'center' },
-  center: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', gap: 2 },
-  digits: { flexDirection: 'row', alignItems: 'flex-end' },
-  cell: { padding: 0, color: color.paper, fontFamily: font.serif, textAlign: 'center' },
+  center: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
+  line: { textAlign: 'center', maxWidth: 150 },
+  digits: { flexDirection: 'row', alignItems: 'center' },
+  cell: { padding: 0, margin: 0, color: color.paper, fontFamily: font.serif, textAlign: 'center' },
   colon: {
     fontFamily: font.serif,
-    fontSize: 62,
-    lineHeight: 62,
+    fontSize: DIGIT,
+    lineHeight: DIGIT * 1.45,
     color: color.paper,
-    width: 62 * 0.26,
+    width: DIGIT * 0.26,
     textAlign: 'center',
   },
-  seconds: { flexDirection: 'row', marginLeft: 4, marginBottom: 6, opacity: 0.7 },
-  secondsText: { color: color.paper },
-  word: { fontFamily: font.serifItalic, fontSize: 56, lineHeight: 62, color: color.paper },
+  seconds: { flexDirection: 'row', marginTop: -6, marginBottom: 2, opacity: 0.7 },
+  word: { fontFamily: font.serifItalic, fontSize: 56, lineHeight: 81, color: color.paper },
 });

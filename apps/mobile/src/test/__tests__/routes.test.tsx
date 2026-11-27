@@ -18,13 +18,12 @@ import R11 from '@/app/prakse';
 import R12 from '@/app/alergije';
 import R13 from '@/app/vaktija';
 import R14 from '@/app/privatnost';
-import R15 from '@/app/asistent';
 import R16 from '@/app/nalog';
 import R17 from '@/app/(sheets)/prijava-greske';
-import R18 from '@/app/(sheets)/ai-pristanak';
 import R19 from '@/app/(sheets)/brisanje';
 import R20 from '@/app/(sheets)/izuzetak';
 import R21 from '@/app/(sheets)/kupovina';
+import R22 from '@/app/uslovi';
 
 const routes: [string, ComponentType, string][] = [
   ['welcome', R0, 'screen-welcome'],
@@ -42,13 +41,12 @@ const routes: [string, ComponentType, string][] = [
   ['alergije', R12, 'screen-alergije'],
   ['vaktija', R13, 'screen-vaktija'],
   ['privatnost', R14, 'screen-privatnost'],
-  ['asistent', R15, 'screen-asistent'],
   ['nalog', R16, 'screen-nalog'],
   ['prijava-greske', R17, 'screen-prijava-greske'],
-  ['ai-pristanak', R18, 'screen-ai-pristanak'],
   ['brisanje', R19, 'screen-brisanje'],
   ['izuzetak', R20, 'screen-izuzetak'],
   ['kupovina', R21, 'screen-kupovina'],
+  ['uslovi', R22, 'screen-uslovi'],
 ];
 
 describe('route stubs', () => {

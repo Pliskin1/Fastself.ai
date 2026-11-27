@@ -24,37 +24,33 @@ export default function IzuzetakSheet() {
   };
 
   return (
-    <View style={styles.fill}>
-      <ScreenScroll testID="screen-izuzetak" contentStyle={styles.content}>
-        <Display style={styles.title}>{t('exception.title')}</Display>
-        <Body tone="mist">{t('exception.body')}</Body>
-        <View style={styles.chips}>
-          {REASONS.map((r) => (
-            <Chip
-              key={r}
-              variant="toggle"
-              testID={`chip-reason-${r}`}
-              label={t(`exception.reason.${r}`)}
-              selected={reason === r}
-              onPress={() => setReason(r)}
-            />
-          ))}
-        </View>
-        {plan.ramadanDay > 0 ? <Caption>{t('exception.kaza')}</Caption> : null}
-        <PrimaryButton
-          testID="btn-confirm-exception"
-          label={t('exception.confirm')}
-          disabled={!reason}
-          onPress={confirm}
-        />
-      </ScreenScroll>
-    </View>
+    <ScreenScroll testID="screen-izuzetak" sheet>
+      <Display style={styles.title}>{t('exception.title')}</Display>
+      <Body tone="mist">{t('exception.body')}</Body>
+      <View style={styles.chips}>
+        {REASONS.map((r) => (
+          <Chip
+            key={r}
+            variant="toggle"
+            testID={`chip-reason-${r}`}
+            label={t(`exception.reason.${r}`)}
+            selected={reason === r}
+            onPress={() => setReason(r)}
+          />
+        ))}
+      </View>
+      {plan.ramadanDay > 0 ? <Caption>{t('exception.kaza')}</Caption> : null}
+      <PrimaryButton
+        testID="btn-confirm-exception"
+        label={t('exception.confirm')}
+        disabled={!reason}
+        onPress={confirm}
+      />
+    </ScreenScroll>
   );
 }
 
 const styles = StyleSheet.create({
-  fill: { flex: 1, backgroundColor: 'rgba(11,13,36,0.96)' },
-  content: { paddingTop: 24 },
-  title: { fontSize: 30, lineHeight: 34 },
+  title: { fontSize: 30, lineHeight: 44 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
 });

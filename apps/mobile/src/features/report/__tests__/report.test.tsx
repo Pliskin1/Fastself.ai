@@ -34,7 +34,7 @@ describe('prijava greske sheet', () => {
     await renderForm({ date: '2026-12-02', context: 'danas' });
     expect(screen.getByText('Pogrešno pravilo')).toBeTruthy();
     expect(screen.getByText('Pogrešno vrijeme')).toBeTruthy();
-    expect(screen.getByText('Problem sa receptom')).toBeTruthy();
+    expect(screen.getByText('Namirnice i alergije')).toBeTruthy();
     expect(screen.getByText('Nešto drugo')).toBeTruthy();
     expect(screen.getByText('Šaljemo samo ovaj opis, datum i verziju pravila. Bez imena i lokacije.')).toBeTruthy();
     expect(screen.getByText('Odnosi se na: Srijeda, 2. decembar, ekran Danas')).toBeTruthy();

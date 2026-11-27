@@ -29,7 +29,7 @@ export function KalendarHeader({ month, showToday, onPrev, onNext, onToday }: Pr
 const styles = StyleSheet.create({
   wrap: { gap: 6 },
   titleRow: { flexDirection: 'row', alignItems: 'baseline', gap: 10 },
-  year: { fontFamily: font.serifItalic, fontSize: 20, lineHeight: 26 },
+  year: { fontFamily: font.serifItalic, fontSize: 20, lineHeight: 29 },
   controls: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   spacer: { flex: 1 },
 });

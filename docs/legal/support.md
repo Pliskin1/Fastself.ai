@@ -22,7 +22,11 @@ Profil → Grad i vaktija → Početak Ramazana: pomjeri za jedan dan.
 Podešavanja telefona → Obavještenja → fastself.ai: dozvoli obavještenja. Zatim otvori aplikaciju, da ih ponovo zakaže.
 
 **Kako da obrišem nalog?**
-Profil → Obriši nalog. Brišemo sve podatke sa servera i opozivamo prijavu uz Apple.
+Profil → Obriši nalog. Brišemo sve podatke sa servera.
+
+## Brisanje naloga bez aplikacije
+Ako nemaš aplikaciju, pošalji email sa adrese naloga na **[POPUNI: email za podršku]** s naslovom "Brisanje naloga".
+Brišemo nalog i sve podatke na serveru u roku od 30 dana i potvrđujemo ti to emailom.
 
 **Kako da izvezem podatke?**
 Profil → Izvezi moje podatke.
@@ -35,3 +39,7 @@ Politika privatnosti: [privacy](./privacy). Uslovi korišćenja: [terms](./terms
 
 Email **[POPUNI: support email]**; we reply within 2 business days. In the app: Profile → Report a problem.
 Delete your account: Profile → Delete account. Export your data: Profile → Export my data.
+
+## Delete your account without the app (fastself.ai)
+Send an email from the account address to **[POPUNI: support email]** with the subject "Delete account". We delete the
+account and all server data within 30 days and confirm by email.

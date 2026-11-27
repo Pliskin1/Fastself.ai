@@ -64,21 +64,20 @@ eas submit -p ios --latest                      # uploads to App Store Connect
 - **Price**: free. Availability: all countries, or ME + region first.
 - **Screenshots**: 6.9" iPhone (iPhone 18 Pro Max Simulator), 5–6 shots from `e2e/maestro/screenshots.yaml`:
   - Danas dusk (Božićni post + IF), Danas Ramadan iftar countdown.
-  - Kalendar, Šta da jedem (validated recipe + rejected).
+  - Kalendar, Plan.
   - Tajmer, Privatnost.
   Add a short caption overlay only if time allows; plain screenshots are fine.
 - **Copyright**: "2026 <legal entity>".
 
 ## 5. App Privacy ("nutrition labels")
-Data is collected only when the user creates an account or uses AI. Declare it like this:
+Data is collected only when the user creates an account or sends a report or rating (v1 has no AI). Declare it like this:
 | Data type | Collected | Linked to user | Tracking | Purpose |
 |---|---|---|---|---|
-| Contact Info: Email Address | yes (email login; Apple may relay) | yes | no | App Functionality |
+| Contact Info: Email Address | yes (email + password login) | yes | no | App Functionality |
 | Identifiers: User ID | yes (account) | yes | no | App Functionality |
-| Identifiers: Device ID (random install id, hashed, rate limit) | yes | no | no | App Functionality |
 | Health & Fitness: Health (allergies), Fitness (fasting history) | yes, only with sync consent | yes | no | App Functionality |
 | Sensitive Info (religious practice) | yes, only with sync consent | yes | no | App Functionality |
-| User Content: Other (error reports) | yes | no | no | App Functionality |
+| User Content: Other (error reports and ratings) | yes | no | no | App Functionality |
 | Location | **no** (city is chosen on the device; coordinates are never sent) | | | |
 | Diagnostics | no (unless crash reporting is added later) | | | |
 Do not track and do not use the ATT prompt. AI requests contain no personal data (see API.md §1).
@@ -90,32 +89,35 @@ Do not track and do not use the ATT prompt. AI requests contain no personal data
 | 2.1 | No crashes, no placeholders, backend live during review | QA matrix, copy test, prod keepalive cron |
 | 2.3 | Accurate metadata and screenshots from the real app | Maestro screenshots |
 | 4.0 | Native UI, no web wrapper; sign-in inside the app | Expo native, native Apple button |
-| 4.8 | Sign in with Apple if third-party login is offered | Apple offered (email OTP is first-party) |
+| 4.8 | Sign in with Apple if third-party login is offered | v1 offers only first-party email + password, so not required |
 | 5.1.1(i) | Privacy policy in the app and in App Store Connect | Profil → Privatnost → link; ASC URL |
 | 5.1.1(ii) | Consent for data collection, revocable | consents table, Profil switches |
 | 5.1.1(iii) | Data minimisation | city only, no coordinates; AI payload minimal |
 | 5.1.1(iv) | Respect permission refusal; no forced permissions | dozvole optional; app works without |
 | 5.1.1(v) | Login optional when not required; **in-app account deletion**; revoke the Apple token | guest mode, brisanje sheet, delete-account function |
-| 5.1.2(i) | Disclose and get permission before sharing personal data with third-party AI | ai-pristanak sheet names the provider |
+| 5.1.2(i) | Disclose and get permission before sharing personal data with third-party AI | v1 has no AI (entry points hidden) |
 | 5.1.3 | Health data not used for ads, not stored in iCloud | none |
 | 5.6 | Honest developer behaviour; support contact works | support page and email |
 
 ## 7. Review notes (App Review Information → Notes)
 ```
 fastself.ai shows daily fasting rules and times for Orthodox fasting, Ramadan and intermittent fasting.
-No login is required: all features work as a guest. An account is optional and only syncs data between devices.
-To test account features, use Sign in with Apple with any Apple ID, or email login (a 6-digit code is emailed).
-To delete an account: Profil → Obriši nalog. This deletes all server data and revokes the Sign in with Apple token.
-AI meal suggestions require explicit consent (Profil → AI prijedlozi jela). We send only a list of forbidden food
-categories, the meal type and chosen ingredients to <AI provider>. No personal data is sent. Every suggested recipe
-is validated on the device and on the server against the day's rule and the user's allergies.
+No login is required: all features work as a guest. An account (email + password) is optional and only syncs
+practices, allergies and fasting history between devices.
+Demo account: review@fastself.ai / <password set by Andrej on prod>. Profil → Prijavi se ili napravi nalog → Prijava.
+To delete an account: Profil → Obriši nalog (on the account card and in the Privatnost group). This deletes the
+account and all server data immediately.
+Terms of use: Profil → Uslovi korišćenja. Privacy summary: Profil → Politika privatnosti.
+Rating: Profil → Ocijeni aplikaciju (anonymous feedback to the team).
+Version 1.0 has no AI features.
 The app is not a medical app and contains no health claims. Interface language: Montenegrin.
 ```
-Demo account: not needed (guest mode plus Sign in with Apple). If App Review asks, create `review@<domain>` with a
-mailbox you control.
+Demo account (v1 decision, 27 Nov): `review@fastself.ai` with a long fixed password, created by A on prod
+(email confirmation off or the address confirmed), never deleted, sync data seeded with one practice. Put the email and
+the password into App Store Connect → App Review Information → Sign-in required, and into Play Console → App access.
 
 ## 8. TestFlight "What to test" (external)
-"Prođi onboarding, izaberi bar jednu praksu, otvori Danas, Kalendar i Šta da jedem. Probaj prijavu i brisanje naloga.
+"Prođi onboarding, izaberi bar jednu praksu, otvori Danas, Kalendar i Tajmer. Probaj prijavu, ocjenu i brisanje naloga.
 Prijavi greške dugmetom Prijavi grešku ili na <support email>."
 
 ## 9. If App Review rejects (typical fixes, reply in Resolution Center the same day)

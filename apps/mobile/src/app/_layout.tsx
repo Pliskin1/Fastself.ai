@@ -8,6 +8,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SkyBackground, ToastProvider } from '@/components';
 import { applyDevLink } from '@/lib/dev';
+import { startNotificationSync } from '@/notifications';
+import { startSync } from '@/sync';
 import { useAppFonts } from '@/theme/fonts';
 
 SplashScreen.preventAutoHideAsync();
@@ -23,6 +25,9 @@ const SHEET = {
   sheetAllowedDetents: [0.5, 1],
   contentStyle: { backgroundColor: 'transparent' },
 };
+
+// Forms taller than half the screen open fully, so the send button is not hidden below the edge.
+const TALL_SHEET = { ...SHEET, sheetAllowedDetents: [1] };
 
 function useDevLink() {
   useEffect(() => {
@@ -41,6 +46,15 @@ export default function RootLayout() {
   useDevLink();
 
   useEffect(() => {
+    const stopSync = startSync();
+    const stopNotifications = startNotificationSync();
+    return () => {
+      stopSync();
+      stopNotifications();
+    };
+  }, []);
+
+  useEffect(() => {
     if (fontsReady) SplashScreen.hideAsync();
   }, [fontsReady]);
 
@@ -55,7 +69,7 @@ export default function RootLayout() {
             <StatusBar style="light" />
             <ThemeProvider value={NAV_THEME}>
               <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
-                <Stack.Screen name="(sheets)/prijava-greske" options={SHEET} />
+                <Stack.Screen name="(sheets)/prijava-greske" options={TALL_SHEET} />
                 <Stack.Screen name="(sheets)/ai-pristanak" options={SHEET} />
                 <Stack.Screen name="(sheets)/brisanje" options={SHEET} />
                 <Stack.Screen name="(sheets)/izuzetak" options={SHEET} />

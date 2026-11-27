@@ -1,0 +1,15 @@
+# Tajmer: switch to 14:10, start, check the running state, stop early and read the message.
+appId: ai.fastself.app
+---
+- launchApp
+- extendedWaitUntil: { visible: 'Profil|Počni', timeout: 30000 }
+- openLink: 'fastself://dev?reset=1&preset=if14&date=2026-12-03&time=20:15&tab=tajmer'
+- assertVisible: { id: 'screen-tajmer' }
+- tapOn: { id: 'seg-plan-14' }
+- tapOn: { id: 'timer-toggle' }
+- assertVisible: 'Postiš'
+- assertVisible: { id: 'stat-end' }
+- openLink: 'fastself://dev?date=2026-12-04&time=07:40&tab=tajmer'
+- assertVisible: 'Postiš'
+- tapOn: { id: 'timer-toggle' }
+- assertVisible: { id: 'timer-result' }
