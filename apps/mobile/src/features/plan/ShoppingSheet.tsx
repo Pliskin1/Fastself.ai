@@ -23,51 +23,47 @@ export function ShoppingSheet() {
   };
 
   return (
-    <View style={styles.fill}>
-      <ScreenScroll testID="screen-kupovina">
-        <Display style={styles.title}>{t('plan.shopping')}</Display>
-        <Caption>{t('plan.shopping.caption')}</Caption>
-        <View style={styles.list}>
-          {items.map((item) => {
-            const on = checked.includes(item.name);
-            const name = capitalFirst(item.name);
-            const count = shoppingCount(item.count);
-            return (
-              <Pressable
-                key={item.name}
-                testID={`shop-item-${item.name}`}
-                accessibilityRole="checkbox"
-                accessibilityLabel={count ? `${name}, ${count}` : name}
-                accessibilityState={{ checked: on }}
-                onPress={() => toggle(item.name)}
-                style={styles.row}
-              >
-                <View style={[styles.box, on && styles.boxOn]}>
-                  {on ? <Icon name="check" size={16} color={color.sunInk} /> : null}
-                </View>
-                <View style={[styles.text, on && styles.textOn]}>
-                  <Text variant="body" style={on ? styles.struck : undefined}>
-                    {name}
+    <ScreenScroll testID="screen-kupovina" sheet>
+      <Display style={styles.title}>{t('plan.shopping')}</Display>
+      <Caption>{t('plan.shopping.caption')}</Caption>
+      <View style={styles.list}>
+        {items.map((item) => {
+          const on = checked.includes(item.name);
+          const name = capitalFirst(item.name);
+          const count = shoppingCount(item.count);
+          return (
+            <Pressable
+              key={item.name}
+              testID={`shop-item-${item.name}`}
+              accessibilityRole="checkbox"
+              accessibilityLabel={count ? `${name}, ${count}` : name}
+              accessibilityState={{ checked: on }}
+              onPress={() => toggle(item.name)}
+              style={styles.row}
+            >
+              <View style={[styles.box, on && styles.boxOn]}>
+                {on ? <Icon name="check" size={16} color={color.sunInk} /> : null}
+              </View>
+              <View style={[styles.text, on && styles.textOn]}>
+                <Text variant="body" style={on ? styles.struck : undefined}>
+                  {name}
+                </Text>
+                {count ? (
+                  <Text variant="caption" tone="mist" style={on ? styles.struck : undefined}>
+                    {count}
                   </Text>
-                  {count ? (
-                    <Text variant="caption" tone="mist" style={on ? styles.struck : undefined}>
-                      {count}
-                    </Text>
-                  ) : null}
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
-      </ScreenScroll>
-    </View>
+                ) : null}
+              </View>
+            </Pressable>
+          );
+        })}
+      </View>
+    </ScreenScroll>
   );
 }
 
 const styles = StyleSheet.create({
-  // Opaque on purpose: the route background is transparent, and at 0.96 the screen behind ghosted through on Android.
-  fill: { flex: 1, backgroundColor: color.ink },
-  title: { fontSize: 30, lineHeight: 34 },
+  title: { fontSize: 30, lineHeight: 44 },
   list: { gap: 2 },
   row: { minHeight: layout.minHit, flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 8 },
   box: {

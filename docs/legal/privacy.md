@@ -25,9 +25,9 @@ ne čuvamo ih i ne šaljemo. Grad možeš izabrati i ručno.
 
 ## 3. Nalog i sinhronizacija (opciono)
 Ako napraviš nalog, čuvamo:
-- email adresu (kod prijave emailom) ili Apple identifikator i email koji Apple podijeli, koji može biti skriveni Apple email;
-- uz tvoj pristanak za svaku grupu posebno: prakse i podešavanja (uključujući izabrani grad za vaktiju, bez
-  koordinata), alergije i ishranu, istoriju posta;
+- email adresu i lozinku (lozinku čuvamo samo kao kriptografski otisak, niko je ne može pročitati);
+- uz tvoj pristanak za svaku grupu posebno: prakse i podešavanja (uključujući grad i vaktiju), alergije i ishranu,
+  istoriju posta;
 - zapis o datim i povučenim pristancima.
 
 Osnov obrade: izvršenje usluge koju tražiš i tvoj izričit pristanak. Prakse mogu otkriti vjersko uvjerenje, a
@@ -35,11 +35,9 @@ alergije zdravstveni podatak, zato ih šaljemo samo uz izričit pristanak, koji 
 
 Podaci se čuvaju na serverima u Evropskoj uniji (Frankfurt, Njemačka) kod provajdera Supabase. Veza je šifrovana.
 
-## 4. AI prijedlozi jela (opciono)
-Samo ako ih uključiš, AI servisu treće strane, Cloudflare, Inc., SAD (Workers AI), šaljemo:
-- listu kategorija namirnica koje taj dan ne jedeš i namirnice koje sam dodaš kao izbjegavane;
-- obrok i sastojke koje izabereš;
-- jezik odgovora.
+## 4. Prijave grešaka i ocjene
+Kad pošalješ prijavu ili ocjenu, šaljemo ono što napišeš ili izabereš, datum, vrstu i verziju aplikacije i pravila.
+Prijava i ocjena nikad nisu vezane za nalog. Čuvamo ih najviše 12 mjeseci.
 
 Ne šaljemo ime, email, identifikator naloga, vjeru, lokaciju ni sigurnosne odgovore. Zahtjev ide preko našeg servera,
 pa AI servis ne vidi ni tvoju IP adresu. Da bismo ograničili zloupotrebu, brojimo zahtjeve po heširanom
@@ -53,36 +51,34 @@ recept) i verziju aplikacije i pravila. Prijava nije vezana za tvoj nalog. Prija
 ## 6. Podsjetnici
 Podsjetnici su lokalni: pravi ih telefon, bez našeg servera i bez push tokena.
 
-## 7. Ko još obrađuje podatke
+## 6. Ko još obrađuje podatke
 | Ko | Zašto | Gdje |
 |---|---|---|
 | Supabase Inc. | baza i prijava | EU (Frankfurt) |
-| [POPUNI: Resend ili Brevo] | slanje koda za prijavu emailom | [POPUNI] |
-| Apple Inc. | prijava uz Apple | prema Apple uslovima |
-| Cloudflare, Inc. (Workers AI) | AI prijedlozi jela, samo uz pristanak, bez ličnih podataka | SAD; obrada na Cloudflare mreži |
 
-Za prenos van EU koristimo standardne ugovorne klauzule koje nude ovi provajderi. Ne prodajemo podatke, ne
-prikazujemo reklame i ne pratimo te između aplikacija.
+Za prenos van EU koristimo standardne ugovorne klauzule koje nudi ovaj provajder. Ne prodajemo podatke, ne
+prikazujemo reklame i ne pratimo te između aplikacija. Ova verzija nema AI funkcija.
 
-## 8. Koliko dugo čuvamo podatke
+## 7. Koliko dugo čuvamo podatke
 Podatke naloga čuvamo dok ga ne obrišeš. Brisanjem naloga u aplikaciji (Profil → Obriši nalog) brišemo sve podatke sa
-servera i opozivamo prijavu uz Apple. Podaci na telefonu se brišu kad ih obrišeš u Profilu ili kad ukloniš aplikaciju.
+servera. Nalog možeš obrisati i bez aplikacije, preko stranice Podrška. Podaci na telefonu se brišu kad ih obrišeš u
+Profilu ili kad ukloniš aplikaciju.
 
-## 9. Tvoja prava
+## 8. Tvoja prava
 Imaš pravo na pristup, ispravku, brisanje, prenosivost (Profil → Izvezi moje podatke), ograničenje obrade i povlačenje
 pristanka u bilo kom trenutku. Piši na [POPUNI: email]. Odgovaramo u roku od 30 dana. Pritužbu možeš podnijeti
 Agenciji za zaštitu ličnih podataka i slobodan pristup informacijama Crne Gore, ili nadzornom organu u zemlji EU u
 kojoj živiš.
 
-## 10. Djeca
+## 9. Djeca
 Za mlađe od 18 godina isprekidani post je isključen. Nalog nije namijenjen djeci mlađoj od 16 godina bez saglasnosti
 roditelja.
 
-## 11. Zdravlje
+## 10. Zdravlje
 fastself.ai nije medicinska aplikacija i ne daje medicinske savjete. Ako imaš zdravstveno stanje, posavjetuj se sa
 ljekarom prije posta.
 
-## 12. Izmjene
+## 11. Izmjene
 O bitnim izmjenama obavještavamo u aplikaciji. Datum na vrhu pokazuje posljednju izmjenu.
 
 ---
@@ -98,27 +94,21 @@ It works without an account and keeps data on your phone.
    settings, fasting history, exceptions and their reasons, safety answers (pregnancy, diabetes, eating disorder,
    under 18) and a random install id. Safety answers never leave the device.
 2. **Location:** used once, if you allow it, to find the nearest city. Coordinates are discarded and never sent.
-3. **Optional account and sync:** email address or Apple identifier (possibly a private relay email); with your consent
-   per group, practices and settings (including the chosen city for prayer times, never coordinates), allergies and
-   diet, fasting history; a record of consents. Practices can reveal
-   religious belief and allergies are health data, so they are synced only with explicit consent, which you can withdraw
-   in Profile. Stored in the EU (Frankfurt) with Supabase.
-4. **Optional AI meal suggestions:** only if you turn them on, we send Cloudflare, Inc. (Workers AI, USA) the forbidden food
-   categories, your own avoid words, the meal, the ingredients you pick and the language. No name, email, account id,
-   religion, location or safety answers. Requests go through our server, so the provider does not see your IP address.
-   A hashed install id counts requests for abuse limits and is deleted after 30 days.
-5. **Error reports:** the text you write, the date, the type, the part of the app it is about (for example a recipe)
-   and the app and rule versions. Not linked to your account. Kept for up to 12 months.
-6. **Reminders** are local notifications; no push tokens.
-7. **Processors:** Supabase (database and auth, EU), [POPUNI: email provider] (login codes), Apple (Sign in with Apple),
-   Cloudflare, Inc. (Workers AI, USA; meal suggestions, with consent). Transfers outside the EU rely on standard contractual clauses.
-   No selling of data, no ads, no tracking.
-8. **Retention and deletion:** account data until you delete the account in the app (Profile → Delete account), which
-   deletes all server data and revokes Sign in with Apple.
-9. **Your rights:** access, rectification, erasure, portability (Profile → Export my data), restriction and withdrawal
+3. **Optional account and sync:** email address and password (stored only as a cryptographic hash); with your consent
+   per group, practices and settings (including city and prayer time settings), allergies and diet, fasting history; a
+   record of consents. Practices can reveal religious belief and allergies are health data, so they are synced only
+   with explicit consent, which you can withdraw in Profile. Stored in the EU (Frankfurt) with Supabase.
+4. **Error reports and ratings:** what you write or choose, the date, the type and the app and rule versions. Never
+   linked to your account. Kept for up to 12 months.
+5. **Reminders** are local notifications; no push tokens.
+6. **Processors:** Supabase (database and auth, EU). Transfers outside the EU rely on standard contractual clauses.
+   No selling of data, no ads, no tracking. This version has no AI features.
+7. **Retention and deletion:** account data until you delete the account in the app (Profile → Delete account), which
+   deletes all server data. You can also request deletion without the app on the Support page.
+8. **Your rights:** access, rectification, erasure, portability (Profile → Export my data), restriction and withdrawal
    of consent at any time. Write to [POPUNI: email]; we answer within 30 days. You can complain to the Montenegrin
    Personal Data Protection Agency or to the supervisory authority where you live.
-10. **Children:** intermittent fasting is disabled for users under 18. Accounts are not intended for children under 16
-    without parental consent.
-11. **Health:** fastself.ai is not a medical app and gives no medical advice.
-12. **Changes:** material changes are announced in the app.
+9. **Children:** intermittent fasting is disabled for users under 18. Accounts are not intended for children under 16
+   without parental consent.
+10. **Health:** fastself.ai is not a medical app and gives no medical advice.
+11. **Changes:** material changes are announced in the app.

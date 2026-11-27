@@ -61,53 +61,78 @@ function skyAt(now: Date, city: CityId, demoHour: number | null): Sky {
   };
 }
 
-type StarProps = { x: number; y: number; size: number; base: number; period: number; animate: boolean };
+type StarData = { x: number; y: number; size: number; base: number; period: number };
 
-const Star = memo(function Star({ x, y, size, base, period, animate }: StarProps) {
-  const o = useSharedValue(base);
+const GROUPS = 6;
+
+/**
+ * One twinkle animation per group of stars instead of one per star: 6 animated views per sky instead of 54, so the
+ * tabs (each has its own sky) do not run hundreds of endless animations while the user scrolls.
+ */
+const StarGroup = memo(function StarGroup({
+  stars,
+  period,
+  animate,
+}: {
+  stars: StarData[];
+  period: number;
+  animate: boolean;
+}) {
+  const o = useSharedValue(1);
   useEffect(() => {
     if (!animate) {
-      o.value = base;
+      o.value = 1;
       return;
     }
     o.value = withRepeat(
       withSequence(
-        withTiming(base * 0.3, { duration: period / 2, easing: Easing.inOut(Easing.quad) }),
-        withTiming(base, { duration: period / 2, easing: Easing.inOut(Easing.quad) }),
+        withTiming(0.35, { duration: period / 2, easing: Easing.inOut(Easing.quad) }),
+        withTiming(1, { duration: period / 2, easing: Easing.inOut(Easing.quad) }),
       ),
       -1,
     );
     return () => cancelAnimation(o);
-  }, [animate, base, period, o]);
+  }, [animate, period, o]);
   const style = useAnimatedStyle(() => ({ opacity: o.value }));
   return (
-    <Animated.View
-      style={[
-        {
-          position: 'absolute',
-          left: x,
-          top: y,
-          width: size,
-          height: size,
-          borderRadius: size,
-          backgroundColor: '#fff',
-        },
-        style,
-      ]}
-    />
+    <Animated.View style={[StyleSheet.absoluteFill, style]}>
+      {stars.map((s, i) => (
+        <View
+          key={i}
+          style={{
+            position: 'absolute',
+            left: s.x,
+            top: s.y,
+            width: s.size,
+            height: s.size,
+            borderRadius: s.size,
+            backgroundColor: '#fff',
+            opacity: s.base,
+          }}
+        />
+      ))}
+    </Animated.View>
   );
 });
 
 type Props = {
   /** Welcome screen only: the day runs 0 to 24 h over 20 s, looped. */
   demoCycle?: boolean;
+  /** The moon, top right. Off on screens with a header there: it covered titles and header buttons. */
+  moon?: boolean;
   /** Overlay used on push screens and sheets. */
   dim?: boolean;
   width?: number;
   city?: CityId;
 };
 
-export function SkyBackground({ demoCycle = false, dim = false, width = 390, city = 'podgorica' }: Props) {
+export function SkyBackground({
+  demoCycle = false,
+  moon = false,
+  dim = false,
+  width = 390,
+  city = 'podgorica',
+}: Props) {
   const { reduced } = useMotion();
   const [tick, setTick] = useState(() => Date.now());
   const [demoHour, setDemoHour] = useState(0);
@@ -145,8 +170,14 @@ export function SkyBackground({ demoCycle = false, dim = false, width = 390, cit
   }, [target, reduced, demoCycle, fade]);
 
   const curStyle = useAnimatedStyle(() => ({ opacity: fade.value }));
-  const stars = useMemo(() => makeStars(width), [width]);
-  const moonVisible = target.alt < -4;
+  const groups = useMemo(() => {
+    const stars = makeStars(width);
+    return Array.from({ length: GROUPS }, (_, g) => ({
+      stars: stars.filter((_, i) => i % GROUPS === g),
+      period: 2600 + g * 650,
+    }));
+  }, [width]);
+  const moonVisible = moon && target.alt < -4;
   const { prev, cur } = layers;
 
   return (
@@ -177,8 +208,8 @@ export function SkyBackground({ demoCycle = false, dim = false, width = 390, cit
           <Ellipse cx="50%" cy="100%" rx="70%" ry="100%" fill="url(#glow)" />
         </Svg>
         <View style={[StyleSheet.absoluteFill, { opacity: cur.stars }]}>
-          {stars.map((s, i) => (
-            <Star key={i} {...s} animate={!reduced} />
+          {groups.map((group, g) => (
+            <StarGroup key={g} stars={group.stars} period={group.period} animate={!reduced} />
           ))}
         </View>
         {moonVisible ? (

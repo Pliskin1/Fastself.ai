@@ -1,0 +1,13 @@
+# Kalendar: next month, Božić 7.1.2027 is mrsno, back to today.
+appId: ai.fastself.app
+---
+- launchApp
+- extendedWaitUntil: { visible: 'Profil|Počni', timeout: 30000 }
+- openLink: 'fastself://dev?reset=1&preset=orthodox&date=2026-12-02&time=12:00&tab=kalendar'
+- assertVisible: { id: 'screen-kalendar' }
+- tapOn: { id: 'btn-cal-next' }
+- tapOn: { id: 'cal-2027-01-07' }
+- assertVisible: { id: 'selected-day-card' }
+- assertVisible: 'Mrsno'
+- tapOn: { id: 'btn-cal-today' }
+- assertVisible: { id: 'cal-2026-12-02' }

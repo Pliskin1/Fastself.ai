@@ -1,2 +1,3 @@
-// On in dev builds only until the meal-plan function is on the server and the flow is checked (P1 decision Thu 26 Nov 18:00).
-export const flags = { mealPlan: __DEV__ };
+// Off in every build for v1: AI meal plans are not part of the first release (the Jelovnik card and its consent stay
+// hidden; tests switch it on explicitly).
+export const flags = { mealPlan: false };

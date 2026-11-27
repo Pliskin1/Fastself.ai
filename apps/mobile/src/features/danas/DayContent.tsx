@@ -15,19 +15,7 @@ import {
 import { router, type Href } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import {
-  Body,
-  Caption,
-  Chip,
-  GlassCard,
-  LinkButton,
-  Pill,
-  PrimaryButton,
-  SecondaryButton,
-  Text,
-  Title,
-  useToast,
-} from '@/components';
+import { Body, Caption, Chip, GlassCard, LinkButton, Pill, SecondaryButton, Text, Title, useToast } from '@/components';
 import { t } from '@/copy/sr';
 import { useUpdateSettings } from '@/hooks';
 import { font } from '@/theme/fonts';
@@ -94,15 +82,25 @@ export function Complications({ plan }: { plan: DayPlan }) {
           <Circle cx={20} cy={20} r={18} fill="rgba(233,238,255,0.10)" />
           <Path d={moonPath(moon.phase, 20, 20, 18)} fill="rgba(233,238,255,0.92)" />
         </Svg>
-        <Caption style={styles.compText}>{moon.name}</Caption>
+        <Caption style={styles.compText} numberOfLines={2} maxFontSizeMultiplier={1.15}>
+          {moon.name}
+        </Caption>
       </Complication>
       <Complication testID="comp-julian" label={t('danas.comp.julian', { date: julianText })}>
-        <Text style={styles.compNumber}>{jul.d}</Text>
-        <Caption style={styles.compText}>{MONTHS_GEN[jul.m - 1]}</Caption>
+        <Text style={styles.compNumber} maxFontSizeMultiplier={1.2}>
+          {jul.d}
+        </Text>
+        <Caption style={styles.compText} numberOfLines={2} maxFontSizeMultiplier={1.15}>
+          {MONTHS_GEN[jul.m - 1]}
+        </Caption>
       </Complication>
       <Complication testID="comp-hijri" label={t('danas.comp.hijri', { date: hijriText })}>
-        <Text style={styles.compNumber}>{plan.hijri.d}</Text>
-        <Caption style={styles.compText}>{HIJRI_MONTHS[plan.hijri.m - 1]}</Caption>
+        <Text style={styles.compNumber} maxFontSizeMultiplier={1.2}>
+          {plan.hijri.d}
+        </Text>
+        <Caption style={styles.compText} numberOfLines={2} maxFontSizeMultiplier={1.15}>
+          {HIJRI_MONTHS[plan.hijri.m - 1]}
+        </Caption>
       </Complication>
     </View>
   );
@@ -161,11 +159,6 @@ export function PlateCard({ plan, settings }: { plan: DayPlan; settings: Setting
 export function Actions({ plan, onToggleWhy }: { plan: DayPlan; onToggleWhy: () => void }) {
   return (
     <View style={styles.actions}>
-      <PrimaryButton
-        testID="btn-what-to-eat"
-        label={t('danas.whatToEat')}
-        onPress={() => router.push('/asistent' as Href)}
-      />
       <SecondaryButton testID="btn-why" label={t('danas.why', { word: wordFor(plan.level) })} onPress={onToggleWhy} />
     </View>
   );
@@ -233,9 +226,9 @@ const styles = StyleSheet.create({
   legendDot: { width: 8, height: 8, borderRadius: 4 },
   comps: { flexDirection: 'row', justifyContent: 'space-between' },
   comp: { width: 104, height: 104 },
-  compInner: { width: 102, height: 102, alignItems: 'center', justifyContent: 'center', gap: 2 },
-  compNumber: { fontFamily: font.serif, fontSize: 30, lineHeight: 34, color: color.paper },
-  compText: { textAlign: 'center' },
+  compInner: { width: 102, height: 102, alignItems: 'center', justifyContent: 'center', gap: 2, paddingHorizontal: 10 },
+  compNumber: { fontFamily: font.serif, fontSize: 30, lineHeight: 44, color: color.paper },
+  compText: { textAlign: 'center', fontSize: 12, lineHeight: 15 },
   card: { padding: 16, gap: 12 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   actions: { gap: 10 },

@@ -14,11 +14,24 @@ import { getSupabase } from './supabase';
 // off iOS, which is a programming error. Nothing here logs an email, a code, a token or a user id.
 
 export type AuthError =
-  'cancelled' | 'offline' | 'rate_limited' | 'invalid_email' | 'invalid_code' | 'expired' | 'server';
+  | 'cancelled'
+  | 'offline'
+  | 'rate_limited'
+  | 'invalid_email'
+  | 'invalid_code'
+  | 'expired'
+  | 'server'
+  | 'invalid_credentials'
+  | 'email_taken'
+  | 'weak_password'
+  | 'confirm_email';
 export type AuthResult = { ok: true } | { ok: false; error: AuthError };
 
 export type AuthProvider = 'apple' | 'email';
 export type Session = { user: User | null; provider: AuthProvider | null };
+
+/** Shortest password the app accepts (the server allows 6; we ask for more). */
+export const MIN_PASSWORD_LENGTH = 8;
 
 /** How long the server keeps an email code valid (Auth setting, docs/API.md §3). */
 export const OTP_LIFETIME_SECONDS = 600;
@@ -233,6 +246,62 @@ export async function verifyEmailCode(email: string, code: string): Promise<Auth
     return error ? fail(mapError(error, 'verify', address)) : OK;
   } catch (e) {
     return fail(mapError(e, 'verify', address));
+  }
+}
+
+function mapPasswordError(error: unknown): AuthError {
+  if (isAuthRetryableFetchError(error)) return error.status === 0 ? 'offline' : 'server';
+  if (isAuthApiError(error)) {
+    const code: string | undefined = error.code;
+    if (error.status === 429 || code === 'over_request_rate_limit' || code === 'over_email_send_rate_limit') {
+      return 'rate_limited';
+    }
+    if (code === 'invalid_credentials') return 'invalid_credentials';
+    if (code === 'user_already_exists' || code === 'email_exists') return 'email_taken';
+    if (code === 'weak_password') return 'weak_password';
+    if (code === 'email_address_invalid' || code === 'validation_failed') return 'invalid_email';
+    if (code === 'email_not_confirmed') return 'confirm_email';
+  }
+  return 'server';
+}
+
+function checkCredentials(email: string, password: string): AuthError | null {
+  if (!EMAIL_SHAPE.test(normalise(email))) return 'invalid_email';
+  if (password.length < MIN_PASSWORD_LENGTH) return 'weak_password';
+  return null;
+}
+
+/**
+ * Creates an email + password account and signs in. With email confirmation on in the project the server gives no
+ * session; that answers `confirm_email`. The password is never stored or logged here.
+ */
+export async function signUpWithPassword(email: string, password: string): Promise<AuthResult> {
+  const supabase = getSupabase();
+  if (!supabase) return fail('server');
+  const invalid = checkCredentials(email, password);
+  if (invalid) return fail(invalid);
+  try {
+    const { data, error } = await supabase.auth.signUp({ email: normalise(email), password });
+    if (error) return fail(mapPasswordError(error));
+    // GoTrue answers a sign-up for an existing confirmed email with a user that has no identities.
+    if (data.user && data.user.identities?.length === 0) return fail('email_taken');
+    return data.session ? OK : fail('confirm_email');
+  } catch (e) {
+    return fail(mapPasswordError(e));
+  }
+}
+
+/** Signs in with email + password. On success the client holds the session and `useSession` follows. */
+export async function signInWithPassword(email: string, password: string): Promise<AuthResult> {
+  const supabase = getSupabase();
+  if (!supabase) return fail('server');
+  if (!EMAIL_SHAPE.test(normalise(email))) return fail('invalid_email');
+  if (password.length === 0) return fail('invalid_credentials');
+  try {
+    const { error } = await supabase.auth.signInWithPassword({ email: normalise(email), password });
+    return error ? fail(mapPasswordError(error)) : OK;
+  } catch (e) {
+    return fail(mapPasswordError(e));
   }
 }
 

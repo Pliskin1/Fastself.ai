@@ -7,7 +7,7 @@ import { PraksePicker } from '@/features/onboarding';
 export default function PrakseScreen() {
   const toast = useToast();
   return (
-    <ScreenScroll testID="screen-prakse" contentStyle={{ paddingTop: 12 }}>
+    <ScreenScroll testID="screen-prakse">
       <ScreenHeader title={t('prakse.title')} />
       <PraksePicker />
       <PrimaryButton

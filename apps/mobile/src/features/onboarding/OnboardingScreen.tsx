@@ -22,7 +22,13 @@ export function OnboardingScreen({ testID, title, sub, cta, onNext, disabled, ch
   const { enter } = useMotion();
   return (
     <View style={styles.fill}>
-      <ScreenScroll testID={testID} bottomInset={96} contentStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScreenScroll
+        testID={testID}
+        underHeader
+        bottomInset={96}
+        contentStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
         <Animated.View entering={enter(0)} style={styles.head}>
           <Display>{title}</Display>
           {sub ? <Body tone="mist">{sub}</Body> : null}

@@ -12,7 +12,7 @@ export default function WelcomeScreen() {
   const { enter } = useMotion();
   return (
     <View style={styles.fill}>
-      <SkyBackground demoCycle />
+      <SkyBackground demoCycle moon />
       <View style={[styles.brand, { top: insets.top + 14 }]}>
         <Svg width={22} height={22} viewBox="0 0 24 24">
           <Circle cx={12} cy={12} r={9.5} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth={1.4} />

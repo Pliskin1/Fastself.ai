@@ -5,7 +5,7 @@ import { CityCard, ManualCorrection, MethodList } from '@/features/profil/Vaktij
 
 export default function VaktijaScreen() {
   return (
-    <ScreenScroll testID="screen-vaktija" contentStyle={{ paddingTop: 12 }}>
+    <ScreenScroll testID="screen-vaktija">
       <ScreenHeader title={t('vaktija.title')} />
       <CityCard />
       <MethodList />

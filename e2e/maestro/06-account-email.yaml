@@ -1,20 +1,24 @@
-# Email OTP against LOCAL Supabase. Mailpit catches the email at http://127.0.0.1:54324.
+# Email + password sign up against LOCAL Supabase (email confirmation off), then turn on sync.
 appId: ai.fastself.app
 env:
   EMAIL: e2e-${MAESTRO_TS}@test.local
+  PASSWORD: lozinka-e2e-1
 ---
 - launchApp
-- tapOn: 'Profil'
+- extendedWaitUntil: { visible: 'Profil|Počni', timeout: 30000 }
+- openLink: 'fastself://dev?reset=1&preset=orthodox&date=2026-12-02&time=12:00&tab=profil'
 - tapOn: { id: 'btn-open-account' }
+- assertVisible: { id: 'screen-nalog' }
+- tapOn: { id: 'seg-auth-mode-signUp' }
 - tapOn: { id: 'input-email' }
 - inputText: ${EMAIL}
-- tapOn: { id: 'btn-send-code' }
-- runScript:
-    file: scripts/otp.js
-    env:
-      EMAIL: ${EMAIL}
-- tapOn: { id: 'input-code' }
-- inputText: ${output.otp}
-- tapOn: { id: 'btn-verify' }
+- tapOn: { id: 'input-password' }
+- inputText: ${PASSWORD}
+- hideKeyboard
+- tapOn: { id: 'btn-auth-submit' }
+- tapOn: { text: 'Not Now', optional: true }
+- assertVisible: 'Šta da sinhronizujemo?'
 - tapOn: { id: 'btn-enable-sync' }
-- assertVisible: 'Sinhronizacija uključena'
+- assertVisible: { id: 'screen-profil' }
+- assertVisible: { id: 'btn-sign-out' }
+- assertVisible: ${EMAIL}

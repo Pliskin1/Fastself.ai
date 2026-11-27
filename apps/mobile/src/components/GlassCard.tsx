@@ -20,6 +20,16 @@ export type GlassCardProps = ViewProps & {
   contentStyle?: StyleProp<ViewStyle>;
 };
 
+/**
+ * Live glass (Liquid Glass / blur) re-samples the moving sky and the content under every card on every scroll frame,
+ * which made long screens stutter and shimmer while scrolling. Cards use a static translucent fill instead, the same
+ * look Android already ships. Set to true to compare on a device.
+ */
+export const LIVE_GLASS = false;
+
+/** Static iOS card fill: the sky still shows through, nothing is re-rendered while scrolling. */
+const STATIC_FILL = 'rgba(20,24,56,0.72)';
+
 function useReduceTransparency(): boolean {
   const [on, setOn] = useState(false);
   useEffect(() => {
@@ -51,6 +61,8 @@ export function GlassCard({ children, radius = radii.card, style, contentStyle, 
     frame.backgroundColor = color.androidGlass;
   } else if (reduceTransparency) {
     frame.backgroundColor = color.solidCard;
+  } else if (!LIVE_GLASS) {
+    frame.backgroundColor = STATIC_FILL;
   } else if (isLiquidGlassAvailable()) {
     backdrop = (
       <GlassView

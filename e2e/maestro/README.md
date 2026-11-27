@@ -5,8 +5,9 @@ Prerequisites: Simulator "iPhone 18 Pro" booted, the dev build installed and run
 Maestro runs on the iOS Simulator only (D's Mac). Android is checked by hand (PLATFORMS.md §8).
 
 Run: `maestro test e2e/maestro` (all) or `maestro test e2e/maestro/01-onboarding.yaml` (one).
-Run 06 with a timestamp: `maestro test -e MAESTRO_TS=$(date +%s) e2e/maestro/06-account-email.yaml`.
+Run with a timestamp (06 and 07 need it, 07 continues from 06): `maestro test -e MAESTRO_TS=$(date +%s) e2e/maestro`.
 Inspect ids: `maestro studio`.
 
-Flows (TESTING.md §6): 01-onboarding, 06-account-email and screenshots.yaml are written; T21 adds 02–05, 07 and 08.
+Flows (TESTING.md §6): 01 to 08 and screenshots.yaml. v1 hides AI, so 04 checks the terms and privacy screens and 05
+the rating instead of Šta da jedem and the AI consent. 06 signs up with email + password.
 The `fastself://dev` link works only in `__DEV__` builds.
