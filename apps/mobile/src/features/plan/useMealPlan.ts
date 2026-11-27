@@ -1,6 +1,6 @@
 import { isoDate, validateRecipe, type DayNum, type DayPlan } from '@fastself/core';
 import { router, useNavigation } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { haptics, useToast } from '@/components';
 import { t } from '@/copy/sr';
 import { consents } from '@/db/repo';
@@ -111,7 +111,11 @@ export function useMealPlan(plans: readonly DayPlan[], settings: AppSettings, to
     void run();
   }, [run]);
 
-  const current = stored && planIsCurrent(stored, today) ? stored : null;
-  const days = current ? revalidateStored(current, plans, settings, validateRecipe) : null;
-  return { days: days && days.some((d) => d.items.length > 0) ? days : null, loading, make };
+  // Memoised: PlanScreen uses `days` as a dependency, and a new array every render would redo its rows.
+  const days = useMemo(() => {
+    const current = stored && planIsCurrent(stored, today) ? stored : null;
+    const valid = current ? revalidateStored(current, plans, settings, validateRecipe) : null;
+    return valid && valid.some((d) => d.items.length > 0) ? valid : null;
+  }, [stored, today, plans, settings]);
+  return { days, loading, make };
 }

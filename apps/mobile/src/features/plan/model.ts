@@ -212,7 +212,19 @@ export function revalidateStored(
   settings: Settings,
   validate: Parameters<typeof keepValidRecipes>[3],
 ): StoredDay[] {
-  return keepValidRecipes({ days: days.map((d) => ({ date: d.date, items: d.items })) }, plans, settings, validate);
+  const kept = keepValidRecipes(
+    { days: days.map((d) => ({ date: d.date, items: d.items })) },
+    plans,
+    settings,
+    validate,
+  );
+  // A meal the day no longer asks for (Ramadan switched on, an exception) is dropped too.
+  const byDate = new Map(plans.map((p) => [isoDate(p.n), p]));
+  return kept.map((day) => {
+    const plan = byDate.get(day.date);
+    const asked = plan ? mealsFor(plan) : [];
+    return { date: day.date, items: day.items.filter((item) => asked.includes(item.meal)) };
+  });
 }
 
 /** A stored plan counts while its last day is today or later. */

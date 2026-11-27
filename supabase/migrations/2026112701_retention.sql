@@ -14,5 +14,8 @@ begin
   if exists (select 1 from pg_available_extensions where name = 'pg_cron') then
     create extension if not exists pg_cron;
     perform cron.schedule('purge-expired', '17 3 * * *', 'select private.purge_expired()');
+  else
+    -- Without a schedule the retention in docs/legal/privacy.md is not kept. Enable pg_cron, or call purge_expired() daily.
+    raise warning 'pg_cron is not available: purge_expired() is not scheduled';
   end if;
 end $$;

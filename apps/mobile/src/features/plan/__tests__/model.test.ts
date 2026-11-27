@@ -158,6 +158,14 @@ describe('meal plan input and validation', () => {
     expect(days[0]!.items.map((i) => i.recipe.id)).toEqual(['ok']);
   });
 
+  it('drops stored meals the day no longer asks for', () => {
+    const settings = fixtureSettings({ orthodox: true });
+    const plans = nextDays(DEC_2, 1, settings);
+    const stored = [{ date: isoDate(DEC_2), items: [{ meal: 'sehur' as const, recipe: OK }] }];
+    const days = revalidateStored(stored, plans, settings, validateRecipe);
+    expect(days[0]!.items).toEqual([]);
+  });
+
   it('a plan is current while its last day is today or later', () => {
     const days = [{ date: '2026-12-08', items: [] }];
     expect(planIsCurrent(days, toDayNum(2026, 12, 8))).toBe(true);
