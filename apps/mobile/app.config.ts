@@ -6,7 +6,9 @@ const LOCATION_TEXT =
 
 const config: ExpoConfig = {
   name: 'fastself.ai',
-  slug: 'fastself',
+  // Must match the EAS project on expo.dev (@pliskin1s-team/fastselfai, projectId below).
+  owner: 'pliskin1s-team',
+  slug: 'fastselfai',
   scheme: 'fastself',
   version: '1.0.0',
   orientation: 'portrait',
@@ -78,6 +80,8 @@ const config: ExpoConfig = {
     ],
   ],
   experiments: { typedRoutes: true, reactCompiler: true },
+  // The EAS project on expo.dev: builds and the production env vars (EXPO_PUBLIC_SUPABASE_*) live there.
+  extra: { eas: { projectId: '7d792b08-4d45-4e35-8091-cd15a7ad385c' } },
 };
 
 export default config;
