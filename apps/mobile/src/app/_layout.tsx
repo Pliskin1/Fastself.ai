@@ -8,6 +8,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SkyBackground, ToastProvider } from '@/components';
 import { applyDevLink } from '@/lib/dev';
+import { startNotificationSync } from '@/notifications';
+import { startSync } from '@/sync';
 import { useAppFonts } from '@/theme/fonts';
 
 SplashScreen.preventAutoHideAsync();
@@ -39,6 +41,15 @@ function useDevLink() {
 export default function RootLayout() {
   const fontsReady = useAppFonts();
   useDevLink();
+
+  useEffect(() => {
+    const stopSync = startSync();
+    const stopNotifications = startNotificationSync();
+    return () => {
+      stopSync();
+      stopNotifications();
+    };
+  }, []);
 
   useEffect(() => {
     if (fontsReady) SplashScreen.hideAsync();

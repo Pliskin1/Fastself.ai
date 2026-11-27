@@ -1,17 +1,64 @@
 import { RULE_PACK_VERSION } from '@fastself/core';
 import Constants from 'expo-constants';
 import { router, type Href } from 'expo-router';
-import { StyleSheet } from 'react-native';
-import { Body, Caption, GlassCard, SecondaryButton, Title, useToast } from '@/components';
+import { useState } from 'react';
+import { Alert, StyleSheet } from 'react-native';
+import { Body, Caption, GlassCard, LinkButton, SecondaryButton, Title, useToast } from '@/components';
 import { t } from '@/copy/sr';
 import { useSettings, useUpdateSettings } from '@/hooks';
+import { signOut, useSession } from '@/lib/auth';
+import { exportData } from '@/lib/export';
+import { ensureNotificationPermission } from '@/notifications/permissions';
+import { deleteServerCopy } from '@/sync';
+import { setConsents } from '@/sync/consents';
 import { Group, LinkRow, SwitchRow } from './Rows';
 import { allergySummary, practiceSummary } from './model';
 import { useConsent } from './useConsent';
 
+const SYNC_KINDS = ['practices', 'allergies', 'history'] as const;
+
 const go = (href: string) => () => router.push(href as Href);
 
+/** Sync is on when any of the three sync consents is on. */
+function useSyncConsent(): [boolean, (on: boolean) => void] {
+  const [practices, setPractices] = useConsent('practices');
+  const [allergies, setAllergies] = useConsent('allergies');
+  const [history, setHistory] = useConsent('history');
+  const set = (on: boolean) => {
+    setPractices(on);
+    setAllergies(on);
+    setHistory(on);
+  };
+  return [practices || allergies || history, set];
+}
+
 export function AccountCard() {
+  const { user } = useSession();
+  const toast = useToast();
+  const [syncOn] = useSyncConsent();
+  const [busy, setBusy] = useState(false);
+  if (user) {
+    const onSignOut = async () => {
+      setBusy(true);
+      const result = await signOut();
+      setBusy(false);
+      toast.show(t(result.ok ? 'nalog.loggedOut' : 'profil.signOut.error'));
+    };
+    return (
+      <GlassCard contentStyle={styles.card} testID="account-card">
+        <Title>{t('profil.account.title')}</Title>
+        <Body testID="account-email">{t('profil.account.body', { email: user.email ?? '' })}</Body>
+        <Body tone="mist">{t(syncOn ? 'profil.account.syncOn' : 'profil.account.syncOff')}</Body>
+        <SecondaryButton
+          testID="btn-sign-out"
+          label={t('profil.signOut')}
+          disabled={busy}
+          onPress={() => void onSignOut()}
+        />
+        <LinkButton testID="btn-delete-account" label={t('profil.delete.account')} onPress={go('/(sheets)/brisanje')} />
+      </GlassCard>
+    );
+  }
   return (
     <GlassCard contentStyle={styles.card} testID="account-card">
       <Title>{t('profil.local.title')}</Title>
@@ -45,8 +92,14 @@ export function FastGroup() {
 export function RemindersGroup() {
   const { reminders } = useSettings();
   const update = useUpdateSettings();
-  const set = (key: keyof typeof reminders) => (value: boolean) =>
+  const toast = useToast();
+  const set = (key: keyof typeof reminders) => async (value: boolean) => {
+    if (value && !(await ensureNotificationPermission())) {
+      toast.show(t('profil.rem.denied'));
+      return;
+    }
     update({ reminders: { ...reminders, [key]: value } });
+  };
   return (
     <Group title={t('profil.group.reminders')}>
       <SwitchRow
@@ -75,35 +128,59 @@ export function RemindersGroup() {
   );
 }
 
-type PrivacyProps = {
-  /** Undefined until the data export exists: the row is shown disabled. */
-  onExport?: () => void;
-};
-
-export function PrivacyGroup({ onExport }: PrivacyProps) {
+export function PrivacyGroup() {
   const toast = useToast();
-  const [ai, setAi] = useConsent('ai');
-  const onAi = (value: boolean) => {
-    if (value) {
-      router.push('/(sheets)/ai-pristanak' as Href);
+  const { user } = useSession();
+  const [syncOn, setSyncLocal] = useSyncConsent();
+
+  const onSync = async (value: boolean) => {
+    if (!user) {
+      router.push('/nalog' as Href);
       return;
     }
-    setAi(false);
-    toast.show(t('profil.ai.off'));
+    const changes = Object.fromEntries(SYNC_KINDS.map((kind) => [kind, value]));
+    setSyncLocal(value);
+    const result = await setConsents(changes);
+    if (!result.ok) toast.show(t('profil.sync.error'));
+    else toast.show(t(value ? 'profil.sync.toastOn' : 'profil.sync.toastOff'));
+    if (value) return;
+    Alert.alert(t('profil.sync.askTitle'), t('profil.sync.askBody'), [
+      { text: t('profil.sync.askKeep'), style: 'cancel' },
+      {
+        text: t('profil.sync.askDelete'),
+        style: 'destructive',
+        onPress: () => {
+          void deleteServerCopy(SYNC_KINDS).then((deleted) =>
+            toast.show(t(deleted.ok ? 'profil.sync.deleted' : 'profil.sync.error')),
+          );
+        },
+      },
+    ]);
   };
+
+  const onExport = async () => {
+    const result = await exportData();
+    toast.show(t(result.ok ? 'profil.export.done' : 'profil.export.error'));
+  };
+
   return (
     <Group title={t('profil.group.privacy')}>
-      <SwitchRow testID="sw-ai" title={t('profil.ai')} sub={t('profil.ai.sub')} value={ai} onValueChange={onAi} />
       <SwitchRow
         testID="sw-sync"
         title={t('profil.sync')}
         sub={t('profil.sync.sub')}
-        value={false}
-        onValueChange={() => router.push('/nalog' as Href)}
+        value={Boolean(user) && syncOn}
+        onValueChange={(value) => void onSync(value)}
       />
       <LinkRow testID="row-privacy" title={t('profil.policy')} onPress={go('/privatnost')} />
-      <LinkRow testID="row-export" title={t('profil.export')} onPress={onExport} disabled={!onExport} />
-      <LinkRow testID="row-delete" title={t('profil.delete.local')} onPress={go('/(sheets)/brisanje')} last />
+      <LinkRow testID="row-terms" title={t('profil.terms')} onPress={go('/uslovi')} />
+      <LinkRow testID="row-export" title={t('profil.export')} onPress={() => void onExport()} />
+      <LinkRow
+        testID="row-delete"
+        title={t(user ? 'profil.delete.account' : 'profil.delete.local')}
+        onPress={go('/(sheets)/brisanje')}
+        last
+      />
     </Group>
   );
 }

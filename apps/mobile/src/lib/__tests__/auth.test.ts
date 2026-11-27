@@ -15,6 +15,8 @@ import {
   resetAuthForTests,
   sendEmailCode,
   signInApple,
+  signInWithPassword,
+  signUpWithPassword,
   signOut,
   useSession,
   verifyEmailCode,
@@ -26,6 +28,8 @@ const mockAuth = {
   signInWithOtp: jest.fn(),
   verifyOtp: jest.fn(),
   signInWithIdToken: jest.fn(),
+  signUp: jest.fn(),
+  signInWithPassword: jest.fn(),
   signOut: jest.fn(),
   onAuthStateChange: jest.fn(),
   getSession: jest.fn(),
@@ -297,6 +301,59 @@ describe('signInApple', () => {
     await expect(signInApple()).rejects.toBeInstanceOf(AppleSignInUnavailableError);
     expect(signInAsync).not.toHaveBeenCalled();
     expect(mockAuth.signInWithIdToken).not.toHaveBeenCalled();
+  });
+});
+
+describe('signUpWithPassword', () => {
+  const session = { access_token: 'x' };
+
+  it('creates the account with a normalised email and succeeds with a session', async () => {
+    mockAuth.signUp.mockResolvedValue({ data: { user: { identities: [{}] }, session }, error: null });
+    expect(await signUpWithPassword('  Ana@Primjer.ME ', 'tajna1234')).toEqual({ ok: true });
+    expect(mockAuth.signUp).toHaveBeenCalledWith({ email: 'ana@primjer.me', password: 'tajna1234' });
+  });
+
+  it('checks the email and the password length on the device first', async () => {
+    expect(await signUpWithPassword('ana', 'tajna1234')).toEqual({ ok: false, error: 'invalid_email' });
+    expect(await signUpWithPassword('ana@primjer.me', 'kratka')).toEqual({ ok: false, error: 'weak_password' });
+    expect(mockAuth.signUp).not.toHaveBeenCalled();
+  });
+
+  it('tells a taken email, a weak password, a missing confirmation and the network apart', async () => {
+    mockAuth.signUp.mockResolvedValueOnce({ data: {}, error: apiError('user_already_exists', 422) });
+    expect(await signUpWithPassword('a@b.co', 'tajna1234')).toEqual({ ok: false, error: 'email_taken' });
+    mockAuth.signUp.mockResolvedValueOnce({ data: { user: { identities: [] }, session: null }, error: null });
+    expect(await signUpWithPassword('a@b.co', 'tajna1234')).toEqual({ ok: false, error: 'email_taken' });
+    mockAuth.signUp.mockResolvedValueOnce({ data: {}, error: apiError('weak_password', 422) });
+    expect(await signUpWithPassword('a@b.co', 'tajna1234')).toEqual({ ok: false, error: 'weak_password' });
+    mockAuth.signUp.mockResolvedValueOnce({ data: { user: { identities: [{}] }, session: null }, error: null });
+    expect(await signUpWithPassword('a@b.co', 'tajna1234')).toEqual({ ok: false, error: 'confirm_email' });
+    mockAuth.signUp.mockRejectedValueOnce(new AuthRetryableFetchError('net', 0));
+    expect(await signUpWithPassword('a@b.co', 'tajna1234')).toEqual({ ok: false, error: 'offline' });
+  });
+});
+
+describe('signInWithPassword', () => {
+  it('signs in with the normalised email', async () => {
+    mockAuth.signInWithPassword.mockResolvedValue({ data: {}, error: null });
+    expect(await signInWithPassword('Ana@Primjer.me', 'tajna1234')).toEqual({ ok: true });
+    expect(mockAuth.signInWithPassword).toHaveBeenCalledWith({ email: 'ana@primjer.me', password: 'tajna1234' });
+  });
+
+  it('maps wrong credentials, rate limits, server errors and an empty password', async () => {
+    expect(await signInWithPassword('a@b.co', '')).toEqual({ ok: false, error: 'invalid_credentials' });
+    mockAuth.signInWithPassword.mockResolvedValueOnce({ data: {}, error: apiError('invalid_credentials', 400) });
+    expect(await signInWithPassword('a@b.co', 'x')).toEqual({ ok: false, error: 'invalid_credentials' });
+    mockAuth.signInWithPassword.mockResolvedValueOnce({ data: {}, error: apiError('over_request_rate_limit', 429) });
+    expect(await signInWithPassword('a@b.co', 'x')).toEqual({ ok: false, error: 'rate_limited' });
+    mockAuth.signInWithPassword.mockResolvedValueOnce({ data: {}, error: new AuthRetryableFetchError('gw', 502) });
+    expect(await signInWithPassword('a@b.co', 'x')).toEqual({ ok: false, error: 'server' });
+  });
+
+  it('answers server without a client', async () => {
+    mockClient = null;
+    expect(await signInWithPassword('a@b.co', 'x')).toEqual({ ok: false, error: 'server' });
+    expect(await signUpWithPassword('a@b.co', 'tajna1234')).toEqual({ ok: false, error: 'server' });
   });
 });
 
