@@ -47,7 +47,7 @@ const SUGGEST_BODY = {
   recipes: [RECIPE, RECIPES[1]!],
   rejected: [{ title: 'Pita sa sirom', reason: 'Sadrži mliječne proizvode.' }],
   fallback: false,
-  provider: 'anthropic',
+  provider: 'cloudflare',
 };
 const PLAN_BODY = {
   days: [

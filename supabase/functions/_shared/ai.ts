@@ -17,7 +17,10 @@ export interface RawRecipe {
   steps: string[];
 }
 
-export type ProviderName = 'anthropic' | 'mock';
+export type ProviderName = 'cloudflare' | 'anthropic' | 'mock';
+
+/** Used when `AI_PROVIDER` is not set. Cloudflare Workers AI is the v1.0 provider (docs/SPEC.md). */
+export const DEFAULT_PROVIDER: ProviderName = 'cloudflare';
 
 export interface AiProvider {
   readonly name: ProviderName;
@@ -65,9 +68,8 @@ export function mockProvider(): AiProvider {
   };
 }
 
-// ---------------------------------------------------------------- anthropic
+// ---------------------------------------------------------------- shared by the real providers
 
-export const ANTHROPIC_MODEL = 'claude-haiku-5-5';
 export const AI_TIMEOUT_MS = 12_000;
 
 export function buildSystemPrompt(input: SuggestInput): string {
@@ -83,9 +85,11 @@ export function buildSystemPrompt(input: SuggestInput): string {
   ].join('\n');
 }
 
-const TOOL_NAME = 'return_recipes';
+const userMessage = (extraNote?: string): string =>
+  extraNote ? `Predloži recepte. ${extraNote}` : 'Predloži recepte.';
 
-const TOOL_SCHEMA = {
+/** The JSON schema of the answer: `{ recipes: RawRecipe[3] }`. */
+export const RECIPES_SCHEMA = {
   type: 'object',
   properties: {
     recipes: {
@@ -114,6 +118,64 @@ const TOOL_SCHEMA = {
   required: ['recipes'],
 };
 
+/** `{ recipes: [...] }` as an object or as a JSON string; anything else throws. */
+function readRecipes(value: unknown): RawRecipe[] {
+  const parsed: unknown = typeof value === 'string' ? JSON.parse(value) : value;
+  const recipes = parsed && typeof parsed === 'object' ? (parsed as { recipes?: unknown }).recipes : undefined;
+  if (!Array.isArray(recipes)) throw new Error('provider returned no recipes');
+  return recipes as RawRecipe[];
+}
+
+// ---------------------------------------------------------------- cloudflare
+
+/** A Workers AI model with JSON mode (developers.cloudflare.com/workers-ai/features/json-mode). */
+export const CF_DEFAULT_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+export const CF_API_BASE = 'https://api.cloudflare.com/client/v4/accounts';
+
+/**
+ * Cloudflare Workers AI over REST, with the answer constrained to `RECIPES_SCHEMA` (JSON mode). Any failure throws,
+ * and meal-suggest then serves built-in recipes. Errors carry only the HTTP status, never the token.
+ */
+export function cloudflareProvider(
+  accountId: string,
+  token: string,
+  model: string = CF_DEFAULT_MODEL,
+  fetchImpl: typeof fetch = fetch,
+  timeoutMs = AI_TIMEOUT_MS,
+): AiProvider {
+  return {
+    name: 'cloudflare',
+    async suggest(input, extraNote) {
+      const res = await fetchImpl(`${CF_API_BASE}/${encodeURIComponent(accountId)}/ai/run/${model}`, {
+        method: 'POST',
+        headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: buildSystemPrompt(input) },
+            { role: 'user', content: `${userMessage(extraNote)} Odgovori samo JSON objektom sa poljem recipes.` },
+          ],
+          // The default is 256 tokens, too few for three recipes.
+          max_tokens: 1500,
+          response_format: { type: 'json_schema', json_schema: RECIPES_SCHEMA },
+        }),
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (!res.ok) {
+        await res.body?.cancel();
+        throw new Error(`provider status ${res.status}`);
+      }
+      const data = (await res.json()) as { success?: unknown; result?: { response?: unknown } | null };
+      if (data.success !== true) throw new Error('provider reported a failure');
+      return readRecipes(data.result?.response);
+    },
+  };
+}
+
+// ---------------------------------------------------------------- anthropic
+
+export const ANTHROPIC_MODEL = 'claude-haiku-5-5';
+const TOOL_NAME = 'return_recipes';
+
 export function anthropicProvider(
   apiKey: string,
   fetchImpl: typeof fetch = fetch,
@@ -130,8 +192,8 @@ export function anthropicProvider(
           model: ANTHROPIC_MODEL,
           max_tokens: 1500,
           system: buildSystemPrompt(input),
-          messages: [{ role: 'user', content: extraNote ? `Predloži recepte. ${extraNote}` : 'Predloži recepte.' }],
-          tools: [{ name: TOOL_NAME, description: 'Vrati 3 recepta.', input_schema: TOOL_SCHEMA }],
+          messages: [{ role: 'user', content: userMessage(extraNote) }],
+          tools: [{ name: TOOL_NAME, description: 'Vrati 3 recepta.', input_schema: RECIPES_SCHEMA }],
           tool_choice: { type: 'tool', name: TOOL_NAME },
         }),
         signal: AbortSignal.timeout(timeoutMs),
@@ -149,9 +211,7 @@ export function anthropicProvider(
         throw new Error(`provider stopped: ${data.stop_reason}`);
       }
       const block = data.content?.find((c) => c.type === 'tool_use');
-      const recipes = block?.input?.recipes;
-      if (!Array.isArray(recipes)) throw new Error('provider returned no recipes');
-      return recipes as RawRecipe[];
+      return readRecipes(block?.input);
     },
   };
 }
@@ -160,11 +220,18 @@ export function anthropicProvider(
 
 /**
  * Provider from the env. Unknown or unconfigured provider returns null: the caller then serves built-ins
- * (`fallback: true`) instead of crashing. `cloudflare` is not implemented yet and ends up here too.
+ * (`fallback: true`) instead of crashing. Cloudflare needs `CF_ACCOUNT_ID` and `CF_API_TOKEN`; `CF_AI_MODEL`
+ * optionally picks another Workers AI model with JSON mode.
  */
 export function getProvider(env: (name: string) => string | undefined): AiProvider | null {
-  const name = (env('AI_PROVIDER') ?? 'anthropic').trim().toLowerCase();
+  const name = (env('AI_PROVIDER') ?? DEFAULT_PROVIDER).trim().toLowerCase();
   if (name === 'mock') return mockProvider();
+  if (name === 'cloudflare') {
+    const accountId = env('CF_ACCOUNT_ID')?.trim();
+    const token = env('CF_API_TOKEN')?.trim();
+    if (!accountId || !token) return null;
+    return cloudflareProvider(accountId, token, env('CF_AI_MODEL')?.trim() || CF_DEFAULT_MODEL);
+  }
   if (name === 'anthropic') {
     const key = env('ANTHROPIC_API_KEY');
     return key ? anthropicProvider(key) : null;
