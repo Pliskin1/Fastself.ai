@@ -73,5 +73,5 @@ fastself.ai nije medicinska aplikacija. Ako imaš zdravstveno stanje, posavjetuj
 - Category: Lifestyle (primary), Health & Fitness (secondary).
 - Age rating: answer the questionnaire; expected 4+. Medical or treatment information: none.
 - Content rights: no third-party content.
-- App Review contact: [POPUNI: name, phone, email]. Notes: APPSTORE.md §7 (replace `<AI provider>`).
+- App Review contact: [POPUNI: name, phone, email]. Notes: APPSTORE.md §7 (replace `<AI provider>` with `Cloudflare Workers AI`).
 - Sign-in required: no (guest mode). Demo account: not needed.
