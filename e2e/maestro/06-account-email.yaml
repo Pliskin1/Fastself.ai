@@ -5,6 +5,7 @@ env:
   PASSWORD: lozinka-e2e-1
 ---
 - launchApp
+- extendedWaitUntil: { visible: 'Profil|Počni', timeout: 30000 }
 - openLink: 'fastself://dev?reset=1&preset=orthodox&date=2026-12-02&time=12:00&tab=profil'
 - tapOn: { id: 'btn-open-account' }
 - assertVisible: { id: 'screen-nalog' }
@@ -15,6 +16,7 @@ env:
 - inputText: ${PASSWORD}
 - hideKeyboard
 - tapOn: { id: 'btn-auth-submit' }
+- tapOn: { text: 'Not Now', optional: true }
 - assertVisible: 'Šta da sinhronizujemo?'
 - tapOn: { id: 'btn-enable-sync' }
 - assertVisible: { id: 'screen-profil' }

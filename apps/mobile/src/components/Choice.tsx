@@ -64,7 +64,7 @@ export function Choice({ title, description, checked, disabled, role = 'radio', 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', padding: 18, gap: 14, minHeight: 72 },
   texts: { flex: 1, gap: 4 },
-  title: { fontFamily: font.serifMedium, fontSize: 23, lineHeight: 28 },
+  title: { fontFamily: font.serifMedium, fontSize: 23, lineHeight: 33 },
   check: {
     width: 28,
     height: 28,

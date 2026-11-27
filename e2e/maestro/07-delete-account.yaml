@@ -2,6 +2,7 @@
 appId: ai.fastself.app
 ---
 - launchApp
+- extendedWaitUntil: { visible: 'Profil|Počni', timeout: 30000 }
 - openLink: 'fastself://dev?tab=profil'
 - assertVisible: { id: 'btn-sign-out' }
 - tapOn: { id: 'btn-delete-account' }

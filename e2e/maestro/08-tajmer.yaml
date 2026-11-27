@@ -2,6 +2,7 @@
 appId: ai.fastself.app
 ---
 - launchApp
+- extendedWaitUntil: { visible: 'Profil|Počni', timeout: 30000 }
 - openLink: 'fastself://dev?reset=1&preset=if14&date=2026-12-03&time=20:15&tab=tajmer'
 - assertVisible: { id: 'screen-tajmer' }
 - tapOn: { id: 'seg-plan-14' }

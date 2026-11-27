@@ -201,8 +201,8 @@ const styles = StyleSheet.create({
   cells: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   cell: { width: '31%', padding: 10, borderRadius: 14, backgroundColor: color.glassFill, gap: 2 },
   cellHot: { backgroundColor: 'rgba(255,200,110,0.14)' },
-  big: { fontFamily: font.serif, fontSize: 64, lineHeight: 68, color: color.paper },
-  slavaName: { fontFamily: font.serifMedium, fontSize: 26, lineHeight: 30, color: color.paper },
+  big: { fontFamily: font.serif, fontSize: 64, lineHeight: 93, color: color.paper },
+  slavaName: { fontFamily: font.serifMedium, fontSize: 26, lineHeight: 38, color: color.paper },
   week: { gap: 8 },
   capsules: { flexDirection: 'row', justifyContent: 'space-between', gap: 6 },
   capsule: {
@@ -216,5 +216,5 @@ const styles = StyleSheet.create({
   },
   capsuleToday: { borderWidth: 1.5, borderColor: color.paper },
   capText: { textAlign: 'center', fontSize: 11, lineHeight: 14 },
-  capNumber: { fontFamily: font.serif, fontSize: 24, lineHeight: 28, color: color.paper },
+  capNumber: { fontFamily: font.serif, fontSize: 24, lineHeight: 35, color: color.paper },
 });

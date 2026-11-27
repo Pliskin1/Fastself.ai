@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { layout } from '@/theme/tokens';
+import { color, layout } from '@/theme/tokens';
 import { SkyBackground } from './SkyBackground';
 
 type Props = {
@@ -17,6 +17,8 @@ type Props = {
   sky?: boolean;
   /** Inside a formSheet: no status bar inset and no top fade (the sheet starts below the status bar). */
   sheet?: boolean;
+  /** A header above already covers the status bar: no top inset and no top fade. */
+  underHeader?: boolean;
 };
 
 const TOP_GAP = 12;
@@ -31,33 +33,41 @@ export function ScreenScroll({
   keyboardShouldPersistTaps,
   sky = false,
   sheet = false,
+  underHeader = false,
 }: Props) {
   const insets = useSafeAreaInsets();
   const { paddingTop: extraTop, ...rest } = StyleSheet.flatten(contentStyle) ?? {};
-  const top = sheet ? SHEET_TOP : insets.top + (typeof extraTop === 'number' ? extraTop : TOP_GAP);
+  const covered = sheet || underHeader;
+  const gap = typeof extraTop === 'number' ? extraTop : TOP_GAP;
+  const top = sheet ? SHEET_TOP : (underHeader ? 0 : insets.top) + gap;
   const bottom = (sheet ? 0 : insets.bottom) + bottomInset + 24;
+
+  const scroll = (
+    <ScrollView
+      testID={testID}
+      style={sheet ? styles.sheet : styles.fill}
+      keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+      keyboardDismissMode="interactive"
+      contentInsetAdjustmentBehavior="never"
+      automaticallyAdjustKeyboardInsets={sheet}
+      scrollIndicatorInsets={{ top: covered ? 0 : insets.top, bottom: bottom - 24 }}
+      contentContainerStyle={[
+        { paddingTop: top, paddingBottom: bottom, paddingHorizontal: layout.screenPadding, gap: layout.sectionGap },
+        rest,
+      ]}
+    >
+      {children}
+    </ScrollView>
+  );
+  // A native formSheet gives a flex:1 wrapper no height, which leaves the sheet blank on iOS: the ScrollView has to
+  // be the sheet's root view.
+  if (sheet) return scroll;
 
   return (
     <View style={styles.fill}>
       {sky ? <SkyBackground /> : null}
-      <ScrollView
-        testID={testID}
-        style={styles.fill}
-        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
-        keyboardDismissMode="interactive"
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustKeyboardInsets={false}
-        decelerationRate="normal"
-        scrollEventThrottle={16}
-        scrollIndicatorInsets={{ top: sheet ? 0 : insets.top, bottom: bottom - 24 }}
-        contentContainerStyle={[
-          { paddingTop: top, paddingBottom: bottom, paddingHorizontal: layout.screenPadding, gap: layout.sectionGap },
-          rest,
-        ]}
-      >
-        {children}
-      </ScrollView>
-      {sheet ? null : (
+      {scroll}
+      {underHeader ? null : (
         <LinearGradient
           pointerEvents="none"
           colors={FADE}
@@ -71,5 +81,6 @@ export function ScreenScroll({
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
+  sheet: { backgroundColor: color.ink },
   fade: { position: 'absolute', top: 0, left: 0, right: 0 },
 });

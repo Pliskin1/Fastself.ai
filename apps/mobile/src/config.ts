@@ -5,4 +5,4 @@ export const TERMS_URL = 'https://pliskin1.github.io/fastself-site/terms';
 export const SUPPORT_URL = 'https://pliskin1.github.io/fastself-site/support';
 export const SUPPORT_EMAIL = 'podrska@fastself.ai';
 export const LEGAL_ENTITY = 'fastself.ai';
-export const TERMS_EFFECTIVE = '27. novembar 2026.';
+export const TERMS_EFFECTIVE = '27. novembar 2026';

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 import Animated, {
   useAnimatedProps,
   useDerivedValue,
@@ -11,7 +11,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { Text, useMotion } from '@/components';
-import { OdometerDigit } from '@/components/OdometerDigit';
 import { t } from '@/copy/sr';
 import { font } from '@/theme/fonts';
 import { color } from '@/theme/tokens';
@@ -24,6 +23,7 @@ const STROKE = 14;
 const CIRC = 2 * Math.PI * R;
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 const pad = (v: number): string => {
   'worklet';
@@ -47,7 +47,19 @@ function useDigits(elapsed: SharedValue<number>) {
 }
 
 function Cell({ text, initial, size }: { text: SharedValue<string>; initial: string; size: number }) {
-  return <OdometerDigit text={text} initial={initial} size={size} lineHeight={size * 1.1} style={styles.cell} />;
+  const props = useAnimatedProps(() => ({ text: text.value, defaultValue: text.value }) as unknown as TextInputProps);
+  return (
+    <AnimatedTextInput
+      editable={false}
+      pointerEvents="none"
+      accessible={false}
+      defaultValue={initial}
+      animatedProps={props}
+      allowFontScaling={false}
+      // No lineHeight: on iOS it shifts TextInput text up and cuts the digits.
+      style={[styles.cell, { width: size * 0.58, height: size * 1.25, fontSize: size }]}
+    />
+  );
 }
 
 type Props = { model: TimerModel; now: SharedValue<number>; reminderOn: boolean };
@@ -144,20 +156,24 @@ export function TimerRing({ model, now }: Props) {
       </Svg>
 
       <View style={styles.center} pointerEvents="none">
-        <Text variant="caption" tone="mist" style={styles.state}>
+        <Text variant="caption" tone="mist" maxFontSizeMultiplier={1.15} style={styles.state}>
           {stateLabel(model.state)}
         </Text>
         <View style={styles.digits}>
           <Cell text={digits.h1} initial={initial.h.charAt(0)} size={46} />
           <Cell text={digits.h2} initial={initial.h.charAt(1)} size={46} />
-          <Text style={styles.colon}>:</Text>
+          <Text style={styles.colon} allowFontScaling={false}>
+            :
+          </Text>
           <Cell text={digits.m1} initial={initial.m.charAt(0)} size={46} />
           <Cell text={digits.m2} initial={initial.m.charAt(1)} size={46} />
-          <Text style={styles.colon}>:</Text>
+          <Text style={styles.colon} allowFontScaling={false}>
+            :
+          </Text>
           <Cell text={digits.s1} initial={initial.s.charAt(0)} size={46} />
           <Cell text={digits.s2} initial={initial.s.charAt(1)} size={46} />
         </View>
-        <Text variant="caption" tone="mist">
+        <Text variant="caption" tone="mist" maxFontSizeMultiplier={1.15}>
           {goalLine}
         </Text>
       </View>
@@ -178,5 +194,5 @@ const styles = StyleSheet.create({
     margin: 0,
     fontVariant: ['tabular-nums'],
   },
-  colon: { fontFamily: font.serif, fontSize: 40, lineHeight: 46, color: color.mist, marginHorizontal: 1 },
+  colon: { fontFamily: font.serif, fontSize: 40, lineHeight: 58, color: color.mist, marginHorizontal: 1 },
 });

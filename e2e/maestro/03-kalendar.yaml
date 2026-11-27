@@ -2,6 +2,7 @@
 appId: ai.fastself.app
 ---
 - launchApp
+- extendedWaitUntil: { visible: 'Profil|Počni', timeout: 30000 }
 - openLink: 'fastself://dev?reset=1&preset=orthodox&date=2026-12-02&time=12:00&tab=kalendar'
 - assertVisible: { id: 'screen-kalendar' }
 - tapOn: { id: 'btn-cal-next' }

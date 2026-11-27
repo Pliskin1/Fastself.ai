@@ -48,6 +48,6 @@ const styles = StyleSheet.create({
   section: { gap: 6, paddingVertical: 14 },
   divider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: color.glassBorder },
   row: { flexDirection: 'row', alignItems: 'baseline', gap: 10 },
-  num: { fontFamily: font.serif, fontSize: 22, color: color.sunLink, minWidth: 18 },
+  num: { fontFamily: font.serif, fontSize: 22, lineHeight: 32, color: color.sunLink, minWidth: 18 },
   flex: { flex: 1 },
 });

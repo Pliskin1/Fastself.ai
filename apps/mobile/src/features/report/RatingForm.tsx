@@ -191,7 +191,7 @@ export function RatingForm() {
 const styles = StyleSheet.create({
   wrap: { gap: layout.sectionGap },
   head: { gap: 8 },
-  title: { fontSize: 30, lineHeight: 34 },
+  title: { fontSize: 30, lineHeight: 44 },
   stars: { flexDirection: 'row', justifyContent: 'center', gap: 6 },
   starHit: {
     minWidth: layout.minHit + 4,

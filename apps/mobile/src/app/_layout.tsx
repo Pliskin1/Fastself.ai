@@ -26,6 +26,9 @@ const SHEET = {
   contentStyle: { backgroundColor: 'transparent' },
 };
 
+// Forms taller than half the screen open fully, so the send button is not hidden below the edge.
+const TALL_SHEET = { ...SHEET, sheetAllowedDetents: [1] };
+
 function useDevLink() {
   useEffect(() => {
     if (!__DEV__) return;
@@ -66,7 +69,7 @@ export default function RootLayout() {
             <StatusBar style="light" />
             <ThemeProvider value={NAV_THEME}>
               <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
-                <Stack.Screen name="(sheets)/prijava-greske" options={SHEET} />
+                <Stack.Screen name="(sheets)/prijava-greske" options={TALL_SHEET} />
                 <Stack.Screen name="(sheets)/ai-pristanak" options={SHEET} />
                 <Stack.Screen name="(sheets)/brisanje" options={SHEET} />
                 <Stack.Screen name="(sheets)/izuzetak" options={SHEET} />

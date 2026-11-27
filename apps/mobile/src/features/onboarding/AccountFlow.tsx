@@ -7,6 +7,7 @@ import {
   Display,
   GlassCard,
   Icon,
+  IconButton,
   KeyboardScreen,
   PrimaryButton,
   Segmented,
@@ -93,7 +94,7 @@ export function AccountFlow({ mode, returning = false, testID }: Props) {
 
   if (askConsent) {
     return (
-      <KeyboardScreen testID={testID}>
+      <KeyboardScreen testID={testID} underHeader={mode === 'onboarding'}>
         <View style={styles.head}>
           <Display>{t('nalog.consent.title')}</Display>
           <Body tone="mist">{t('nalog.consent.sub', { email: user?.email ?? email.trim() })}</Body>
@@ -127,7 +128,13 @@ export function AccountFlow({ mode, returning = false, testID }: Props) {
   const formError = error && error !== 'invalid_email' ? errorMessage : undefined;
 
   return (
-    <KeyboardScreen testID={testID}>
+    <KeyboardScreen testID={testID} underHeader={mode === 'onboarding'}>
+      {mode === 'push' ? (
+        <View style={styles.back}>
+          <IconButton testID="btn-back" icon="back" accessibilityLabel={t('common.back')} onPress={() => done(mode)} />
+        </View>
+      ) : null}
+
       <View style={styles.head}>
         <Display>{t(returning ? 'nalog.title.returning' : 'nalog.title.new')}</Display>
         <Body tone="mist">{t(returning ? 'nalog.sub.returning' : 'nalog.sub.new')}</Body>
@@ -167,7 +174,7 @@ export function AccountFlow({ mode, returning = false, testID }: Props) {
           autoCorrect={false}
           autoComplete="email"
           keyboardType="email-address"
-          textContentType={authMode === 'signUp' ? 'username' : 'emailAddress'}
+          textContentType="emailAddress"
           returnKeyType="next"
           error={emailError}
         />
@@ -181,8 +188,9 @@ export function AccountFlow({ mode, returning = false, testID }: Props) {
             secureTextEntry={!showPassword}
             autoCapitalize="none"
             autoCorrect={false}
-            autoComplete={authMode === 'signUp' ? 'new-password' : 'current-password'}
-            textContentType={authMode === 'signUp' ? 'newPassword' : 'password'}
+            autoComplete={authMode === 'signUp' ? 'off' : 'current-password'}
+            // 'oneTimeCode' on sign up stops the iOS strong password overlay, which swallowed the typed password.
+            textContentType={authMode === 'signUp' ? 'oneTimeCode' : 'password'}
             returnKeyType="go"
             onSubmitEditing={() => void submit()}
             style={styles.passwordInput}
@@ -233,6 +241,7 @@ export function AccountFlow({ mode, returning = false, testID }: Props) {
 }
 
 const styles = StyleSheet.create({
+  back: { flexDirection: 'row' },
   head: { gap: 8 },
   bullets: { padding: 16, gap: 12 },
   bullet: { flexDirection: 'row', alignItems: 'center', gap: 10 },

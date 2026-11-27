@@ -1,6 +1,6 @@
 import { router, type Href } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Body, Caption, Display, ScreenScroll, SecondaryButton, useToast } from '@/components';
 import { t } from '@/copy/sr';
 import { deleteAccountAndSignOut, wipeDevice } from '@/lib/account';
@@ -122,57 +122,54 @@ export function BrisanjeSheet() {
     phase === 'alsoLocal' ? 'alsoLocal' : user || deleting || stored === true ? 'account' : 'local';
 
   return (
-    <View testID="screen-brisanje" style={styles.fill}>
-      <ScreenScroll sheet>
-        {variant === 'alsoLocal' ? (
-          // The toast sits under the native sheet and may not be seen; the screen reader already heard it.
-          <Body testID="delete-done" style={styles.done}>
-            {t('delete.done.account')}
-          </Body>
-        ) : null}
-        <Display style={styles.title}>{t(TITLE[variant])}</Display>
-        <Body tone="mist">{t(variant === 'account' ? 'delete.body.account' : 'delete.body.local')}</Body>
-        {variant === 'account' && provider === 'apple' ? <Caption>{t('delete.apple')}</Caption> : null}
-        {error ? (
-          <Caption
-            testID="delete-error"
-            accessibilityRole="alert"
-            accessibilityLiveRegion="assertive"
-            style={styles.error}
-          >
-            {t(error)}
-          </Caption>
-        ) : null}
-        <DangerButton
-          testID="btn-confirm-delete"
-          label={t(variant === 'account' ? 'delete.confirm.account' : 'delete.confirm.local')}
-          disabled={pending || stored === null}
-          busy={pending}
-          onPress={variant === 'account' ? removeAccount : wipe}
+    <ScreenScroll testID="screen-brisanje" sheet>
+      {variant === 'alsoLocal' ? (
+        // The toast sits under the native sheet and may not be seen; the screen reader already heard it.
+        <Body testID="delete-done" style={styles.done}>
+          {t('delete.done.account')}
+        </Body>
+      ) : null}
+      <Display style={styles.title}>{t(TITLE[variant])}</Display>
+      <Body tone="mist">{t(variant === 'account' ? 'delete.body.account' : 'delete.body.local')}</Body>
+      {variant === 'account' && provider === 'apple' ? <Caption>{t('delete.apple')}</Caption> : null}
+      {error ? (
+        <Caption
+          testID="delete-error"
+          accessibilityRole="alert"
+          accessibilityLiveRegion="assertive"
+          style={styles.error}
+        >
+          {t(error)}
+        </Caption>
+      ) : null}
+      <DangerButton
+        testID="btn-confirm-delete"
+        label={t(variant === 'account' ? 'delete.confirm.account' : 'delete.confirm.local')}
+        disabled={pending || stored === null}
+        busy={pending}
+        onPress={variant === 'account' ? removeAccount : wipe}
+      />
+      {variant === 'alsoLocal' ? (
+        <SecondaryButton
+          testID="btn-keep-local"
+          label={t('delete.keepLocal')}
+          disabled={pending}
+          onPress={() => router.back()}
         />
-        {variant === 'alsoLocal' ? (
-          <SecondaryButton
-            testID="btn-keep-local"
-            label={t('delete.keepLocal')}
-            disabled={pending}
-            onPress={() => router.back()}
-          />
-        ) : (
-          <SecondaryButton
-            testID="btn-cancel-delete"
-            label={t('common.cancel')}
-            disabled={pending}
-            onPress={() => router.back()}
-          />
-        )}
-      </ScreenScroll>
-    </View>
+      ) : (
+        <SecondaryButton
+          testID="btn-cancel-delete"
+          label={t('common.cancel')}
+          disabled={pending}
+          onPress={() => router.back()}
+        />
+      )}
+    </ScreenScroll>
   );
 }
 
 const styles = StyleSheet.create({
-  fill: { flex: 1, backgroundColor: color.ink },
-  title: { fontSize: 28, lineHeight: 32 },
+  title: { fontSize: 28, lineHeight: 41 },
   done: { color: color.tealInk },
   error: { color: color.emberInk },
 });

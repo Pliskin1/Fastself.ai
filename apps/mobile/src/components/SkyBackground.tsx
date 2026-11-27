@@ -118,13 +118,21 @@ const StarGroup = memo(function StarGroup({
 type Props = {
   /** Welcome screen only: the day runs 0 to 24 h over 20 s, looped. */
   demoCycle?: boolean;
+  /** The moon, top right. Off on screens with a header there: it covered titles and header buttons. */
+  moon?: boolean;
   /** Overlay used on push screens and sheets. */
   dim?: boolean;
   width?: number;
   city?: CityId;
 };
 
-export function SkyBackground({ demoCycle = false, dim = false, width = 390, city = 'podgorica' }: Props) {
+export function SkyBackground({
+  demoCycle = false,
+  moon = false,
+  dim = false,
+  width = 390,
+  city = 'podgorica',
+}: Props) {
   const { reduced } = useMotion();
   const [tick, setTick] = useState(() => Date.now());
   const [demoHour, setDemoHour] = useState(0);
@@ -169,7 +177,7 @@ export function SkyBackground({ demoCycle = false, dim = false, width = 390, cit
       period: 2600 + g * 650,
     }));
   }, [width]);
-  const moonVisible = target.alt < -4;
+  const moonVisible = moon && target.alt < -4;
   const { prev, cur } = layers;
 
   return (

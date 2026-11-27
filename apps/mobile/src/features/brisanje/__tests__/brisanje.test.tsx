@@ -33,7 +33,7 @@ const TEXT = {
   titleAccount: 'Obrisati nalog?',
   titleLocal: 'Obrisati podatke sa telefona?',
   bodyAccount:
-    'Brišemo nalog i sve podatke sa servera: prakse, alergije, istoriju, jelovnike i pristanke. Ovo se ne može vratiti.',
+    'Brišemo nalog i sve podatke sa servera: prakse, alergije, istoriju i pristanke. Ovo se ne može vratiti.',
   bodyLocal: 'Brišemo prakse, alergije, istoriju i podešavanja sa ovog telefona. Ovo se ne može vratiti.',
   apple: 'Ako si se prijavio uz Apple, opozivamo i tu prijavu.',
   confirmAccount: 'Obriši nalog',
