@@ -26,7 +26,8 @@ ne čuvamo ih i ne šaljemo. Grad možeš izabrati i ručno.
 ## 3. Nalog i sinhronizacija (opciono)
 Ako napraviš nalog, čuvamo:
 - email adresu (kod prijave emailom) ili Apple identifikator i email koji Apple podijeli, koji može biti skriveni Apple email;
-- uz tvoj pristanak za svaku grupu posebno: prakse i podešavanja, alergije i ishranu, istoriju posta;
+- uz tvoj pristanak za svaku grupu posebno: prakse i podešavanja (uključujući izabrani grad za vaktiju, bez
+  koordinata), alergije i ishranu, istoriju posta;
 - zapis o datim i povučenim pristancima.
 
 Osnov obrade: izvršenje usluge koju tražiš i tvoj izričit pristanak. Prakse mogu otkriti vjersko uvjerenje, a
@@ -46,8 +47,8 @@ identifikatoru instalacije, a taj brojač brišemo poslije 30 dana. Prema uslovi
 zahtjeva ne koristi za treniranje modela i ne čuva ih pošto pošalje odgovor.
 
 ## 5. Prijave grešaka
-Kad pošalješ prijavu, šaljemo opis koji napišeš, datum, vrstu greške i verziju aplikacije i pravila. Ako si
-prijavljen, prijava je vezana za nalog, a kad obrišeš nalog, ta veza se briše. Prijave čuvamo najviše 12 mjeseci.
+Kad pošalješ prijavu, šaljemo opis koji napišeš, datum, vrstu greške, dio aplikacije na koji se odnosi (na primjer
+recept) i verziju aplikacije i pravila. Prijava nije vezana za tvoj nalog. Prijave čuvamo najviše 12 mjeseci.
 
 ## 6. Podsjetnici
 Podsjetnici su lokalni: pravi ih telefon, bez našeg servera i bez push tokena.
@@ -98,15 +99,16 @@ It works without an account and keeps data on your phone.
    under 18) and a random install id. Safety answers never leave the device.
 2. **Location:** used once, if you allow it, to find the nearest city. Coordinates are discarded and never sent.
 3. **Optional account and sync:** email address or Apple identifier (possibly a private relay email); with your consent
-   per group, practices and settings, allergies and diet, fasting history; a record of consents. Practices can reveal
+   per group, practices and settings (including the chosen city for prayer times, never coordinates), allergies and
+   diet, fasting history; a record of consents. Practices can reveal
    religious belief and allergies are health data, so they are synced only with explicit consent, which you can withdraw
    in Profile. Stored in the EU (Frankfurt) with Supabase.
 4. **Optional AI meal suggestions:** only if you turn them on, we send Cloudflare, Inc. (Workers AI, USA) the forbidden food
    categories, your own avoid words, the meal, the ingredients you pick and the language. No name, email, account id,
    religion, location or safety answers. Requests go through our server, so the provider does not see your IP address.
    A hashed install id counts requests for abuse limits and is deleted after 30 days.
-5. **Error reports:** the text you write, the date, the type and the app and rule versions. Linked to your account if
-   you are signed in; the link is removed when the account is deleted. Kept for up to 12 months.
+5. **Error reports:** the text you write, the date, the type, the part of the app it is about (for example a recipe)
+   and the app and rule versions. Not linked to your account. Kept for up to 12 months.
 6. **Reminders** are local notifications; no push tokens.
 7. **Processors:** Supabase (database and auth, EU), [POPUNI: email provider] (login codes), Apple (Sign in with Apple),
    Cloudflare, Inc. (Workers AI, USA; meal suggestions, with consent). Transfers outside the EU rely on standard contractual clauses.
