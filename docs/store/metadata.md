@@ -34,8 +34,8 @@ in the EU, and you can delete it in the app at any time.
 fastself.ai is not a medical app. If you have a health condition, talk to your doctor before fasting.
 ```
 - **What's New**: `First release.`
-- **Support URL**: `https://[POPUNI: github-user].github.io/fastself-site/support`
-- **Privacy Policy URL**: `https://[POPUNI: github-user].github.io/fastself-site/privacy`
+- **Support URL**: `https://pliskin1.github.io/fastself-site/support`
+- **Privacy Policy URL**: `https://pliskin1.github.io/fastself-site/privacy`
 - **Copyright**: `2026 [POPUNI: legal entity]`
 
 ## Croatian localisation (closest to Montenegrin; D-24)
@@ -73,5 +73,34 @@ fastself.ai nije medicinska aplikacija. Ako imaš zdravstveno stanje, posavjetuj
 - Category: Lifestyle (primary), Health & Fitness (secondary).
 - Age rating: answer the questionnaire; expected 4+. Medical or treatment information: none.
 - Content rights: no third-party content.
-- App Review contact: [POPUNI: name, phone, email]. Notes: APPSTORE.md §7 (replace `<AI provider>`).
+- App Review contact: [POPUNI: name, phone, email].
 - Sign-in required: no (guest mode). Demo account: not needed.
+
+## App Review notes (App Review Information → Notes)
+Final text for 1.0; it replaces the APPSTORE.md §7 draft. Check before pasting that the build has Sign in with Apple,
+email login, "Obriši nalog" in Profil and the AI consent sheet (audit T24 blockers 1 to 4).
+```
+fastself.ai shows daily fasting rules and times for Orthodox fasting, Ramadan and intermittent fasting.
+No login is required: all features work as a guest. An account is optional and only syncs data between devices.
+To test account features, use Sign in with Apple with any Apple ID, or email login (a 6-digit code is emailed).
+To delete an account: Profil → Obriši nalog. This deletes all server data and revokes the Sign in with Apple token.
+AI meal suggestions require explicit consent (Profil → AI prijedlozi jela). We send only a list of forbidden food
+categories, the user's own avoid words, the meal type and chosen ingredients to Cloudflare Workers AI, through our
+server. No name, email, account id, religion or location is sent. Every suggested recipe is validated on the device
+and on the server against the day's rule and the user's allergies.
+The app is not a medical app and contains no health claims. Interface language: Montenegrin.
+```
+
+## App Privacy answers (App Privacy → Data Types)
+No tracking, no ATT prompt. Everything below is "App Functionality" only.
+| Data type | Collected | Linked to user | Tracking | Why |
+|---|---|---|---|---|
+| Contact Info: Email Address | yes | yes | no | email login; Apple may relay |
+| Identifiers: User ID | yes | yes | no | account |
+| Identifiers: Device ID | yes | no | no | random install id, hashed, AI rate limit |
+| Health & Fitness: Health | yes | yes | no | allergies, only with sync consent |
+| Health & Fitness: Fitness | yes | yes | no | fasting history, only with sync consent |
+| Sensitive Info | yes | yes | no | religious practices, only with sync consent |
+| Location: Coarse Location | yes | yes | no | the chosen city syncs with practices consent (`profiles.city`); never coordinates |
+| User Content: Other User Content | yes | no | no | error reports, not linked to the account |
+| Diagnostics | no | | | no crash reporting in 1.0 |
