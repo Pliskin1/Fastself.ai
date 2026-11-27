@@ -4,6 +4,7 @@ import brisanje from './brisanje';
 import common from './common';
 import danas from './danas';
 import kalendar from './kalendar';
+import legal from './legal';
 import nalog from './nalog';
 import nav from './nav';
 import notif from './notif';
@@ -25,6 +26,7 @@ const strings: Record<string, string> = {
   ...plan,
   ...report,
   ...brisanje,
+  ...legal,
   ...notif,
   ...nav,
 };

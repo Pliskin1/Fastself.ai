@@ -1,5 +1,6 @@
-import { StubScreen } from '@/components/StubScreen';
+import { Redirect, type Href } from 'expo-router';
 
-export default function AiPristanakScreen() {
-  return <StubScreen testID="screen-ai-pristanak" titleKey="nav.aiPristanak" />;
+// AI meal suggestions are not part of v1: the route exists for old links only and goes to Danas.
+export default function HiddenScreen() {
+  return <Redirect href={'/(tabs)/danas' as Href} />;
 }

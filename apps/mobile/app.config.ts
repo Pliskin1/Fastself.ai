@@ -1,6 +1,8 @@
 import type { ExpoConfig } from 'expo/config';
 
 const BG = '#03040D';
+const LOCATION_TEXT =
+  'Lokaciju koristimo jednom, da pronađemo najbliži grad za vaktiju. Koordinate ne čuvamo i ne šaljemo.';
 
 const config: ExpoConfig = {
   name: 'fastself.ai',
@@ -17,8 +19,32 @@ const config: ExpoConfig = {
     usesAppleSignIn: true,
     config: { usesNonExemptEncryption: false },
     infoPlist: {
-      NSLocationWhenInUseUsageDescription:
-        'Lokaciju koristimo jednom, da pronađemo najbliži grad za vaktiju. Koordinate ne čuvamo i ne šaljemo.',
+      NSLocationWhenInUseUsageDescription: LOCATION_TEXT,
+      CFBundleAllowMixedLocalizations: true,
+      CFBundleDevelopmentRegion: 'sr',
+    },
+    privacyManifests: {
+      NSPrivacyTracking: false,
+      NSPrivacyTrackingDomains: [],
+      NSPrivacyCollectedDataTypes: [],
+      NSPrivacyAccessedAPITypes: [
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryUserDefaults',
+          NSPrivacyAccessedAPITypeReasons: ['CA92.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryFileTimestamp',
+          NSPrivacyAccessedAPITypeReasons: ['C617.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategorySystemBootTime',
+          NSPrivacyAccessedAPITypeReasons: ['35F9.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryDiskSpace',
+          NSPrivacyAccessedAPITypeReasons: ['E174.1'],
+        },
+      ],
     },
   },
   android: {
@@ -41,7 +67,17 @@ const config: ExpoConfig = {
     'expo-sqlite',
     ['expo-notifications', { color: '#FFC86E' }],
     'expo-apple-authentication',
-    ['expo-location', { isAndroidBackgroundLocationEnabled: false }],
+    ['./plugins/with-location-texts', { text: LOCATION_TEXT }],
+    [
+      'expo-location',
+      {
+        locationWhenInUsePermission: LOCATION_TEXT,
+        locationAlwaysAndWhenInUsePermission: false,
+        locationAlwaysPermission: false,
+        isIosBackgroundLocationEnabled: false,
+        isAndroidBackgroundLocationEnabled: false,
+      },
+    ],
   ],
   experiments: { typedRoutes: true, reactCompiler: true },
 };

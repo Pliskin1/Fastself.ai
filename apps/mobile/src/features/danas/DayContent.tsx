@@ -15,19 +15,7 @@ import {
 import { router, type Href } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import {
-  Body,
-  Caption,
-  Chip,
-  GlassCard,
-  LinkButton,
-  Pill,
-  PrimaryButton,
-  SecondaryButton,
-  Text,
-  Title,
-  useToast,
-} from '@/components';
+import { Body, Caption, Chip, GlassCard, LinkButton, Pill, SecondaryButton, Text, Title, useToast } from '@/components';
 import { t } from '@/copy/sr';
 import { useUpdateSettings } from '@/hooks';
 import { font } from '@/theme/fonts';
@@ -161,11 +149,6 @@ export function PlateCard({ plan, settings }: { plan: DayPlan; settings: Setting
 export function Actions({ plan, onToggleWhy }: { plan: DayPlan; onToggleWhy: () => void }) {
   return (
     <View style={styles.actions}>
-      <PrimaryButton
-        testID="btn-what-to-eat"
-        label={t('danas.whatToEat')}
-        onPress={() => router.push('/asistent' as Href)}
-      />
       <SecondaryButton testID="btn-why" label={t('danas.why', { word: wordFor(plan.level) })} onPress={onToggleWhy} />
     </View>
   );
