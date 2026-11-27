@@ -1,0 +1,18 @@
+# Danas: open "Zašto", check the receipt, report the day from it and see the toast.
+appId: ai.fastself.app
+---
+- launchApp
+- openLink: 'fastself://dev?reset=1&preset=orthodox-if&date=2026-12-02&time=16:30&tab=danas'
+- assertVisible: { id: 'screen-danas' }
+- assertNotVisible: { id: 'btn-what-to-eat' }
+- tapOn: { id: 'btn-why' }
+- assertVisible: { id: 'why-receipt' }
+- assertVisible: 'Važi za danas'
+- tapOn: { id: 'btn-report-day' }
+- assertVisible: { id: 'screen-prijava-greske' }
+- tapOn: { id: 'chip-report-pravilo' }
+- tapOn: { id: 'input-report' }
+- inputText: 'E2E provjera prijave'
+- hideKeyboard
+- tapOn: { id: 'btn-send-report' }
+- assertVisible: 'Prijava je poslata. Hvala.'

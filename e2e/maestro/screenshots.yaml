@@ -22,14 +22,10 @@ appId: ai.fastself.app
 - waitForAnimationToEnd
 - takeScreenshot: store/screenshots/03-kalendar
 
-- openLink: 'fastself://dev?preset=orthodox&date=2026-12-02&time=12:30&tab=danas'
-- tapOn: { id: 'btn-what-to-eat' }
-- assertVisible: { id: 'screen-asistent' }
-- tapOn:
-    id: 'recipe-.*'
-    index: 0
+- openLink: 'fastself://dev?preset=orthodox-if&date=2026-12-02&time=12:30&tab=plan'
+- assertVisible: { id: 'screen-plan' }
 - waitForAnimationToEnd
-- takeScreenshot: store/screenshots/04-sta-da-jedem
+- takeScreenshot: store/screenshots/04-plan
 
 - openLink: 'fastself://dev?reset=1&preset=if14&date=2026-12-03&time=20:15&tab=tajmer'
 - tapOn: { id: 'timer-toggle' }

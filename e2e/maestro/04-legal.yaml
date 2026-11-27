@@ -1,0 +1,19 @@
+# v1 has no Šta da jedem (AI hidden), so flow 04 checks what App Review opens: terms and privacy inside the app.
+appId: ai.fastself.app
+---
+- launchApp
+- openLink: 'fastself://dev?reset=1&preset=orthodox&date=2026-12-02&time=12:00&tab=profil'
+- assertVisible: { id: 'screen-profil' }
+- assertNotVisible: { id: 'sw-ai' }
+- scrollUntilVisible:
+    element: { id: 'row-terms' }
+- tapOn: { id: 'row-terms' }
+- assertVisible: { id: 'screen-uslovi' }
+- assertVisible: 'Nije medicinski savjet'
+- scrollUntilVisible:
+    element: { id: 'terms-9' }
+- assertNotVisible: 'POPUNI'
+- tapOn: { id: 'btn-back' }
+- tapOn: { id: 'row-privacy' }
+- assertVisible: { id: 'screen-privatnost' }
+- assertNotVisible: { id: 'privacy-ai' }

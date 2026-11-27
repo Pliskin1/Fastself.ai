@@ -11,9 +11,11 @@ Log format, newest first, max 3 lines per task: `date time | task | result | nex
 - Schedules: docs/team/DANILO.md, docs/team/ANDREJ.md.
 
 ## D (Danilo): now and log
-- Now: T8 done on branch t/T8-kalendar (off main, not pushed). Next: T13.
+- Now: v1 release work on branch t/release-v1 (local, not pushed): T17 email+password, T20 scroll/motion, T21 E2E, terms, rating, AI hidden. Next: D's simulator check, then push.
+- ZAHTJEV ZA A: prod live during review; password sign-up on, email confirmation off; create `review@fastself.ai` with a fixed password; send legal entity + support email for `src/config.ts`; I touched your files (lib/auth password functions, ReportForm mode + sheet inset, BrisanjeSheet/ShoppingSheet `sheet` inset, plan flags off).
 - Waiting for A: nothing.
 - Log:
+  - 2026-11-27 | release v1 | email+password login + Profil account/sync/export/delete, Uslovi screen + config.ts, AI entry points hidden, app.config (no Always location, privacy manifest, sr region), scroll insets/fade/static glass/star groups, odometer, rating + store prompt, Maestro 02–08; typecheck, lint, test:app 1067 | simulator check, maestro run, push
   - 2026-11-25 | T8 | Kalendar: month grid with orbs, today/selected/slava/nafila marks, month slide across years, day card, report; typecheck, lint, test:app 326, expo export ok | simulator check, push, T13
   - 2026-11-24 | T7 | Danas: dial, plate, receipt, izuzetak sheet, Ramadan/vaktija/nafila/slava cards, week strip; typecheck, lint, test:app 165, expo export ok | simulator + Maestro 01 check, push, T8
   - 2026-11-24 | T6 | 6 onboarding screens, PraksePicker, AlergijePicker, flow tests; typecheck, lint, test:app 150, expo export ok | simulator + Maestro check, push, T7

@@ -7,6 +7,8 @@ never edit the same file; `src/copy/sr/index.ts` merges them and exports `t()`.
 | `common.ts` | common.*, a11y.* | D |
 | `onboarding.ts` | ob.*, prakse.*, alergije.*, sigurnost.*, dozvole.* | D |
 | `nalog.ts` | nalog.* | D |
+| `legal.ts` | uslovi.* | D |
+| `ocjena.ts` | ocjena.*, feedback.* | D |
 | `danas.ts` | day.*, dial.*, danas.*, prayer.*, exception.* | D |
 | `kalendar.ts` | kal.* | D |
 | `tajmer.ts` | tajmer.* | D |
@@ -443,3 +445,113 @@ Verb agreement changes with the plural form, so `passed` has three keys; pick wi
 | a11y.toastPrefix | Obavještenje: |
 | a11y.recipe.expand / collapse | Prikaži recept / Sakrij recept |
 | a11y.stepper.minus / plus | Smanji {what} za jedan / Povećaj {what} za jedan |
+
+## 12. v1 release additions (27 Nov: email + password login, terms, rating, sync label)
+Areas: `nalog.*`, `profil.*`, `danas.sync.*` as above; `legal.ts` (`uslovi.*`) and `ocjena.ts` (`ocjena.*`, `feedback.*`) are new files, owner D.
+| key | text |
+|---|---|
+| nalog.mode.signIn | Prijava |
+| nalog.mode.signUp | Registracija |
+| nalog.mode.a11y | Prijava ili registracija |
+| nalog.password.label | Lozinka |
+| nalog.password.placeholder | Najmanje {n} znakova |
+| nalog.password.show | Prikaži |
+| nalog.password.hide | Sakrij |
+| nalog.password.showA11y | Prikaži lozinku |
+| nalog.password.hideA11y | Sakrij lozinku |
+| nalog.submit.signIn | Prijavi se |
+| nalog.submit.signUp | Napravi nalog |
+| nalog.legal.pre | Nastavkom prihvataš  |
+| nalog.legal.terms | uslove korišćenja |
+| nalog.legal.and |  i  |
+| nalog.legal.policy | politiku privatnosti |
+| nalog.legal.end | . |
+| nalog.err.credentials | Email ili lozinka nisu tačni. |
+| nalog.err.taken | Nalog sa ovim emailom već postoji. Prijavi se. |
+| nalog.err.weak | Lozinka mora imati najmanje {n} znakova. |
+| nalog.err.confirm | Poslali smo ti email za potvrdu. Potvrdi nalog pa se prijavi. |
+| nalog.err.offline | Nema interneta. Provjeri vezu i pokušaj ponovo. |
+| nalog.err.rate | Previše pokušaja. Sačekaj minut pa pokušaj ponovo. |
+| nalog.err.server | Prijava trenutno ne radi. Pokušaj malo kasnije. |
+| nalog.signedIn | Prijavljen si |
+| nalog.consent.later | Ne sada |
+| nalog.consent.sub | Prijavljen si kao {email}. Izaberi šta ide na server. |
+| privatnost.terms | Uslovi korišćenja |
+| privatnost.support | Podrška |
+| profil.account.title | Prijavljen si |
+| profil.account.body | {email} |
+| profil.account.syncOn | Prakse, alergije i istorija se čuvaju i na serveru u EU. |
+| profil.account.syncOff | Sinhronizacija je isključena. Podaci su samo na ovom telefonu. |
+| profil.signOut | Odjavi se |
+| profil.signOut.error | Odjava nije uspjela. Pokušaj ponovo. |
+| profil.export.error | Izvoz nije uspio. Pokušaj ponovo. |
+| profil.terms | Uslovi korišćenja |
+| profil.sync.askTitle | Obrisati i kopiju na serveru? |
+| profil.sync.askBody | Podaci ostaju na ovom telefonu. Možeš obrisati i kopiju na serveru. |
+| profil.sync.askDelete | Obriši sa servera |
+| profil.sync.askKeep | Zadrži na serveru |
+| profil.sync.deleted | Kopija na serveru je obrisana |
+| profil.sync.error | Server nije dostupan. Pokušaj ponovo. |
+| profil.rem.denied | Obavještenja su isključena u podešavanjima telefona. |
+| profil.rate | Ocijeni aplikaciju |
+| profil.rate.sub | reci nam šta ti se sviđa i šta da popravimo |
+| danas.sync.on | Sinhronizovano |
+| danas.sync.syncing | Sinhronizacija u toku |
+| danas.sync.error | Sinhronizacija nije uspjela |
+| uslovi.title | Uslovi korišćenja |
+| uslovi.meta | Važi od {date}. Pružalac: {entity}, Crna Gora. Kontakt: {email}. |
+| uslovi.1.title | Šta aplikacija radi |
+| uslovi.1.body | fastself.ai prikazuje pravila i vremena posta prema javno dostupnim kalendarima i proračunima. Pravila mogu da se razlikuju po parohiji, džematu i duhovniku. Kad nisi siguran, pitaj sveštenika ili imama. Grešku prijavi u aplikaciji. |
+| uslovi.2.title | Nije medicinski savjet |
+| uslovi.2.body | Aplikacija ne daje medicinske savjete i ne zamjenjuje ljekara. Post prekini ako ti je loše. Isprekidani post nije dostupan mlađima od 18 godina. |
+| uslovi.3.title | Recepti i alergije |
+| uslovi.3.body | Recepti prolaze automatsku provjeru prema pravilu dana i tvojim alergijama, ali provjera može da pogriješi. Kod alergija uvijek pročitaj deklaraciju proizvoda. |
+| uslovi.4.title | Nalog |
+| uslovi.4.body | Nalog je opcion. Odgovoran si za svoj email i lozinku. Nalog brišeš u aplikaciji u bilo kom trenutku: Profil, pa Obriši nalog. |
+| uslovi.5.title | Dozvoljeno korišćenje |
+| uslovi.5.body | Ne zloupotrebljavaj servis: bez automatskog slanja zahtjeva, zaobilaženja ograničenja ili ometanja rada. |
+| uslovi.6.title | Dostupnost |
+| uslovi.6.body | Aplikacija je besplatna i pružamo je kakva jeste. Trudimo se da servis radi, ali ne garantujemo da će sinhronizacija uvijek biti dostupna. Osnovne funkcije rade bez interneta. |
+| uslovi.7.title | Odgovornost |
+| uslovi.7.body | U mjeri u kojoj zakon dozvoljava, ne odgovaramo za štetu nastalu oslanjanjem na prikazana pravila, vremena ili recepte. |
+| uslovi.8.title | Izmjene |
+| uslovi.8.body | Uslove možemo izmijeniti. O bitnim izmjenama obavještavamo u aplikaciji. |
+| uslovi.9.title | Pravo |
+| uslovi.9.body | Primjenjuje se pravo Crne Gore. Apple nije strana ovih uslova i nema obavezu podrške za aplikaciju. Važe i Appleovi standardni uslovi za aplikacije (Licensed Application EULA). |
+| uslovi.web | Otvori uslove na webu |
+| uslovi.contact | Piši podršci |
+| uslovi.privacy | Politika privatnosti |
+| feedback.mode.report | Prijavi grešku |
+| feedback.mode.rate | Ocijeni aplikaciju |
+| ocjena.title | Kako ti se sviđa fastself.ai? |
+| ocjena.sub | Tvoja ocjena ide direktno timu i pomaže nam da odlučimo šta radimo sljedeće. |
+| ocjena.star.a11y | {n} od 5 zvjezdica |
+| ocjena.score.1 | Loše |
+| ocjena.score.2 | Može bolje |
+| ocjena.score.3 | Solidno |
+| ocjena.score.4 | Dobro |
+| ocjena.score.5 | Odlično |
+| ocjena.ask.low | Šta da popravimo? |
+| ocjena.ask.high | Šta ti se najviše dopada? |
+| ocjena.chip.rule | Pravila posta |
+| ocjena.chip.time | Vremena |
+| ocjena.chip.design | Dizajn |
+| ocjena.chip.speed | Brzina |
+| ocjena.chip.missing | Nešto mi fali |
+| ocjena.chip.other | Nešto drugo |
+| ocjena.chip.dial | Sat na Danas |
+| ocjena.chip.calendar | Kalendar |
+| ocjena.chip.timer | Tajmer |
+| ocjena.chip.reminders | Podsjetnici |
+| ocjena.chip.simple | Jednostavnost |
+| ocjena.input.label | Komentar (nije obavezan) |
+| ocjena.input.placeholder.low | Šta te je zasmetalo? |
+| ocjena.input.placeholder.high | Napiši nam šta god želiš |
+| ocjena.note | Šaljemo samo ocjenu, izbor i komentar. Bez imena, emaila i lokacije. |
+| ocjena.send | Pošalji ocjenu |
+| ocjena.thanks.title | Hvala ti! |
+| ocjena.thanks.high | Drago nam je da ti pomaže. Ako imaš minut, ocjena u prodavnici nam mnogo znači. |
+| ocjena.thanks.low | Pročitaćemo svaku riječ. Hvala što nam pomažeš da budemo bolji. |
+| ocjena.store | Ocijeni u prodavnici |
+| ocjena.done | Gotovo |
+| ocjena.error | Ocjena nije poslata. Provjeri internet i pokušaj ponovo. |

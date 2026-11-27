@@ -23,9 +23,8 @@ INTERMITTENT FASTING
 12:12, 14:10 or 16:8 with a timer that keeps running when the app is closed. It works together with a religious fast:
 the fast decides what you eat, the window decides when.
 
-WHAT TO EAT
-Recipes that fit today's rule and your allergies. Optional AI suggestions, only with your consent; every recipe is
-checked against the day's rule and your allergy list before you see it.
+WHAT YOU CAN EAT TODAY
+Every day lists what is allowed and what is not, by your fast and your own allergy list, with the reason.
 
 PRIVATE BY DEFAULT
 Works without an account. Your data stays on your phone. An optional account syncs between your devices, on servers
@@ -58,9 +57,8 @@ ISPREKIDANI POST
 12:12, 14:10 ili 16:8, sa tajmerom koji radi i kad je aplikacija zatvorena. Ide uz vjerski post: post određuje šta
 jedeš, prozor određuje kada.
 
-ŠTA DA JEDEM
-Recepti koji odgovaraju današnjem pravilu i tvojim alergijama. AI prijedlozi samo uz tvoj pristanak; svaki recept
-prolazi provjeru prije nego što ga vidiš.
+ŠTA SE DANAS JEDE
+Svaki dan pokazuje šta može, a šta ne, po tvom postu i tvojim alergijama, uz objašnjenje zašto.
 
 PRIVATNOST
 Radi bez naloga. Podaci ostaju na telefonu. Nalog je opcion, sinhronizuje uređaje preko servera u EU i brišeš ga u
@@ -73,5 +71,5 @@ fastself.ai nije medicinska aplikacija. Ako imaš zdravstveno stanje, posavjetuj
 - Category: Lifestyle (primary), Health & Fitness (secondary).
 - Age rating: answer the questionnaire; expected 4+. Medical or treatment information: none.
 - Content rights: no third-party content.
-- App Review contact: [POPUNI: name, phone, email]. Notes: APPSTORE.md §7 (replace `<AI provider>`).
-- Sign-in required: no (guest mode). Demo account: not needed.
+- App Review contact: [POPUNI: name, phone, email]. Notes: APPSTORE.md §7.
+- Sign-in required: no (guest mode), but give the demo account anyway: `review@fastself.ai` / [password from A]. See APPSTORE.md §7.
