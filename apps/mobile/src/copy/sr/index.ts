@@ -8,6 +8,7 @@ import legal from './legal';
 import nalog from './nalog';
 import nav from './nav';
 import notif from './notif';
+import ocjena from './ocjena';
 import onboarding from './onboarding';
 import plan from './plan';
 import profil from './profil';
@@ -25,6 +26,7 @@ const strings: Record<string, string> = {
   ...asistent,
   ...plan,
   ...report,
+  ...ocjena,
   ...brisanje,
   ...legal,
   ...notif,

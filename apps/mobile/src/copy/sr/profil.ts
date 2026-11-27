@@ -81,4 +81,6 @@ export default {
   'profil.sync.deleted': 'Kopija na serveru je obrisana',
   'profil.sync.error': 'Server nije dostupan. Pokušaj ponovo.',
   'profil.rem.denied': 'Obavještenja su isključena u podešavanjima telefona.',
+  'profil.rate': 'Ocijeni aplikaciju',
+  'profil.rate.sub': 'reci nam šta ti se sviđa i šta da popravimo',
 } as Record<string, string>;

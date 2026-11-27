@@ -9,6 +9,7 @@ import {
   Display,
   KeyboardScreen,
   PrimaryButton,
+  Segmented,
   TextField,
   Text,
   haptics,
@@ -17,10 +18,13 @@ import {
 import { t } from '@/copy/sr';
 import { sendReport, type ReportType } from '@/lib/api';
 import { color, layout, radius } from '@/theme/tokens';
+import { RatingForm } from './RatingForm';
 import { buildReport, canSend, MAX_LENGTH, REPORT_TYPES, validDay } from './model';
 
 // The entry point contract (docs/team/ANDREJ.md): context is one of these, and 'recipe' may come with a recipeId.
-type Props = { date?: string; context?: string; recipeId?: string };
+type Props = { date?: string; context?: string; recipeId?: string; mode?: string };
+
+type Mode = 'report' | 'rate';
 
 const KNOWN_CONTEXTS = ['danas', 'kalendar', 'profil', 'recipe'];
 
@@ -35,8 +39,9 @@ function contextLine(date?: string, context?: string): string {
   return t('report.context', { value: parts.length > 0 ? parts.join(', ') : t('report.context.general') });
 }
 
-export function ReportForm({ date, context, recipeId }: Props) {
+export function ReportForm({ date, context, recipeId, mode: initialMode }: Props) {
   const toast = useToast();
+  const [mode, setMode] = useState<Mode>(initialMode === 'ocjena' ? 'rate' : 'report');
   // Coming from a recipe, the recipe type is already chosen; the user can still change it.
   const [type, setType] = useState<ReportType | null>(context === 'recipe' ? 'recept' : null);
   const [text, setText] = useState('');
@@ -74,59 +79,74 @@ export function ReportForm({ date, context, recipeId }: Props) {
   return (
     <View style={styles.fill}>
       <KeyboardScreen testID="screen-prijava-greske" sheet>
-        <Display style={styles.title}>{t('report.title')}</Display>
-        <Body tone="mist">{contextLine(date, context)}</Body>
-        <View accessibilityRole="radiogroup" accessibilityLabel={t('report.type.group')} style={styles.chips}>
-          {REPORT_TYPES.map((item) => {
-            const selected = type === item.type;
-            return (
-              <Pressable
-                key={item.type}
-                testID={item.testID}
-                accessibilityRole="radio"
-                accessibilityLabel={t(item.key)}
-                accessibilityState={{ selected, checked: selected }}
-                onPress={() => {
-                  haptics.selection();
-                  setType(item.type);
-                }}
-                style={[styles.chip, selected && styles.chipOn]}
+        <Segmented<Mode>
+          testID="seg-feedback-mode"
+          items={[
+            { key: 'report', label: t('feedback.mode.report') },
+            { key: 'rate', label: t('feedback.mode.rate') },
+          ]}
+          value={mode}
+          onChange={setMode}
+        />
+        {mode === 'rate' ? (
+          <RatingForm />
+        ) : (
+          <>
+            <Display style={styles.title}>{t('report.title')}</Display>
+            <Body tone="mist">{contextLine(date, context)}</Body>
+            <View accessibilityRole="radiogroup" accessibilityLabel={t('report.type.group')} style={styles.chips}>
+              {REPORT_TYPES.map((item) => {
+                const selected = type === item.type;
+                return (
+                  <Pressable
+                    key={item.type}
+                    testID={item.testID}
+                    accessibilityRole="radio"
+                    accessibilityLabel={t(item.key)}
+                    accessibilityState={{ selected, checked: selected }}
+                    onPress={() => {
+                      haptics.selection();
+                      setType(item.type);
+                    }}
+                    style={[styles.chip, selected && styles.chipOn]}
+                  >
+                    <Text variant="small" style={{ color: selected ? color.sunInk : color.paper }}>
+                      {t(item.key)}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <TextField
+              testID="input-report"
+              label={t('report.input.label')}
+              placeholder={t('report.input.placeholder')}
+              value={text}
+              onChangeText={setText}
+              maxLength={MAX_LENGTH}
+              multiline
+              textAlignVertical="top"
+              style={styles.input}
+            />
+            <Caption>{t('report.note')}</Caption>
+            {failed ? (
+              <Caption
+                testID="report-error"
+                accessibilityRole="alert"
+                accessibilityLiveRegion="assertive"
+                style={styles.error}
               >
-                <Text variant="small" style={{ color: selected ? color.sunInk : color.paper }}>
-                  {t(item.key)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-        <TextField
-          testID="input-report"
-          label={t('report.input.label')}
-          placeholder={t('report.input.placeholder')}
-          value={text}
-          onChangeText={setText}
-          maxLength={MAX_LENGTH}
-          multiline
-          textAlignVertical="top"
-          style={styles.input}
-        />
-        <Caption>{t('report.note')}</Caption>
-        {failed ? (
-          <Caption
-            testID="report-error"
-            accessibilityRole="alert"
-            accessibilityLiveRegion="assertive"
-            style={styles.error}
-          >
-            {t('common.error.network')}
-          </Caption>
-        ) : null}
-        <PrimaryButton
-          testID="btn-send-report"
-          label={t('report.send')}
-          disabled={pending || !canSend(type, text)}
-          onPress={send}
-        />
+                {t('common.error.network')}
+              </Caption>
+            ) : null}
+            <PrimaryButton
+              testID="btn-send-report"
+              label={t('report.send')}
+              disabled={pending || !canSend(type, text)}
+              onPress={send}
+            />
+          </>
+        )}
       </KeyboardScreen>
     </View>
   );

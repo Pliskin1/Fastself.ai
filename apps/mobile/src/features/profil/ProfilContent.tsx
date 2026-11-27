@@ -189,6 +189,14 @@ export function HelpGroup() {
   return (
     <Group title={t('profil.group.help')}>
       <LinkRow
+        testID="row-rate"
+        title={t('profil.rate')}
+        sub={t('profil.rate.sub')}
+        onPress={() =>
+          router.push({ pathname: '/(sheets)/prijava-greske', params: { context: 'profil', mode: 'ocjena' } } as Href)
+        }
+      />
+      <LinkRow
         testID="row-report"
         title={t('profil.report')}
         sub={t('profil.report.sub')}
