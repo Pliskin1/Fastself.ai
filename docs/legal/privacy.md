@@ -26,7 +26,8 @@ ne čuvamo ih i ne šaljemo. Grad možeš izabrati i ručno.
 ## 3. Nalog i sinhronizacija (opciono)
 Ako napraviš nalog, čuvamo:
 - email adresu (kod prijave emailom) ili Apple identifikator i email koji Apple podijeli, koji može biti skriveni Apple email;
-- uz tvoj pristanak za svaku grupu posebno: prakse i podešavanja, alergije i ishranu, istoriju posta;
+- uz tvoj pristanak za svaku grupu posebno: prakse i podešavanja (uključujući izabrani grad za vaktiju, bez
+  koordinata), alergije i ishranu, istoriju posta;
 - zapis o datim i povučenim pristancima.
 
 Osnov obrade: izvršenje usluge koju tražiš i tvoj izričit pristanak. Prakse mogu otkriti vjersko uvjerenje, a
@@ -98,7 +99,8 @@ It works without an account and keeps data on your phone.
    under 18) and a random install id. Safety answers never leave the device.
 2. **Location:** used once, if you allow it, to find the nearest city. Coordinates are discarded and never sent.
 3. **Optional account and sync:** email address or Apple identifier (possibly a private relay email); with your consent
-   per group, practices and settings, allergies and diet, fasting history; a record of consents. Practices can reveal
+   per group, practices and settings (including the chosen city for prayer times, never coordinates), allergies and
+   diet, fasting history; a record of consents. Practices can reveal
    religious belief and allergies are health data, so they are synced only with explicit consent, which you can withdraw
    in Profile. Stored in the EU (Frankfurt) with Supabase.
 4. **Optional AI meal suggestions:** only if you turn them on, we send Cloudflare, Inc. (Workers AI, USA) the forbidden food
