@@ -35,15 +35,15 @@ alergije zdravstveni podatak, zato ih šaljemo samo uz izričit pristanak, koji 
 Podaci se čuvaju na serverima u Evropskoj uniji (Frankfurt, Njemačka) kod provajdera Supabase. Veza je šifrovana.
 
 ## 4. AI prijedlozi jela (opciono)
-Samo ako ih uključiš, AI servisu treće strane, [POPUNI: npr. Anthropic PBC, SAD (Claude)], šaljemo:
+Samo ako ih uključiš, AI servisu treće strane, Cloudflare, Inc., SAD (Workers AI), šaljemo:
 - listu kategorija namirnica koje taj dan ne jedeš i namirnice koje sam dodaš kao izbjegavane;
 - obrok i sastojke koje izabereš;
 - jezik odgovora.
 
 Ne šaljemo ime, email, identifikator naloga, vjeru, lokaciju ni sigurnosne odgovore. Zahtjev ide preko našeg servera,
 pa AI servis ne vidi ni tvoju IP adresu. Da bismo ograničili zloupotrebu, brojimo zahtjeve po heširanom
-identifikatoru instalacije, a taj brojač brišemo poslije 30 dana. Prema uslovima servisa, podaci iz zahtjeva se ne
-koriste za treniranje modela.
+identifikatoru instalacije, a taj brojač brišemo poslije 30 dana. Prema uslovima servisa, Cloudflare podatke iz
+zahtjeva ne koristi za treniranje modela i ne čuva ih pošto pošalje odgovor.
 
 ## 5. Prijave grešaka
 Kad pošalješ prijavu, šaljemo opis koji napišeš, datum, vrstu greške i verziju aplikacije i pravila. Ako si
@@ -58,7 +58,7 @@ Podsjetnici su lokalni: pravi ih telefon, bez našeg servera i bez push tokena.
 | Supabase Inc. | baza i prijava | EU (Frankfurt) |
 | [POPUNI: Resend ili Brevo] | slanje koda za prijavu emailom | [POPUNI] |
 | Apple Inc. | prijava uz Apple | prema Apple uslovima |
-| [POPUNI: AI provajder] | AI prijedlozi jela, samo uz pristanak, bez ličnih podataka | [POPUNI] |
+| Cloudflare, Inc. (Workers AI) | AI prijedlozi jela, samo uz pristanak, bez ličnih podataka | SAD; obrada na Cloudflare mreži |
 
 Za prenos van EU koristimo standardne ugovorne klauzule koje nude ovi provajderi. Ne prodajemo podatke, ne
 prikazujemo reklame i ne pratimo te između aplikacija.
@@ -101,7 +101,7 @@ It works without an account and keeps data on your phone.
    per group, practices and settings, allergies and diet, fasting history; a record of consents. Practices can reveal
    religious belief and allergies are health data, so they are synced only with explicit consent, which you can withdraw
    in Profile. Stored in the EU (Frankfurt) with Supabase.
-4. **Optional AI meal suggestions:** only if you turn them on, we send [POPUNI: AI provider] the forbidden food
+4. **Optional AI meal suggestions:** only if you turn them on, we send Cloudflare, Inc. (Workers AI, USA) the forbidden food
    categories, your own avoid words, the meal, the ingredients you pick and the language. No name, email, account id,
    religion, location or safety answers. Requests go through our server, so the provider does not see your IP address.
    A hashed install id counts requests for abuse limits and is deleted after 30 days.
@@ -109,7 +109,7 @@ It works without an account and keeps data on your phone.
    you are signed in; the link is removed when the account is deleted. Kept for up to 12 months.
 6. **Reminders** are local notifications; no push tokens.
 7. **Processors:** Supabase (database and auth, EU), [POPUNI: email provider] (login codes), Apple (Sign in with Apple),
-   [POPUNI: AI provider] (meal suggestions, with consent). Transfers outside the EU rely on standard contractual clauses.
+   Cloudflare, Inc. (Workers AI, USA; meal suggestions, with consent). Transfers outside the EU rely on standard contractual clauses.
    No selling of data, no ads, no tracking.
 8. **Retention and deletion:** account data until you delete the account in the app (Profile → Delete account), which
    deletes all server data and revokes Sign in with Apple.
