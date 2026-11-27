@@ -4,9 +4,9 @@ title: Politika privatnosti | Privacy policy
 
 # Politika privatnosti, fastself.ai
 
-Važi od: [POPUNI: datum objave, npr. 27. novembar 2026]
-Rukovalac podacima: [POPUNI: pravno lice ili ime i prezime], [POPUNI: adresa], Crna Gora.
-Kontakt: [POPUNI: email za podršku]
+Važi od: 27. novembar 2026
+Rukovalac podacima: fastself, [POPUNI: adresa], Crna Gora.
+Kontakt: review@fastself.ai
 
 fastself.ai prikazuje pravila i vremena pravoslavnog posta, Ramazana, dobrovoljnih postova i isprekidanog posta.
 Aplikacija je napravljena tako da radi bez naloga i da podaci ostanu na tvom telefonu.
@@ -66,7 +66,7 @@ Profilu ili kad ukloniš aplikaciju.
 
 ## 8. Tvoja prava
 Imaš pravo na pristup, ispravku, brisanje, prenosivost (Profil → Izvezi moje podatke), ograničenje obrade i povlačenje
-pristanka u bilo kom trenutku. Piši na [POPUNI: email]. Odgovaramo u roku od 30 dana. Pritužbu možeš podnijeti
+pristanka u bilo kom trenutku. Piši na review@fastself.ai. Odgovaramo u roku od 30 dana. Pritužbu možeš podnijeti
 Agenciji za zaštitu ličnih podataka i slobodan pristup informacijama Crne Gore, ili nadzornom organu u zemlji EU u
 kojoj živiš.
 
@@ -85,7 +85,7 @@ O bitnim izmjenama obavještavamo u aplikaciji. Datum na vrhu pokazuje posljednj
 
 # Privacy policy, fastself.ai (English)
 
-Effective: [POPUNI: date]. Controller: [POPUNI: entity], [POPUNI: address], Montenegro. Contact: [POPUNI: email].
+Effective: 27 November 2026. Controller: fastself, [POPUNI: address], Montenegro. Contact: review@fastself.ai.
 
 fastself.ai shows the rules and times of Orthodox fasting, Ramadan, voluntary Islamic fasts and intermittent fasting.
 It works without an account and keeps data on your phone.
@@ -106,7 +106,7 @@ It works without an account and keeps data on your phone.
 7. **Retention and deletion:** account data until you delete the account in the app (Profile → Delete account), which
    deletes all server data. You can also request deletion without the app on the Support page.
 8. **Your rights:** access, rectification, erasure, portability (Profile → Export my data), restriction and withdrawal
-   of consent at any time. Write to [POPUNI: email]; we answer within 30 days. You can complain to the Montenegrin
+   of consent at any time. Write to review@fastself.ai; we answer within 30 days. You can complain to the Montenegrin
    Personal Data Protection Agency or to the supervisory authority where you live.
 9. **Children:** intermittent fasting is disabled for users under 18. Accounts are not intended for children under 16
    without parental consent.
