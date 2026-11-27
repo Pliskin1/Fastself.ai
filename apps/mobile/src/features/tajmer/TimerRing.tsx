@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   useAnimatedProps,
   useDerivedValue,
@@ -11,6 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { Text, useMotion } from '@/components';
+import { OdometerDigit } from '@/components/OdometerDigit';
 import { t } from '@/copy/sr';
 import { font } from '@/theme/fonts';
 import { color } from '@/theme/tokens';
@@ -23,7 +24,6 @@ const STROKE = 14;
 const CIRC = 2 * Math.PI * R;
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 const pad = (v: number): string => {
   'worklet';
@@ -47,17 +47,7 @@ function useDigits(elapsed: SharedValue<number>) {
 }
 
 function Cell({ text, initial, size }: { text: SharedValue<string>; initial: string; size: number }) {
-  const props = useAnimatedProps(() => ({ text: text.value, defaultValue: text.value }) as unknown as TextInputProps);
-  return (
-    <AnimatedTextInput
-      editable={false}
-      pointerEvents="none"
-      accessible={false}
-      defaultValue={initial}
-      animatedProps={props}
-      style={[styles.cell, { width: size * 0.58, fontSize: size, lineHeight: size * 1.1 }]}
-    />
-  );
+  return <OdometerDigit text={text} initial={initial} size={size} lineHeight={size * 1.1} style={styles.cell} />;
 }
 
 type Props = { model: TimerModel; now: SharedValue<number>; reminderOn: boolean };

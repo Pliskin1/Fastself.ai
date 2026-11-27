@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   useAnimatedProps,
   useDerivedValue,
@@ -12,6 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Defs, G, Line, LinearGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
 import { Text, useMotion } from '@/components';
+import { OdometerDigit } from '@/components/OdometerDigit';
 import { nowMs } from '@/lib/clock';
 import { font } from '@/theme/fonts';
 import { color, level as levels } from '@/theme/tokens';
@@ -24,7 +25,6 @@ const STROKE = 14;
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedPath = Animated.createAnimatedComponent(Path);
-const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 const angle = (min: number): number => (min / 1440) * Math.PI * 2 - Math.PI / 2;
 const point = (min: number, r: number) => ({ x: C + r * Math.cos(angle(min)), y: C + r * Math.sin(angle(min)) });
@@ -65,15 +65,13 @@ type CellProps = { text: SharedValue<string>; initial: string; size: number; sty
 
 /** One digit that is rewritten on the UI thread, in a fixed-width cell so the numbers never jitter. */
 function Cell({ text, initial, size, style }: CellProps) {
-  const props = useAnimatedProps(() => ({ text: text.value, defaultValue: text.value }) as unknown as TextInputProps);
   return (
-    <AnimatedTextInput
-      editable={false}
-      pointerEvents="none"
-      accessible={false}
-      defaultValue={initial}
-      animatedProps={props}
-      style={[styles.cell, { width: size * 0.58, fontSize: size, lineHeight: size * 1.06 }, style]}
+    <OdometerDigit
+      text={text}
+      initial={initial}
+      size={size}
+      lineHeight={size * 1.06}
+      style={style ? [styles.cell, style] : styles.cell}
     />
   );
 }

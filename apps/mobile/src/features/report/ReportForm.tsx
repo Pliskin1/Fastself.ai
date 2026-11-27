@@ -73,7 +73,7 @@ export function ReportForm({ date, context, recipeId }: Props) {
 
   return (
     <View style={styles.fill}>
-      <KeyboardScreen testID="screen-prijava-greske">
+      <KeyboardScreen testID="screen-prijava-greske" sheet>
         <Display style={styles.title}>{t('report.title')}</Display>
         <Body tone="mist">{contextLine(date, context)}</Body>
         <View accessibilityRole="radiogroup" accessibilityLabel={t('report.type.group')} style={styles.chips}>

@@ -24,7 +24,7 @@ export function ShoppingSheet() {
 
   return (
     <View style={styles.fill}>
-      <ScreenScroll testID="screen-kupovina">
+      <ScreenScroll testID="screen-kupovina" sheet>
         <Display style={styles.title}>{t('plan.shopping')}</Display>
         <Caption>{t('plan.shopping.caption')}</Caption>
         <View style={styles.list}>

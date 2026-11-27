@@ -25,7 +25,7 @@ export default function IzuzetakSheet() {
 
   return (
     <View style={styles.fill}>
-      <ScreenScroll testID="screen-izuzetak" contentStyle={styles.content}>
+      <ScreenScroll testID="screen-izuzetak" sheet>
         <Display style={styles.title}>{t('exception.title')}</Display>
         <Body tone="mist">{t('exception.body')}</Body>
         <View style={styles.chips}>
@@ -54,7 +54,6 @@ export default function IzuzetakSheet() {
 
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: 'rgba(11,13,36,0.96)' },
-  content: { paddingTop: 24 },
   title: { fontSize: 30, lineHeight: 34 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
 });

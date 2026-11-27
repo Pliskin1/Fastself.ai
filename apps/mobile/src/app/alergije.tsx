@@ -7,7 +7,7 @@ import { AlergijePicker } from '@/features/onboarding';
 export default function AlergijeScreen() {
   const toast = useToast();
   return (
-    <ScreenScroll testID="screen-alergije" contentStyle={{ paddingTop: 12 }} keyboardShouldPersistTaps="handled">
+    <ScreenScroll testID="screen-alergije" keyboardShouldPersistTaps="handled">
       <ScreenHeader title={t('alergije.title')} />
       <AlergijePicker />
       <PrimaryButton

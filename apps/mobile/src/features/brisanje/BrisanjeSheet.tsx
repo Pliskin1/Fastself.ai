@@ -123,7 +123,7 @@ export function BrisanjeSheet() {
 
   return (
     <View testID="screen-brisanje" style={styles.fill}>
-      <ScreenScroll>
+      <ScreenScroll sheet>
         {variant === 'alsoLocal' ? (
           // The toast sits under the native sheet and may not be seen; the screen reader already heard it.
           <Body testID="delete-done" style={styles.done}>

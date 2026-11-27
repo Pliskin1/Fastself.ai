@@ -12,6 +12,7 @@ jest.mock('react-native-reanimated', () => {
     View,
     Easing: { bezier, inOut: () => ease, quad: ease },
     FadeInDown: chain,
+    FadeIn: chain,
     useReducedMotion: () => false,
     useSharedValue: (v) => {
       const ref = useRef({ value: v });
@@ -20,6 +21,7 @@ jest.mock('react-native-reanimated', () => {
     useAnimatedStyle: (fn) => fn(),
     useDerivedValue: (fn) => ({ value: fn() }),
     useAnimatedProps: (fn) => fn(),
+    useAnimatedReaction: () => undefined,
     interpolateColor: (_v, _in, out) => out[0],
     withTiming: (v) => v,
     withSpring: (v) => v,
