@@ -6,7 +6,8 @@ title: Podrška | Support
 
 Piši na **[POPUNI: email za podršku]**. Odgovaramo u roku od 2 radna dana.
 
-U aplikaciji: Profil → Prijavi grešku. Prijava šalje samo opis, datum i verziju pravila.
+U aplikaciji: Profil → Prijavi grešku. Prijava šalje samo opis, datum, vrstu greške, dio aplikacije na koji se
+odnosi i verziju aplikacije i pravila, bez veze sa tvojim nalogom.
 
 ## Česta pitanja
 **Zašto je danas post na ulju, a moj kalendar kaže drugačije?**
@@ -30,6 +31,12 @@ Brišemo nalog i sve podatke na serveru u roku od 30 dana i potvrđujemo ti to e
 
 **Kako da izvezem podatke?**
 Profil → Izvezi moje podatke.
+
+## Brisanje naloga bez aplikacije {#brisanje-naloga}
+Ako aplikaciju više nemaš, piši na **[POPUNI: email za podršku]** sa adrese kojom si se prijavio, sa naslovom
+"Brisanje naloga". Brišemo nalog i sve podatke vezane za njega (prakse, alergije, istoriju, jelovnike i pristanke) u
+roku od 30 dana i javljamo ti kad je gotovo. Prijave grešaka nisu vezane za nalog i brišu se poslije najviše 12
+mjeseci. Podaci na telefonu se brišu kad obrišeš aplikaciju.
 
 Politika privatnosti: [privacy](./privacy). Uslovi korišćenja: [terms](./terms).
 

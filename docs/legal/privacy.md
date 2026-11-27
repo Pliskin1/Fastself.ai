@@ -39,7 +39,16 @@ Podaci se čuvaju na serverima u Evropskoj uniji (Frankfurt, Njemačka) kod prov
 Kad pošalješ prijavu ili ocjenu, šaljemo ono što napišeš ili izabereš, datum, vrstu i verziju aplikacije i pravila.
 Prijava i ocjena nikad nisu vezane za nalog. Čuvamo ih najviše 12 mjeseci.
 
-## 5. Podsjetnici
+Ne šaljemo ime, email, identifikator naloga, vjeru, lokaciju ni sigurnosne odgovore. Zahtjev ide preko našeg servera,
+pa AI servis ne vidi ni tvoju IP adresu. Da bismo ograničili zloupotrebu, brojimo zahtjeve po heširanom
+identifikatoru instalacije, a taj brojač brišemo poslije 30 dana. Prema uslovima servisa, Cloudflare podatke iz
+zahtjeva ne koristi za treniranje modela i ne čuva ih pošto pošalje odgovor.
+
+## 5. Prijave grešaka
+Kad pošalješ prijavu, šaljemo opis koji napišeš, datum, vrstu greške, dio aplikacije na koji se odnosi (na primjer
+recept) i verziju aplikacije i pravila. Prijava nije vezana za tvoj nalog. Prijave čuvamo najviše 12 mjeseci.
+
+## 6. Podsjetnici
 Podsjetnici su lokalni: pravi ih telefon, bez našeg servera i bez push tokena.
 
 ## 6. Ko još obrađuje podatke
