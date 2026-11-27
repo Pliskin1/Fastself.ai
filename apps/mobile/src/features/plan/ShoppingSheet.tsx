@@ -1,22 +1,17 @@
-import { shoppingList, validateRecipe } from '@fastself/core';
+import { shoppingList } from '@fastself/core';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Caption, Display, Icon, ScreenScroll, Text, haptics } from '@/components';
 import { t } from '@/copy/sr';
-import { useRange, useSettings, useToday } from '@/hooks';
 import { color, layout, radius } from '@/theme/tokens';
-import { capitalFirst, revalidateStored, shoppingCount, toPlanDays } from './model';
+import { capitalFirst, shoppingCount, toPlanDays } from './model';
 import { loadChecks, loadMealPlan, setCheck } from './storage';
 
 export function ShoppingSheet() {
-  const today = useToday();
-  const settings = useSettings();
-  const { plans } = useRange(today, 7);
   // Read once on mount: the repo is not reactive, and a sheet is a fresh mount every time it opens.
-  // The recipes are validated again against today's settings before they make a shopping list (CLAUDE.md rule 4).
   const [items] = useState(() => {
     const plan = loadMealPlan();
-    return plan ? shoppingList(toPlanDays(revalidateStored(plan.days, plans, settings, validateRecipe))) : [];
+    return plan ? shoppingList(toPlanDays(plan.days)) : [];
   });
   const [checked, setChecked] = useState<readonly string[]>(() => [...loadChecks()]);
 

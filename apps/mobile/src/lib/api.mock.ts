@@ -50,7 +50,7 @@ export async function suggestMeals(input: SuggestInput): Promise<ApiResult<Sugge
   // The forbidden one goes second: a check that only looks at the end of the list must not pass.
   const mixed = bad ? [...valid.slice(0, 1), bad, ...valid.slice(1)] : valid;
   const recipes = mixed.map((recipe, index) => ({ ...recipe, id: `ai-${index}`, meals: [input.meal] }));
-  return { ok: true, data: { recipes, rejected: [], fallback: false, provider: 'cloudflare' } };
+  return { ok: true, data: { recipes, rejected: [], fallback: false, provider: 'anthropic' } };
 }
 
 /** A built-in recipe that passes the day for every asked meal. Days differ where the recipes allow it. */
