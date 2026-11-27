@@ -6,7 +6,7 @@ import { t } from '@/copy/sr';
 import { consents } from '@/db/repo';
 import type { AppSettings } from '@/hooks';
 import { mealPlan, type ApiError } from '@/lib/api';
-import { buildMealPlanInput, keepValidRecipes, planIsCurrent, type StoredDay } from './model';
+import { buildMealPlanInput, keepValidRecipes, planIsCurrent, revalidateStored, type StoredDay } from './model';
 import { loadMealPlan, saveMealPlan } from './storage';
 
 const ERROR_KEY: Record<ApiError, string> = {
@@ -111,5 +111,7 @@ export function useMealPlan(plans: readonly DayPlan[], settings: AppSettings, to
     void run();
   }, [run]);
 
-  return { days: stored && planIsCurrent(stored, today) ? stored : null, loading, make };
+  const current = stored && planIsCurrent(stored, today) ? stored : null;
+  const days = current ? revalidateStored(current, plans, settings, validateRecipe) : null;
+  return { days: days && days.some((d) => d.items.length > 0) ? days : null, loading, make };
 }

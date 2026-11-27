@@ -1,6 +1,14 @@
 import { isoDate, nextDays, rangeStats, toDayNum, validateRecipe, type Recipe } from '@fastself/core';
 import { fixtureSettings } from '@/test/utils';
-import { buildMealPlanInput, keepValidRecipes, planIsCurrent, rowModels, shoppingCount, summaryItems } from '../model';
+import {
+  buildMealPlanInput,
+  keepValidRecipes,
+  planIsCurrent,
+  revalidateStored,
+  rowModels,
+  shoppingCount,
+  summaryItems,
+} from '../model';
 
 const DEC_2 = toDayNum(2026, 12, 2);
 
@@ -129,6 +137,24 @@ describe('meal plan input and validation', () => {
       settings,
       validateRecipe,
     );
+    expect(days[0]!.items.map((i) => i.recipe.id)).toEqual(['ok']);
+  });
+
+  it('revalidates a stored plan on read and drops days outside the range', () => {
+    const settings = fixtureSettings({ orthodox: true });
+    const plans = nextDays(DEC_2, 1, settings);
+    const stored = [
+      {
+        date: isoDate(DEC_2),
+        items: [
+          { meal: 'rucak' as const, recipe: OK },
+          { meal: 'vecera' as const, recipe: MEAT },
+        ],
+      },
+      { date: '2026-11-01', items: [{ meal: 'rucak' as const, recipe: OK }] },
+    ];
+    const days = revalidateStored(stored, plans, settings, validateRecipe);
+    expect(days).toHaveLength(1);
     expect(days[0]!.items.map((i) => i.recipe.id)).toEqual(['ok']);
   });
 

@@ -46,8 +46,8 @@ identifikatoru instalacije, a taj brojač brišemo poslije 30 dana. Prema uslovi
 zahtjeva ne koristi za treniranje modela i ne čuva ih pošto pošalje odgovor.
 
 ## 5. Prijave grešaka
-Kad pošalješ prijavu, šaljemo opis koji napišeš, datum, vrstu greške i verziju aplikacije i pravila. Ako si
-prijavljen, prijava je vezana za nalog, a kad obrišeš nalog, ta veza se briše. Prijave čuvamo najviše 12 mjeseci.
+Kad pošalješ prijavu, šaljemo opis koji napišeš, datum, vrstu greške i verziju aplikacije i pravila. Prijava
+nije vezana za tvoj nalog. Prijave čuvamo najviše 12 mjeseci.
 
 ## 6. Podsjetnici
 Podsjetnici su lokalni: pravi ih telefon, bez našeg servera i bez push tokena.
@@ -105,8 +105,8 @@ It works without an account and keeps data on your phone.
    categories, your own avoid words, the meal, the ingredients you pick and the language. No name, email, account id,
    religion, location or safety answers. Requests go through our server, so the provider does not see your IP address.
    A hashed install id counts requests for abuse limits and is deleted after 30 days.
-5. **Error reports:** the text you write, the date, the type and the app and rule versions. Linked to your account if
-   you are signed in; the link is removed when the account is deleted. Kept for up to 12 months.
+5. **Error reports:** the text you write, the date, the type and the app and rule versions. Not linked to your
+   account. Kept for up to 12 months.
 6. **Reminders** are local notifications; no push tokens.
 7. **Processors:** Supabase (database and auth, EU), [POPUNI: email provider] (login codes), Apple (Sign in with Apple),
    Cloudflare, Inc. (Workers AI, USA; meal suggestions, with consent). Transfers outside the EU rely on standard contractual clauses.

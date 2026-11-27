@@ -202,6 +202,19 @@ export function keepValidRecipes(
   return days;
 }
 
+/**
+ * A stored or synced plan is checked again when it is read (CLAUDE.md rule 4): the allergies, practices or rule pack may
+ * have changed since it was made, or the row may come from another device. Days outside `plans` are dropped.
+ */
+export function revalidateStored(
+  days: readonly StoredDay[],
+  plans: readonly DayPlan[],
+  settings: Settings,
+  validate: Parameters<typeof keepValidRecipes>[3],
+): StoredDay[] {
+  return keepValidRecipes({ days: days.map((d) => ({ date: d.date, items: d.items })) }, plans, settings, validate);
+}
+
 /** A stored plan counts while its last day is today or later. */
 export function planIsCurrent(days: readonly StoredDay[], today: DayNum): boolean {
   const last = days[days.length - 1];
