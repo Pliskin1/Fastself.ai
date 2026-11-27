@@ -30,7 +30,7 @@ Verzija 1.0, 25. novembar 2026. Tim: Danilo i Andrej. Stanje koda: glavna grana 
 - **Tim:** Danilo (Mac, iPhone) radi dizajn sistem, navigaciju, ekrane, iOS provjere, E2E testove i TestFlight. Andrej (Windows, Android) radi jezgro pravila, lokalnu bazu, Supabase, AI, obavještenja, sinhronizaciju, ekran Plan, pravne stranice i App Store Connect.
 - **Mentori:** prate projekat, traže naloge i bazu podataka, dobijaju ovaj dokument i verziju preko TestFlighta.
 - **Apple App Review:** odobrava objavu. Traži brisanje naloga u aplikaciji, Sign in with Apple, tačne oznake privatnosti i dovršene tekstove.
-- **Spoljni servisi:** Supabase (baza, prijava, funkcije; EU, Frankfurt), Anthropic (AI model; prima samo anonimni upit), Expo EAS (izrada verzija), servis za slanje email kodova.
+- **Spoljni servisi:** Supabase (baza, prijava, funkcije; EU, Frankfurt), Cloudflare Workers AI (AI model; prima samo anonimni upit), Expo EAS (izrada verzija), servis za slanje email kodova.
 - **Izvori pravila:** svetosavlje.org i crkveni kalendar, vaktija Islamske zajednice u Crnoj Gori (IZ CG), kalendar Diyaneta za hidžretske mjesece. Prema njima se radi ljudska provjera tačnosti.
 
 ## 3. Funkcionalni zahtjevi
@@ -115,7 +115,7 @@ Telefon (iOS ili Android; Expo, React Native)
 Supabase (EU, Frankfurt)
   |- Auth: Apple, email kod
   |- Postgres sa RLS
-  |- Edge funkcije (Deno) --> AI provajder (Anthropic)
+  |- Edge funkcije (Deno) --> AI provajder (Cloudflare Workers AI)
                           --> Apple (izdavanje i opoziv tokena)
 ```
 
@@ -167,7 +167,7 @@ Supabase (EU, Frankfurt)
 
 **Klijent.** Funkcije klijenta vraćaju tipizovan rezultat: uspjeh ili jednu od grešaka `offline`, `rate_limited`, `server`, `invalid`. Nikad ne bacaju izuzetak prema ekranu. U razvoju postoji lažni server (mock).
 
-**AI provajder.** Model `claude-haiku-5-5` sa obaveznim pozivom alata, pa je izlaz strukturisan po šemi recepta. Promjena provajdera traži novu verziju aplikacije, jer tekst pristanka imenuje provajdera.
+**AI provajder.** Cloudflare Workers AI, model `@cf/meta/llama-3.3-70b-instruct-fp8-fast` u JSON režimu, pa je izlaz strukturisan po šemi recepta. Promjena provajdera traži novu verziju aplikacije, jer tekst pristanka imenuje provajdera.
 
 ## 8. Korisnički interfejs
 
@@ -192,7 +192,7 @@ Supabase (EU, Frankfurt)
 | Stanje i validacija | zustand, zod |
 | Jezgro | Čist TypeScript; jedine zavisnosti su adhan (vremena namaza) i zod |
 | Pozadina | Supabase: Postgres, RLS, Auth, Edge funkcije (Deno), region eu-central-1 |
-| AI | Anthropic `claude-haiku-5-5` iza zajedničkog interfejsa |
+| AI | Cloudflare Workers AI (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`) iza zajedničkog interfejsa |
 | Testovi | Vitest, Jest i React Native Testing Library, pgTAP, deno test, Maestro |
 | Izrada i isporuka | pnpm workspaces, Node 22+, GitHub Actions, EAS Build, TestFlight |
 
