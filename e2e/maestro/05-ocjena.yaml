@@ -1,4 +1,4 @@
-# v1 has no AI consent flow, so flow 05 checks the rating: 5 stars, a chip, send, thank-you with the store button.
+# v1 has no AI consent flow, so flow 05 checks the rating: 5 stars, a chip, send, thank-you.
 appId: ai.fastself.app
 ---
 - launchApp
@@ -12,5 +12,4 @@ appId: ai.fastself.app
 - tapOn: { id: 'chip-feedback-timer' }
 - tapOn: { id: 'btn-send-feedback' }
 - assertVisible: { id: 'rating-thanks' }
-- assertVisible: { id: 'btn-store-review' }
 - tapOn: { id: 'btn-rating-done' }

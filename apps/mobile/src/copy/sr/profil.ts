@@ -34,7 +34,7 @@ export default {
   'profil.delete.local': 'Obriši podatke sa telefona',
   'profil.group.help': 'Pomoć',
   'profil.report': 'Prijavi grešku',
-  'profil.report.sub': 'pogrešno pravilo, vrijeme ili recept',
+  'profil.report.sub': 'pogrešno pravilo, vrijeme ili namirnica',
   'profil.footer':
     'fastself.ai {version}. Paket pravila {pack}: pravoslavni kalendar, Ramazan i dobrovoljni postovi. Aplikacija ne daje medicinske savjete.',
   'vaktija.title': 'Grad i vaktija',

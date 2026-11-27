@@ -7,9 +7,9 @@ export default {
   'uslovi.2.title': 'Nije medicinski savjet',
   'uslovi.2.body':
     'Aplikacija ne daje medicinske savjete i ne zamjenjuje ljekara. Post prekini ako ti je loše. Isprekidani post nije dostupan mlađima od 18 godina.',
-  'uslovi.3.title': 'Recepti i alergije',
+  'uslovi.3.title': 'Namirnice i alergije',
   'uslovi.3.body':
-    'Recepti prolaze automatsku provjeru prema pravilu dana i tvojim alergijama, ali provjera može da pogriješi. Kod alergija uvijek pročitaj deklaraciju proizvoda.',
+    'Liste dozvoljenih i zabranjenih namirnica mogu da pogriješe. Kod alergija uvijek pročitaj deklaraciju proizvoda.',
   'uslovi.4.title': 'Nalog',
   'uslovi.4.body':
     'Nalog je opcion. Odgovoran si za svoj email i lozinku. Nalog brišeš u aplikaciji u bilo kom trenutku: Profil, pa Obriši nalog.',
@@ -21,7 +21,7 @@ export default {
     'Aplikacija je besplatna i pružamo je kakva jeste. Trudimo se da servis radi, ali ne garantujemo da će sinhronizacija uvijek biti dostupna. Osnovne funkcije rade bez interneta.',
   'uslovi.7.title': 'Odgovornost',
   'uslovi.7.body':
-    'U mjeri u kojoj zakon dozvoljava, ne odgovaramo za štetu nastalu oslanjanjem na prikazana pravila, vremena ili recepte.',
+    'U mjeri u kojoj zakon dozvoljava, ne odgovaramo za štetu nastalu oslanjanjem na prikazana pravila, vremena ili namirnica.',
   'uslovi.8.title': 'Izmjene',
   'uslovi.8.body': 'Uslove možemo izmijeniti. O bitnim izmjenama obavještavamo u aplikaciji.',
   'uslovi.9.title': 'Pravo',

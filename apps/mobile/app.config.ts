@@ -16,7 +16,6 @@ const config: ExpoConfig = {
   ios: {
     bundleIdentifier: 'ai.fastself.app',
     supportsTablet: false,
-    usesAppleSignIn: true,
     config: { usesNonExemptEncryption: false },
     infoPlist: {
       NSLocationWhenInUseUsageDescription: LOCATION_TEXT,
@@ -66,7 +65,6 @@ const config: ExpoConfig = {
     'expo-font',
     'expo-sqlite',
     ['expo-notifications', { color: '#FFC86E' }],
-    'expo-apple-authentication',
     ['./plugins/with-location-texts', { text: LOCATION_TEXT }],
     [
       'expo-location',

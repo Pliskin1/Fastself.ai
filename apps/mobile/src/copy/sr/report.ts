@@ -3,7 +3,7 @@ export default {
   'report.type.group': 'Vrsta greške',
   'report.type.rule': 'Pogrešno pravilo',
   'report.type.time': 'Pogrešno vrijeme',
-  'report.type.recipe': 'Problem sa receptom',
+  'report.type.recipe': 'Namirnice i alergije',
   'report.type.other': 'Nešto drugo',
   'report.context': 'Odnosi se na: {value}',
   'report.context.general': 'Opšta prijava',

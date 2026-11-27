@@ -59,7 +59,7 @@ reference; when this file and the prototype differ, this file wins.
 | common.retry | Pokušaj ponovo |
 | common.today | Danas |
 | common.disclaimer | fastself.ai nije medicinski savjet. Ako ti je loše, prekini post i javi se ljekaru. |
-| common.offline | Nema interneta. Ovo radi i bez njega, osim AI-ja, prijave i sinhronizacije. |
+| common.offline | Nema interneta. Ovo radi i bez njega, osim prijave i sinhronizacije. |
 | common.error.network | Veza nije uspjela. Provjeri internet i pokušaj ponovo. |
 | common.saved | Sačuvano |
 
@@ -323,7 +323,7 @@ reference; when this file and the prototype differ, this file wins.
 | profil.delete.local | Obriši podatke sa telefona |
 | profil.group.help | Pomoć |
 | profil.report | Prijavi grešku |
-| profil.report.sub | pogrešno pravilo, vrijeme ili recept |
+| profil.report.sub | pogrešno pravilo, vrijeme ili namirnica |
 | profil.footer | fastself.ai {version}. Paket pravila {pack}: pravoslavni kalendar, Ramazan i dobrovoljni postovi. Aplikacija ne daje medicinske savjete. |
 | vaktija.title | Grad i vaktija |
 | vaktija.changeCity | Promijeni grad |
@@ -386,7 +386,7 @@ Verb agreement changes with the plural form, so `passed` has three keys; pick wi
 | key | text |
 |---|---|
 | report.title | Šta nije u redu? |
-| report.type.rule / time / recipe / other | Pogrešno pravilo / Pogrešno vrijeme / Problem sa receptom / Nešto drugo |
+| report.type.rule / time / recipe / other | Pogrešno pravilo / Pogrešno vrijeme / Namirnice i alergije / Nešto drugo |
 | report.input.placeholder | Opiši ukratko šta si očekivao |
 | report.note | Šaljemo samo ovaj opis, datum i verziju pravila. Bez imena i lokacije. |
 | report.send | Pošalji prijavu |
@@ -504,8 +504,8 @@ Areas: `nalog.*`, `profil.*`, `danas.sync.*` as above; `legal.ts` (`uslovi.*`) a
 | uslovi.1.body | fastself.ai prikazuje pravila i vremena posta prema javno dostupnim kalendarima i proračunima. Pravila mogu da se razlikuju po parohiji, džematu i duhovniku. Kad nisi siguran, pitaj sveštenika ili imama. Grešku prijavi u aplikaciji. |
 | uslovi.2.title | Nije medicinski savjet |
 | uslovi.2.body | Aplikacija ne daje medicinske savjete i ne zamjenjuje ljekara. Post prekini ako ti je loše. Isprekidani post nije dostupan mlađima od 18 godina. |
-| uslovi.3.title | Recepti i alergije |
-| uslovi.3.body | Recepti prolaze automatsku provjeru prema pravilu dana i tvojim alergijama, ali provjera može da pogriješi. Kod alergija uvijek pročitaj deklaraciju proizvoda. |
+| uslovi.3.title | Namirnice i alergije |
+| uslovi.3.body | Liste dozvoljenih i zabranjenih namirnica mogu da pogriješe. Kod alergija uvijek pročitaj deklaraciju proizvoda. |
 | uslovi.4.title | Nalog |
 | uslovi.4.body | Nalog je opcion. Odgovoran si za svoj email i lozinku. Nalog brišeš u aplikaciji u bilo kom trenutku: Profil, pa Obriši nalog. |
 | uslovi.5.title | Dozvoljeno korišćenje |
@@ -513,7 +513,7 @@ Areas: `nalog.*`, `profil.*`, `danas.sync.*` as above; `legal.ts` (`uslovi.*`) a
 | uslovi.6.title | Dostupnost |
 | uslovi.6.body | Aplikacija je besplatna i pružamo je kakva jeste. Trudimo se da servis radi, ali ne garantujemo da će sinhronizacija uvijek biti dostupna. Osnovne funkcije rade bez interneta. |
 | uslovi.7.title | Odgovornost |
-| uslovi.7.body | U mjeri u kojoj zakon dozvoljava, ne odgovaramo za štetu nastalu oslanjanjem na prikazana pravila, vremena ili recepte. |
+| uslovi.7.body | U mjeri u kojoj zakon dozvoljava, ne odgovaramo za štetu nastalu oslanjanjem na prikazana pravila, vremena ili namirnica. |
 | uslovi.8.title | Izmjene |
 | uslovi.8.body | Uslove možemo izmijeniti. O bitnim izmjenama obavještavamo u aplikaciji. |
 | uslovi.9.title | Pravo |
@@ -550,8 +550,7 @@ Areas: `nalog.*`, `profil.*`, `danas.sync.*` as above; `legal.ts` (`uslovi.*`) a
 | ocjena.note | Šaljemo samo ocjenu, izbor i komentar. Bez imena, emaila i lokacije. |
 | ocjena.send | Pošalji ocjenu |
 | ocjena.thanks.title | Hvala ti! |
-| ocjena.thanks.high | Drago nam je da ti pomaže. Ako imaš minut, ocjena u prodavnici nam mnogo znači. |
+| ocjena.thanks.high | Drago nam je da ti pomaže. Hvala što si odvojio minut. |
 | ocjena.thanks.low | Pročitaćemo svaku riječ. Hvala što nam pomažeš da budemo bolji. |
-| ocjena.store | Ocijeni u prodavnici |
 | ocjena.done | Gotovo |
 | ocjena.error | Ocjena nije poslata. Provjeri internet i pokušaj ponovo. |

@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
-import * as StoreReview from 'expo-store-review';
 import { ToastProvider } from '@/components';
 import PrijavaGreskeScreen from '@/app/(sheets)/prijava-greske';
 import { sendReport } from '@/lib/api';
@@ -13,11 +12,6 @@ jest.mock('expo-router', () => ({
   useLocalSearchParams: () => mockParams,
 }));
 jest.mock('@/lib/api', () => ({ sendReport: jest.fn() }));
-jest.mock('expo-store-review', () => ({
-  isAvailableAsync: jest.fn(async () => true),
-  requestReview: jest.fn(async () => undefined),
-}));
-
 const send = sendReport as jest.MockedFunction<typeof sendReport>;
 
 const open = (mode?: string) => {
@@ -64,7 +58,7 @@ describe('Ocijeni aplikaciju', () => {
     expect(screen.getByTestId('star-5')).toBeTruthy();
   });
 
-  it('5 stars: chips, comment, send, then the store prompt', async () => {
+  it('5 stars: chips, comment, send, then thanks', async () => {
     send.mockResolvedValue({ ok: true, data: null });
     await open('ocjena');
     await fireEvent.press(screen.getByTestId('star-5'));
@@ -77,11 +71,10 @@ describe('Ocijeni aplikaciju', () => {
       expect.objectContaining({ type: 'drugo', context: 'ocjena:5', message: 'Ocjena 5/5 · Tajmer · Tajmer je top' }),
     );
     expect(await screen.findByTestId('rating-thanks')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('btn-store-review'));
-    expect(StoreReview.requestReview).toHaveBeenCalled();
+    expect(screen.queryByTestId('btn-store-review')).toBeNull();
   });
 
-  it('2 stars: asks what to fix and never offers the store', async () => {
+  it('2 stars: asks what to fix and closes', async () => {
     send.mockResolvedValue({ ok: true, data: null });
     await open('ocjena');
     await fireEvent.press(screen.getByTestId('star-2'));

@@ -28,9 +28,8 @@ export default {
   'ocjena.note': 'Šaljemo samo ocjenu, izbor i komentar. Bez imena, emaila i lokacije.',
   'ocjena.send': 'Pošalji ocjenu',
   'ocjena.thanks.title': 'Hvala ti!',
-  'ocjena.thanks.high': 'Drago nam je da ti pomaže. Ako imaš minut, ocjena u prodavnici nam mnogo znači.',
+  'ocjena.thanks.high': 'Drago nam je da ti pomaže. Hvala što si odvojio minut.',
   'ocjena.thanks.low': 'Pročitaćemo svaku riječ. Hvala što nam pomažeš da budemo bolji.',
-  'ocjena.store': 'Ocijeni u prodavnici',
   'ocjena.done': 'Gotovo',
   'ocjena.error': 'Ocjena nije poslata. Provjeri internet i pokušaj ponovo.',
 } as Record<string, string>;

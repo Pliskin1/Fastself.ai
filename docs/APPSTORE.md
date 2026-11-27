@@ -64,21 +64,20 @@ eas submit -p ios --latest                      # uploads to App Store Connect
 - **Price**: free. Availability: all countries, or ME + region first.
 - **Screenshots**: 6.9" iPhone (iPhone 18 Pro Max Simulator), 5–6 shots from `e2e/maestro/screenshots.yaml`:
   - Danas dusk (Božićni post + IF), Danas Ramadan iftar countdown.
-  - Kalendar, Šta da jedem (validated recipe + rejected).
+  - Kalendar, Plan.
   - Tajmer, Privatnost.
   Add a short caption overlay only if time allows; plain screenshots are fine.
 - **Copyright**: "2026 <legal entity>".
 
 ## 5. App Privacy ("nutrition labels")
-Data is collected only when the user creates an account or uses AI. Declare it like this:
+Data is collected only when the user creates an account or sends a report or rating (v1 has no AI). Declare it like this:
 | Data type | Collected | Linked to user | Tracking | Purpose |
 |---|---|---|---|---|
-| Contact Info: Email Address | yes (email login; Apple may relay) | yes | no | App Functionality |
+| Contact Info: Email Address | yes (email + password login) | yes | no | App Functionality |
 | Identifiers: User ID | yes (account) | yes | no | App Functionality |
-| Identifiers: Device ID (random install id, hashed, rate limit) | yes | no | no | App Functionality |
 | Health & Fitness: Health (allergies), Fitness (fasting history) | yes, only with sync consent | yes | no | App Functionality |
 | Sensitive Info (religious practice) | yes, only with sync consent | yes | no | App Functionality |
-| User Content: Other (error reports) | yes | no | no | App Functionality |
+| User Content: Other (error reports and ratings) | yes | no | no | App Functionality |
 | Location | **no** (city is chosen on the device; coordinates are never sent) | | | |
 | Diagnostics | no (unless crash reporting is added later) | | | |
 Do not track and do not use the ATT prompt. AI requests contain no personal data (see API.md §1).
@@ -109,7 +108,7 @@ Demo account: review@fastself.ai / <password set by Andrej on prod>. Profil → 
 To delete an account: Profil → Obriši nalog (on the account card and in the Privatnost group). This deletes the
 account and all server data immediately.
 Terms of use: Profil → Uslovi korišćenja. Privacy summary: Profil → Politika privatnosti.
-Rating: Profil → Ocijeni aplikaciju (sent anonymously; 4–5 stars offer the system rating prompt).
+Rating: Profil → Ocijeni aplikaciju (anonymous feedback to the team).
 Version 1.0 has no AI features.
 The app is not a medical app and contains no health claims. Interface language: Montenegrin.
 ```

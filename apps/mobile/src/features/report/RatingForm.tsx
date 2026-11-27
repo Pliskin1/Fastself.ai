@@ -11,25 +11,12 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
-import {
-  Body,
-  Caption,
-  Chip,
-  Display,
-  PrimaryButton,
-  SecondaryButton,
-  Text,
-  TextField,
-  Title,
-  haptics,
-  useMotion,
-} from '@/components';
+import { Body, Caption, Chip, Display, PrimaryButton, Text, TextField, Title, haptics, useMotion } from '@/components';
 import { t } from '@/copy/sr';
 import { sendReport } from '@/lib/api';
 import { spring } from '@/theme/motion';
 import { color, layout } from '@/theme/tokens';
 import { buildRating, chipsFor, isHigh, MAX_COMMENT, type ChipId, type Score } from './rating';
-import { askStoreReview } from './storeReview';
 
 const STAR_PATH = 'M12 2.6l2.8 5.8 6.3.9-4.6 4.5 1.1 6.3L12 17.1l-5.6 3 1.1-6.3L2.9 9.3l6.3-.9L12 2.6z';
 const SCORES: Score[] = [1, 2, 3, 4, 5];
@@ -136,16 +123,7 @@ export function RatingForm() {
         <Body tone="mist" style={styles.center}>
           {t(high ? 'ocjena.thanks.high' : 'ocjena.thanks.low')}
         </Body>
-        {high ? (
-          <PrimaryButton
-            testID="btn-store-review"
-            label={t('ocjena.store')}
-            onPress={() => {
-              void askStoreReview().finally(() => router.back());
-            }}
-          />
-        ) : null}
-        <SecondaryButton testID="btn-rating-done" label={t('ocjena.done')} onPress={() => router.back()} />
+        <PrimaryButton testID="btn-rating-done" label={t('ocjena.done')} onPress={() => router.back()} />
       </Animated.View>
     );
   }

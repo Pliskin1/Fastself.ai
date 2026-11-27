@@ -33,8 +33,8 @@ in the EU, and you can delete it in the app at any time.
 fastself.ai is not a medical app. If you have a health condition, talk to your doctor before fasting.
 ```
 - **What's New**: `First release.`
-- **Support URL**: `https://[POPUNI: github-user].github.io/fastself-site/support`
-- **Privacy Policy URL**: `https://[POPUNI: github-user].github.io/fastself-site/privacy`
+- **Support URL**: `https://pliskin1.github.io/fastself-site/support`
+- **Privacy Policy URL**: `https://pliskin1.github.io/fastself-site/privacy`
 - **Copyright**: `2026 [POPUNI: legal entity]`
 
 ## Croatian localisation (closest to Montenegrin; D-24)
