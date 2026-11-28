@@ -13,7 +13,7 @@ Aplikacija je napravljena tako da radi bez naloga i da podaci ostanu na tvom tel
 
 ## 1. Šta ostaje samo na telefonu
 - Prakse koje pratiš, mjera posta, krsna slava, alergije i ishrana, grad i podešavanja vaktije.
-- Istorija posta i isprekidanog posta, izuzeci i razlozi izuzetaka.
+- Istorija posta i isprekidanog posta, izuzeci i razlozi izuzetaka. Razlozi izuzetaka nikad ne napuštaju telefon.
 - Odgovori na sigurnosna pitanja (trudnoća, dijabetes, poremećaj ishrane, maloljetnost). Oni nikad ne napuštaju telefon.
 - Nasumični identifikator instalacije, koji ne sadrži ništa o tebi.
 
@@ -27,7 +27,7 @@ ne čuvamo ih i ne šaljemo. Grad možeš izabrati i ručno.
 Ako napraviš nalog, čuvamo:
 - email adresu i lozinku (lozinku čuvamo samo kao kriptografski otisak, niko je ne može pročitati);
 - uz tvoj pristanak za svaku grupu posebno: prakse i podešavanja (uključujući grad i vaktiju), alergije i ishranu,
-  istoriju posta;
+  istoriju posta (sa datumima izuzetaka, bez razloga);
 - zapis o datim i povučenim pristancima.
 
 Osnov obrade: izvršenje usluge koju tražiš i tvoj izričit pristanak. Prakse mogu otkriti vjersko uvjerenje, a
@@ -36,19 +36,11 @@ alergije zdravstveni podatak, zato ih šaljemo samo uz izričit pristanak, koji 
 Podaci se čuvaju na serverima u Evropskoj uniji (Frankfurt, Njemačka) kod provajdera Supabase. Veza je šifrovana.
 
 ## 4. Prijave grešaka i ocjene
-Kad pošalješ prijavu ili ocjenu, šaljemo ono što napišeš ili izabereš, datum, vrstu i verziju aplikacije i pravila.
-Prijava i ocjena nikad nisu vezane za nalog. Čuvamo ih najviše 12 mjeseci.
+Kad pošalješ prijavu ili ocjenu, šaljemo ono što napišeš ili izabereš, datum, vrstu, dio aplikacije na koji se odnosi
+(na primjer recept) i verziju aplikacije i pravila. Uz prijavu ne šaljemo ime, email, identifikator naloga, prakse,
+lokaciju ni sigurnosne odgovore. Prijava i ocjena nikad nisu vezane za nalog. Čuvamo ih najviše 12 mjeseci.
 
-Ne šaljemo ime, email, identifikator naloga, vjeru, lokaciju ni sigurnosne odgovore. Zahtjev ide preko našeg servera,
-pa AI servis ne vidi ni tvoju IP adresu. Da bismo ograničili zloupotrebu, brojimo zahtjeve po heširanom
-identifikatoru instalacije, a taj brojač brišemo poslije 30 dana. Prema uslovima servisa, Cloudflare podatke iz
-zahtjeva ne koristi za treniranje modela i ne čuva ih pošto pošalje odgovor.
-
-## 5. Prijave grešaka
-Kad pošalješ prijavu, šaljemo opis koji napišeš, datum, vrstu greške, dio aplikacije na koji se odnosi (na primjer
-recept) i verziju aplikacije i pravila. Prijava nije vezana za tvoj nalog. Prijave čuvamo najviše 12 mjeseci.
-
-## 6. Podsjetnici
+## 5. Podsjetnici
 Podsjetnici su lokalni: pravi ih telefon, bez našeg servera i bez push tokena.
 
 ## 6. Ko još obrađuje podatke
@@ -92,14 +84,16 @@ It works without an account and keeps data on your phone.
 
 1. **On the phone only:** practices, fasting strictness, patron saint day, allergies and diet, city and prayer time
    settings, fasting history, exceptions and their reasons, safety answers (pregnancy, diabetes, eating disorder,
-   under 18) and a random install id. Safety answers never leave the device.
+   under 18) and a random install id. Safety answers and exception reasons never leave the device. Without an
+   account and your consent, none of this is sent to a server.
 2. **Location:** used once, if you allow it, to find the nearest city. Coordinates are discarded and never sent.
 3. **Optional account and sync:** email address and password (stored only as a cryptographic hash); with your consent
-   per group, practices and settings (including city and prayer time settings), allergies and diet, fasting history; a
-   record of consents. Practices can reveal religious belief and allergies are health data, so they are synced only
+   per group, practices and settings (including city and prayer time settings), allergies and diet, fasting history
+   (with exception dates, without the reasons); a record of consents. Practices can reveal religious belief and allergies are health data, so they are synced only
    with explicit consent, which you can withdraw in Profile. Stored in the EU (Frankfurt) with Supabase.
-4. **Error reports and ratings:** what you write or choose, the date, the type and the app and rule versions. Never
-   linked to your account. Kept for up to 12 months.
+4. **Error reports and ratings:** what you write or choose, the date, the type, the part of the app it concerns and
+   the app and rule versions. No name, email, account id, practices, location or safety answers are sent with it.
+   Never linked to your account. Kept for up to 12 months.
 5. **Reminders** are local notifications; no push tokens.
 6. **Processors:** Supabase (database and auth, EU). Transfers outside the EU rely on standard contractual clauses.
    No selling of data, no ads, no tracking. This version has no AI features.
