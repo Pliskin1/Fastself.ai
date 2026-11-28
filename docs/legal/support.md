@@ -25,10 +25,6 @@ Podešavanja telefona → Obavještenja → fastself.ai: dozvoli obavještenja. 
 **Kako da obrišem nalog?**
 Profil → Obriši nalog. Brišemo sve podatke sa servera.
 
-## Brisanje naloga bez aplikacije
-Ako nemaš aplikaciju, pošalji email sa adrese naloga na **podrska@fastself.ai** s naslovom "Brisanje naloga".
-Brišemo nalog i sve podatke na serveru u roku od 30 dana i potvrđujemo ti to emailom.
-
 **Kako da izvezem podatke?**
 Profil → Izvezi moje podatke.
 
