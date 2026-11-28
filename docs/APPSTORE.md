@@ -78,7 +78,7 @@ Data is collected only when the user creates an account or sends a report or rat
 | Health & Fitness: Health (allergies), Fitness (fasting history) | yes, only with sync consent | yes | no | App Functionality |
 | Sensitive Info (religious practice) | yes, only with sync consent | yes | no | App Functionality |
 | User Content: Other (error reports and ratings) | yes | no | no | App Functionality |
-| Location | **no** (city is chosen on the device; coordinates are never sent) | | | |
+| Location: Coarse Location | yes, only with sync consent (the chosen city syncs with practices and settings; GPS coordinates are never sent) | yes | no | App Functionality |
 | Diagnostics | no (unless crash reporting is added later) | | | |
 Do not track and do not use the ATT prompt. AI requests contain no personal data (see API.md §1).
 
