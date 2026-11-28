@@ -5,7 +5,7 @@ title: Politika privatnosti | Privacy policy
 # Politika privatnosti, fastself.ai
 
 Važi od: 27. novembar 2026
-Rukovalac podacima: fastself, Bulevar Stanka Dragojevića 1, Podgorica, Crna Gora.
+Rukovalac podacima: fastself.ai, Bulevar Stanka Dragojevića 1, Podgorica, Crna Gora.
 Kontakt: podrska@fastself.ai
 
 fastself.ai prikazuje pravila i vremena pravoslavnog posta, Ramazana, dobrovoljnih postova i isprekidanog posta.
@@ -77,7 +77,7 @@ O bitnim izmjenama obavještavamo u aplikaciji. Datum na vrhu pokazuje posljednj
 
 # Privacy policy, fastself.ai (English)
 
-Effective: 27 November 2026. Controller: fastself, Bulevar Stanka Dragojevića 1, Podgorica, Montenegro. Contact: podrska@fastself.ai.
+Effective: 27 November 2026. Controller: fastself.ai, Bulevar Stanka Dragojevića 1, Podgorica, Montenegro. Contact: podrska@fastself.ai.
 
 fastself.ai shows the rules and times of Orthodox fasting, Ramadan, voluntary Islamic fasts and intermittent fasting.
 It works without an account and keeps data on your phone.
