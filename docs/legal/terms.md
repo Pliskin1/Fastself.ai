@@ -4,7 +4,7 @@ title: Uslovi korišćenja | Terms of use
 
 # Uslovi korišćenja, fastself.ai
 
-Važi od: 27. novembar 2026. Pružalac: fastself, Crna Gora. Kontakt: podrska@fastself.ai.
+Važi od: 27. novembar 2026. Pružalac: fastself.ai, Crna Gora. Kontakt: podrska@fastself.ai.
 
 1. **Šta aplikacija radi.** fastself.ai prikazuje pravila i vremena posta prema javno dostupnim kalendarima i
    proračunima. Pravila mogu da se razlikuju po parohiji, džematu i duhovniku. Kad nisi siguran, pitaj sveštenika ili
